@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RubbishRumble.Models
 {
-    internal class GameStatistics
+    public class GameStatistics
     {
+
     }
 }

@@ -11,7 +11,6 @@ namespace RubbishRumble.Models
         public int Id { get; set; }
         public string Username { get; set; }
         public int Coins { get; set; }
-
         public int HighestScore { get; set; }
     }
 }
