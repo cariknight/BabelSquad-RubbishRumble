@@ -1,12 +1,73 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
              x:Class="RubbishRumble.Views.MainMenuPage"
-             Title="MainMenuPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="ViewModels:MainMenuViewModel"
+             BackgroundColor="#FDCBB0"
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="*, Auto, *" Margin="0,90,0,0" Padding="30" VerticalOptions="FillAndExpand">
+
+        <!-- Logo -->
+        <Image Grid.Row="0" 
+               Source="logo.png" 
+               HeightRequest="150" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Start"/>
+
+        <!-- Main Buttons -->
+        <VerticalStackLayout Grid.Row="1" Spacing="25" Margin="0,0,0,15" HorizontalOptions="Center">
+            <!-- PLay btn -->
+            <ImageButton Source="play.png"
+                         Command="{Binding PlayCommand}"
+                         BackgroundColor="#9E4539"
+                         Aspect="AspectFit"
+                         Padding="6"
+                         HeightRequest="60"
+                         WidthRequest="270"
+                         BorderColor="#4C3E24"
+                         BorderWidth="3"/>
+            <!-- Settings btn -->
+            <ImageButton Source="setting.png"
+                         Command="{Binding SettingsCommand}"
+                         BackgroundColor="#9E4539"
+                         Aspect="AspectFit"
+                         Padding="6"
+                         HeightRequest="60"
+                         WidthRequest="270"
+                         BorderColor="#4C3E24"
+                         BorderWidth="3"/>
+            <!-- Exit btn -->
+            <!-- TO FIX: temporary using setting assets -->
+            <ImageButton Source="setting.png"
+                         Command="{Binding ExitCommand}"
+                         BackgroundColor="#9E4539"
+                         Aspect="AspectFit"
+                         Padding="6"
+                         BorderColor="#4C3E24"
+                         BorderWidth="3"
+                         HeightRequest="60"
+                         WidthRequest="270"/>
+
+        </VerticalStackLayout>
+
+        <!-- Tutorial and Trash Index -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, *" WidthRequest="150" HorizontalOptions="Center">
+
+            <!-- Tutorial btn -->
+            <ImageButton Grid.Column="0"
+                         Command="{Binding TutorialCommand}"
+                         BackgroundColor="#4C3E24"
+                         HorizontalOptions="Start"
+                         HeightRequest="45"/>
+
+            <!-- Trash Index btn -->
+            <ImageButton Grid.Column="1"
+                         Command="{Binding IndexCommand}"
+                         BackgroundColor="#4C3E24"
+                         HorizontalOptions="End"
+                         HeightRequest="45"/>
+
+        </Grid>
+    </Grid>
 </ContentPage>
