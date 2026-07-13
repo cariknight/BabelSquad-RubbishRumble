@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace RubbishRumble.Models
 {
-    internal class Player
+    public class Player
     {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public int Coins { get; set; }
+
+        public int HighestScore { get; set; }
     }
 }
