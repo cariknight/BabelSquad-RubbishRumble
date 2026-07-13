@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RubbishRumble.Models
 {
-    internal class Difficulty
+    public class Difficulty
     {
     }
 }

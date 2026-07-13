@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace RubbishRumble.Models
 {
-    internal class PowerUp
+    public class PowerUp
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int DurationSeconds { get; set; }
+        public double ScoreMultiplier { get; set; }
+        public int Quantity { get; set; }
     }
 }
