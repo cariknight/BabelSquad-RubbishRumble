@@ -23,6 +23,7 @@ namespace RubbishRumble.ViewModels
         private bool _isBioBinOpen;
         private bool _isHazardBinOpen;
         private bool _isLandfillBinOpen;
+        private bool _gameOverHandled;
 
         public int CurrentCoins
         {
@@ -154,6 +155,7 @@ namespace RubbishRumble.ViewModels
 
         public async Task InitializeAsync()
         {
+            _gameOverHandled = false;
             await _powerUpService.InitializeAsync();
             await _gameService.StartGameAsync();
             await RefreshCoinsAsync();
@@ -243,6 +245,24 @@ namespace RubbishRumble.ViewModels
             OnPropertyChanged(nameof(IsAutoSortActive));
             OnPropertyChanged(nameof(IsSpeedActive));
             NotifyPowerUpButtonState();
+
+            if (_gameService.IsGameOver && !_gameOverHandled)
+            {
+                _gameOverHandled = true;
+                _ = NavigateToGameOverAsync();
+            }
+        }
+
+        private async Task NavigateToGameOverAsync()
+        {
+            if (Shell.Current == null)
+                return;
+
+            GameSession session = _gameService.EndGame();
+            string route =
+                $"GameOverPage?TotalScore={session.FinalScore}&EarnedCoins={session.CoinsEarned}";
+
+            await Shell.Current.GoToAsync(route);
         }
 
         private void NotifyPowerUpButtonState()

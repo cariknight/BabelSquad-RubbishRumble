@@ -57,7 +57,7 @@ public partial class GamePage : ContentPage
         {
             BackgroundColor = Colors.Transparent,
             InputTransparent = false,
-            ZIndex = 1000
+            ZIndex = 0
         };
 
         AbsoluteLayout.SetLayoutFlags(_touchLayer, AbsoluteLayoutFlags.All);
@@ -76,7 +76,7 @@ public partial class GamePage : ContentPage
 #endif
 
         _touchLayer.HandlerChanged += OnTouchLayerHandlerChanged;
-        SpawningArena.Children.Add(_touchLayer);
+        SpawningArena.Children.Insert(0, _touchLayer);
     }
 
     private void UpdateLayoutMetrics()
@@ -199,9 +199,12 @@ public partial class GamePage : ContentPage
             WidthRequest = HitSize,
             HeightRequest = HitSize,
             BackgroundColor = Colors.Transparent,
-            InputTransparent = true
+            InputTransparent = true,
+            ZIndex = 1
         };
         container.Children.Add(image);
+
+        AbsoluteLayout.SetLayoutFlags(container, AbsoluteLayoutFlags.None);
 
         var fallingTrash = new FallingTrash(trash, container, image)
         {
@@ -210,8 +213,6 @@ public partial class GamePage : ContentPage
         };
 
         SpawningArena.Children.Add(container);
-        if (_touchLayer != null)
-            _touchLayer.ZIndex = 1000;
 
         _activeTrash.Add(fallingTrash);
         SetBounds(fallingTrash);
@@ -528,9 +529,7 @@ public partial class GamePage : ContentPage
                 element.ZIndex = 0;
         }
 
-        fallingTrash.View.ZIndex = 1;
-        if (_touchLayer != null)
-            _touchLayer.ZIndex = 1000;
+        fallingTrash.View.ZIndex = 2;
     }
 
     private bool TrySortTrash(FallingTrash fallingTrash)
@@ -599,6 +598,9 @@ public partial class GamePage : ContentPage
 
     private async void OnExitButtonClicked(object sender, EventArgs e)
     {
+        if (Shell.Current == null)
+            return;
+
         await Shell.Current.GoToAsync("..");
     }
 }

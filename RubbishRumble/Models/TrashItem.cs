@@ -13,13 +13,8 @@
             if (string.IsNullOrWhiteSpace(FilePath))
                 return string.Empty;
 
-            const string prefix = "Resources/Images/";
-            string path = FilePath.Replace('\\', '/');
-
-            if (path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                path = path[prefix.Length..];
-
-            return Path.ChangeExtension(path, null);
+            string normalized = FilePath.Replace('\\', '/');
+            return Path.GetFileName(normalized);
         }
     }
 }

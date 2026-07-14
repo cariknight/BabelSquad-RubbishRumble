@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Input;
 using RubbishRumble.Services;
-using System.Windows.Input;
 
 namespace RubbishRumble.ViewModels
 {
+    [QueryProperty(nameof(TotalScore), "TotalScore")]
+    [QueryProperty(nameof(EarnedCoins), "EarnedCoins")]
     public class GameOverViewModel : BindableObject
     {
         private int _totalScore;
@@ -37,11 +34,16 @@ namespace RubbishRumble.ViewModels
 
         public GameOverViewModel()
         {
-            // TOFIX: just tested values
-            TotalScore = 200;
-            EarnedCoins = 100;
-            //TOFIX: add music for game over _ = SettingsService.Instance.PlaySfxAsync("gameover.mp3");
+            ExitCommand = new Command(async () => await OnExitExecutedAsync());
+            _ = SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
         }
 
+        private static async Task OnExitExecutedAsync()
+        {
+            if (Shell.Current == null)
+                return;
+
+            await Shell.Current.GoToAsync("//MainMenuPage");
+        }
     }
 }

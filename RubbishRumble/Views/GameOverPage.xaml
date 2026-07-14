@@ -57,6 +57,7 @@
             </Border>
 
             <ImageButton Source="exit.png"
+                         Command="{Binding ExitCommand}"
                          BackgroundColor="#9E4539"
                          BorderColor="#4C3E24"
                          BorderWidth="3"
