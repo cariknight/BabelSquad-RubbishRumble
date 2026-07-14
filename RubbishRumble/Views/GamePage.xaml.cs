@@ -8,4 +8,9 @@ public partial class GamePage : ContentPage
         InitializeComponent();
         BindingContext = new GameViewModel();
     }
+
+    private async void OnExitButtonClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
 }
