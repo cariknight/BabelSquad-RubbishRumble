@@ -20,5 +20,9 @@
 
         // Sorting
         public const double BIN_ZONE_START_RATIO = 0.65;
+
+        // Economy: 10 score = 1 coin (Speed costs 10, Freeze/Slow 15, Auto Sort 50)
+        public const int SCORE_TO_COINS_DIVISOR = 10;
+        public const int MIN_COINS_EARNED = 1;
     }
 }

@@ -3,12 +3,12 @@ using RubbishRumble.Services;
 
 namespace RubbishRumble.ViewModels
 {
-    [QueryProperty(nameof(TotalScore), "TotalScore")]
-    [QueryProperty(nameof(EarnedCoins), "EarnedCoins")]
     public class GameOverViewModel : BindableObject
     {
+        private readonly DatabaseService _databaseService = new();
         private int _totalScore;
         private int _earnedCoins;
+        private bool _rewardsSaved;
 
         public int TotalScore
         {
@@ -36,6 +36,24 @@ namespace RubbishRumble.ViewModels
         {
             ExitCommand = new Command(async () => await OnExitExecutedAsync());
             _ = SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+        }
+
+        public async Task SaveRewardsAsync()
+        {
+            if (_rewardsSaved)
+                return;
+
+            _rewardsSaved = true;
+
+            try
+            {
+                await _databaseService.AwardGameRewardsAsync(TotalScore, EarnedCoins);
+            }
+            catch (Exception ex)
+            {
+                _rewardsSaved = false;
+                System.Diagnostics.Debug.WriteLine($"Failed to save game rewards: {ex}");
+            }
         }
 
         private static async Task OnExitExecutedAsync()

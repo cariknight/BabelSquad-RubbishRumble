@@ -206,8 +206,10 @@ namespace RubbishRumble.Services
 
         public int CalculateCoins()
         {
-            // you can edit here how much score is converted into coins (i.e., Score/2 120 score = 60 coins)
-            return Score;
+            if (Score <= 0)
+                return 0;
+
+            return Math.Max(Constants.MIN_COINS_EARNED, Score / Constants.SCORE_TO_COINS_DIVISOR);
         }
         public GameSession EndGame()
         {
