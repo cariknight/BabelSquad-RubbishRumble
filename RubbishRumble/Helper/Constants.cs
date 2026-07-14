@@ -22,5 +22,8 @@
         public const double SPAWN_INTERVAL_DECREASE = 0.1;
         public const double TRASH_SPEED_INCREASE = 0.15;
         //public const double RARITY_MULTIPLIER_INCREASE = 0.1;
+
+        // Sorting
+        public const double BIN_ZONE_START_RATIO = 0.65;
     }
 }

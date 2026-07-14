@@ -256,6 +256,78 @@ namespace RubbishRumble.Services
             NotifyGameStateChanged();
         }
 
+        public bool IsTrashInBinZone(double trashBottomY, double arenaHeight)
+            => arenaHeight > 0 && trashBottomY >= arenaHeight * Constants.BIN_ZONE_START_RATIO;
+
+        public string? GetBinCategoryAtPosition(
+            double trashCenterX,
+            double trashBottomY,
+            double arenaWidth,
+            double arenaHeight)
+        {
+            if (arenaWidth <= 0 || arenaHeight <= 0)
+                return null;
+
+            if (!IsTrashInBinZone(trashBottomY, arenaHeight))
+                return null;
+
+            double ratio = trashCenterX / arenaWidth;
+
+            if (ratio < 0.25)
+                return "Recyclables";
+
+            if (ratio < 0.5)
+                return "Biodegradable";
+
+            if (ratio < 0.75)
+                return "Biohazard";
+
+            return "Landfill";
+        }
+
+        public bool TryAutoSortTrash(TrashItem? trash, double trashBottomY, double arenaHeight)
+        {
+            if (!IsAutoSortActive || IsGameOver || trash == null)
+                return false;
+
+            if (!IsTrashInBinZone(trashBottomY, arenaHeight))
+                return false;
+
+            CollectTrash(trash);
+            return true;
+        }
+
+        public TrashSortOutcome TryManualSortTrash(
+            TrashItem? trash,
+            double trashCenterX,
+            double trashBottomY,
+            double arenaWidth,
+            double arenaHeight)
+        {
+            if (IsGameOver || trash == null)
+                return TrashSortOutcome.NotInBinZone;
+
+            string? droppedCategory = GetBinCategoryAtPosition(
+                trashCenterX,
+                trashBottomY,
+                arenaWidth,
+                arenaHeight);
+
+            if (droppedCategory == null)
+                return TrashSortOutcome.NotInBinZone;
+
+            string itemCategory = trash.Category ?? string.Empty;
+
+            if (droppedCategory == itemCategory)
+            {
+                CollectTrash(trash);
+                return TrashSortOutcome.Correct;
+            }
+
+            LoseLife();
+            return TrashSortOutcome.Incorrect;
+        }
+
         // POWER UPS
         public async Task ActivatePowerUpAsync(PowerUp? powerUp)
         {

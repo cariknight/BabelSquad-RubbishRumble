@@ -177,15 +177,38 @@ namespace RubbishRumble.ViewModels
 
         public bool IsTrashFrozen() => _gameService.CurrentSpeedMultiplier <= 0;
 
-        public void OnTrashSorted(TrashItem? trash)
+        public bool TryAutoSortTrash(TrashItem? trash, double trashBottomY, double arenaHeight)
         {
-            if (IsGameOver || trash == null)
-                return;
+            if (!_gameService.TryAutoSortTrash(trash, trashBottomY, arenaHeight))
+                return false;
 
-            _gameService.CollectTrash(trash);
-
-            if (!string.IsNullOrWhiteSpace(trash.Category))
+            if (!string.IsNullOrWhiteSpace(trash?.Category))
                 _ = FlashBinAsync(trash.Category);
+
+            return true;
+        }
+
+        public bool TryManualSortTrash(
+            TrashItem? trash,
+            double trashCenterX,
+            double trashBottomY,
+            double arenaWidth,
+            double arenaHeight)
+        {
+            TrashSortOutcome outcome = _gameService.TryManualSortTrash(
+                trash,
+                trashCenterX,
+                trashBottomY,
+                arenaWidth,
+                arenaHeight);
+
+            if (outcome == TrashSortOutcome.Correct
+                && !string.IsNullOrWhiteSpace(trash?.Category))
+            {
+                _ = FlashBinAsync(trash.Category);
+            }
+
+            return outcome != TrashSortOutcome.NotInBinZone;
         }
 
         public void OnTrashMissed()

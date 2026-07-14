@@ -231,6 +231,12 @@ public partial class GamePage : ContentPage
 
             fallingTrash.Y += fallDistance;
 
+            if (_viewModel.TryAutoSortTrash(fallingTrash.Trash, fallingTrash.Y + TrashSize, _arenaHeight))
+            {
+                RemoveTrash(fallingTrash);
+                continue;
+            }
+
             if (fallingTrash.Y >= _arenaHeight - TrashSize)
             {
                 RemoveTrash(fallingTrash);
@@ -341,7 +347,7 @@ public partial class GamePage : ContentPage
         if (density <= 0)
             density = 1;
 
-        // BOTH axes must be converted from raw pixels to DIPs — this was the bug.
+        // BOTH axes must be converted from raw pixels to DIPs ? this was the bug.
         var point = new Point(e.Event.GetX() / density, e.Event.GetY() / density);
         _lastTouchPoint = point;
 
@@ -531,45 +537,18 @@ public partial class GamePage : ContentPage
         if (!_activeTrash.Contains(fallingTrash))
             return true;
 
-        string? droppedCategory = GetBinCategoryAt(fallingTrash);
-        if (droppedCategory == null)
+        bool sorted = _viewModel.TryManualSortTrash(
+            fallingTrash.Trash,
+            fallingTrash.X + (TrashSize / 2),
+            fallingTrash.Y + TrashSize,
+            _arenaWidth,
+            _arenaHeight);
+
+        if (!sorted)
             return false;
 
-        string itemCategory = fallingTrash.Trash.Category ?? string.Empty;
-
-        if (droppedCategory == itemCategory)
-        {
-            RemoveTrash(fallingTrash);
-            _viewModel.OnTrashSorted(fallingTrash.Trash);
-            return true;
-        }
-
         RemoveTrash(fallingTrash);
-        _viewModel.OnTrashMissed();
         return true;
-    }
-
-    private string? GetBinCategoryAt(FallingTrash fallingTrash)
-    {
-        if (_arenaWidth <= 0 || _arenaHeight <= 0)
-            return null;
-
-        if (fallingTrash.Y + TrashSize < _arenaHeight * 0.65)
-            return null;
-
-        double trashCenterX = fallingTrash.X + (TrashSize / 2);
-        double ratio = trashCenterX / _arenaWidth;
-
-        if (ratio < 0.25)
-            return "Recyclables";
-
-        if (ratio < 0.5)
-            return "Biodegradable";
-
-        if (ratio < 0.75)
-            return "Biohazard";
-
-        return "Landfill";
     }
 
     private void RemoveTrash(FallingTrash fallingTrash)
