@@ -1,96 +1,82 @@
-﻿using RubbishRumble.Models;
+﻿using Plugin.Maui.Audio;
+using RubbishRumble.Services;
+using RubbishRumble.ViewModels;
 
 namespace RubbishRumble.Services
 {
     public class SettingsService
     {
-        private readonly DatabaseService _database;
-        private readonly AudioService _audioService;
-        private Settings? _currentSettings;
+        private static SettingsService _instance;
+        public static SettingsService Instance => _instance ??= new SettingsService();
 
-        public SettingsService(DatabaseService database, AudioService audioService)
+        private IAudioPlayer _musicPlayer;
+        private bool _isMusicMuted = false;
+        private bool _isSfxMuted = false;
+
+        private double _musicVolume = 0.6; // 80%
+        private double _sfxVolume = 1.0; // 100%
+        public bool IsMusicMuted => _isMusicMuted;
+        public bool IsSfxMuted => _isSfxMuted;
+
+        private SettingsService() { }
+        public async Task InitializeMusicAsync()
         {
-            _database = database;
-            _audioService = audioService;
+            if (_musicPlayer == null)
+            {
+                try
+                {
+                    // Resources/Raw folder
+                    var audioStream = await FileSystem.OpenAppPackageFileAsync("bgmusic.mp3");
+                    _musicPlayer = AudioManager.Current.CreatePlayer(audioStream);
+                    _musicPlayer.Loop = true; 
+
+                    if (!_isMusicMuted)
+                    {
+                        _musicPlayer.Play();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to initialize music: {ex.Message}");
+                }
+            }
         }
-
-        public Settings CurrentSettings => _currentSettings ?? new Settings();
-
-        public async Task<Settings> LoadSettingsAsync()
+        public void ToggleMusic()
         {
-            _currentSettings = await _database.GetSettingsAsync();
-            ApplySettings(_currentSettings);
-            return _currentSettings;
-        }
+            _isMusicMuted = !_isMusicMuted;
 
-        public async Task<Settings> GetSettingsAsync()
-        {
-            if (_currentSettings == null)
-                return await LoadSettingsAsync();
-
-            return _currentSettings;
-        }
-
-        public async Task UpdateSettingsAsync(Settings settings)
-        {
-            Settings current = await GetSettingsAsync();
-
-            current.MusicEnabled = settings.MusicEnabled;
-            current.SoundEffectsEnabled = settings.SoundEffectsEnabled;
-            current.TutorialCompleted = settings.TutorialCompleted;
-            current.TotalCoins = settings.TotalCoins;
-
-            await SaveAndApplyAsync(current);
-        }
-
-        public async Task SetMusicEnabledAsync(bool enabled)
-        {
-            Settings settings = await GetSettingsAsync();
-            settings.MusicEnabled = enabled;
-            await SaveAndApplyAsync(settings);
-        }
-
-        public async Task SetSoundEffectsEnabledAsync(bool enabled)
-        {
-            Settings settings = await GetSettingsAsync();
-            settings.SoundEffectsEnabled = enabled;
-            await SaveAndApplyAsync(settings);
-        }
-
-        public async Task SetTutorialCompletedAsync(bool completed)
-        {
-            Settings settings = await GetSettingsAsync();
-            settings.TutorialCompleted = completed;
-            await SaveAndApplyAsync(settings);
-        }
-
-        public async Task SetTotalCoinsAsync(int totalCoins)
-        {
-            Settings settings = await GetSettingsAsync();
-            settings.TotalCoins = totalCoins;
-            await SaveAndApplyAsync(settings);
-        }
-
-        public async Task SaveSettingsAsync()
-        {
-            if (_currentSettings == null)
+            if (_musicPlayer == null) 
                 return;
 
-            await _database.SaveSettingsAsync(_currentSettings);
-            ApplySettings(_currentSettings);
+            if (_isMusicMuted)
+            {
+                _musicPlayer.Pause();
+            }
+            else
+            {
+                _musicPlayer.Play();
+            }
+        }
+        public void ToggleSfx()
+        {
+            _isSfxMuted = !_isSfxMuted;
         }
 
-        public void ApplySettings(Settings settings)
+        public async Task PlaySfxAsync(string fileName)
         {
-            _audioService.SetMusicEnabled(settings.MusicEnabled);
-            _audioService.SetSoundEffectsEnabled(settings.SoundEffectsEnabled);
-        }
+            if (_isSfxMuted) return;
 
-        private async Task SaveAndApplyAsync(Settings settings)
-        {
-            await _database.SaveSettingsAsync(settings);
-            _currentSettings = settings;
-            ApplySettings(settings);
+            try
+            {
+                var sfxStream = await FileSystem.OpenAppPackageFileAsync(fileName);
+                var sfxPlayer = AudioManager.Current.CreatePlayer(sfxStream);
+                sfxPlayer.Play();
+                sfxPlayer.PlaybackEnded += (s, e) => sfxPlayer.Dispose();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to play SFX: {ex.Message}");
+            }
         }
     }
 }

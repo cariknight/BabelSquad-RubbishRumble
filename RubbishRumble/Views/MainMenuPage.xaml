@@ -61,7 +61,8 @@
                              BackgroundColor="Transparent"
                              HorizontalOptions="Start"
                              HeightRequest="85"
-                             WidthRequest="85"/>
+                             WidthRequest="85"
+                             CornerRadius="40"/>
             </Grid>
         </Grid>
     </Grid>
