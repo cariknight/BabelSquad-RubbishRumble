@@ -24,14 +24,36 @@ public partial class GamePage : ContentPage
         BindingContext = _viewModel;
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
-        SpawningArena.SizeChanged += OnArenaSizeChanged;
+        Loaded += (_, _) => UpdateLayoutMetrics();
+
+        if (SpawningArena != null)
+            SpawningArena.SizeChanged += (_, _) => UpdateLayoutMetrics();
+    }
+
+    private void UpdateLayoutMetrics()
+    {
+        if (SpawningArena == null)
+            return;
+
+        _arenaWidth = SpawningArena.Width;
+        _arenaHeight = SpawningArena.Height;
     }
 
     private async void OnAppearing(object? sender, EventArgs e)
     {
         StopGameLoop();
         ClearActiveTrash();
-        await _viewModel.InitializeAsync();
+
+        try
+        {
+            await _viewModel.InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Game init failed: {ex}");
+        }
+
+        UpdateLayoutMetrics();
         StartGameLoop();
     }
 
@@ -41,16 +63,16 @@ public partial class GamePage : ContentPage
         ClearActiveTrash();
     }
 
-    private void OnArenaSizeChanged(object? sender, EventArgs e)
-    {
-        _arenaWidth = SpawningArena.Width;
-        _arenaHeight = SpawningArena.Height;
-    }
-
     private void StartGameLoop()
     {
+        if (Dispatcher == null)
+            return;
+
         _spawnAccumulator = 0;
         _gameLoopTimer = Dispatcher.CreateTimer();
+        if (_gameLoopTimer == null)
+            return;
+
         _gameLoopTimer.Interval = TimeSpan.FromMilliseconds(16);
         _gameLoopTimer.Tick += OnGameLoopTick;
         _gameLoopTimer.Start();
@@ -93,6 +115,9 @@ public partial class GamePage : ContentPage
 
     private void SpawnTrashItem()
     {
+        if (SpawningArena == null || _arenaWidth <= 0 || _arenaHeight <= 0)
+            return;
+
         TrashItem? trash = _viewModel.GetRandomTrash();
         if (trash == null)
             return;
@@ -108,7 +133,9 @@ public partial class GamePage : ContentPage
         {
             Source = imageSource,
             Aspect = Aspect.AspectFit,
-            InputTransparent = false
+            InputTransparent = false,
+            WidthRequest = TrashSize,
+            HeightRequest = TrashSize
         };
 
         var fallingTrash = new FallingTrash(trash, image)
@@ -118,13 +145,12 @@ public partial class GamePage : ContentPage
         };
 
         var panGesture = new PanGestureRecognizer();
-        panGesture.PanUpdated += (sender, args) => OnTrashPanned(fallingTrash, args);
+        panGesture.PanUpdated += (_, args) => OnTrashPanned(fallingTrash, args);
         image.GestureRecognizers.Add(panGesture);
-
-        AbsoluteLayout.SetLayoutBounds(image, new Rect(fallingTrash.X, fallingTrash.Y, TrashSize, TrashSize));
 
         SpawningArena.Children.Add(image);
         _activeTrash.Add(fallingTrash);
+        SetBounds(fallingTrash);
     }
 
     private void UpdateFallingTrash(double deltaSeconds)
@@ -149,73 +175,121 @@ public partial class GamePage : ContentPage
                 continue;
             }
 
-            AbsoluteLayout.SetLayoutBounds(
-                fallingTrash.Image,
-                new Rect(fallingTrash.X, fallingTrash.Y, TrashSize, TrashSize));
+            SetBounds(fallingTrash);
         }
+    }
+
+    private void SetBounds(FallingTrash fallingTrash)
+    {
+        if (fallingTrash.Image?.Parent == null)
+            return;
+
+        AbsoluteLayout.SetLayoutBounds(
+            fallingTrash.Image,
+            new Rect(fallingTrash.X, fallingTrash.Y, TrashSize, TrashSize));
     }
 
     private void OnTrashPanned(FallingTrash fallingTrash, PanUpdatedEventArgs args)
     {
-        switch (args.StatusType)
+        if (!_activeTrash.Contains(fallingTrash) || fallingTrash.Image == null)
+            return;
+
+        try
         {
-            case GestureStatus.Started:
-                fallingTrash.IsDragging = true;
-                break;
+            switch (args.StatusType)
+            {
+                case GestureStatus.Started:
+                    fallingTrash.IsDragging = true;
+                    fallingTrash.Image.TranslationX = 0;
+                    fallingTrash.Image.TranslationY = 0;
+                    break;
 
-            case GestureStatus.Running:
-                fallingTrash.X = Math.Clamp(
-                    fallingTrash.X + args.TotalX - fallingTrash.LastPanX,
-                    0,
-                    Math.Max(0, _arenaWidth - TrashSize));
-                fallingTrash.Y = Math.Clamp(
-                    fallingTrash.Y + args.TotalY - fallingTrash.LastPanY,
-                    0,
-                    Math.Max(0, _arenaHeight - TrashSize));
-                fallingTrash.LastPanX = args.TotalX;
-                fallingTrash.LastPanY = args.TotalY;
+                case GestureStatus.Running:
+                    if (!fallingTrash.IsDragging)
+                        fallingTrash.IsDragging = true;
 
-                AbsoluteLayout.SetLayoutBounds(
-                    fallingTrash.Image,
-                    new Rect(fallingTrash.X, fallingTrash.Y, TrashSize, TrashSize));
-                break;
+                    double maxOffsetX = Math.Max(0, _arenaWidth - TrashSize) - fallingTrash.X;
+                    double maxOffsetY = Math.Max(0, _arenaHeight - TrashSize) - fallingTrash.Y;
 
-            case GestureStatus.Completed:
-            case GestureStatus.Canceled:
+                    fallingTrash.Image.TranslationX = Math.Clamp(args.TotalX, -fallingTrash.X, maxOffsetX);
+                    fallingTrash.Image.TranslationY = Math.Clamp(args.TotalY, -fallingTrash.Y, maxOffsetY);
+                    break;
+
+                case GestureStatus.Completed:
+                case GestureStatus.Canceled:
+                    CommitDrag(fallingTrash);
+                    fallingTrash.IsDragging = false;
+
+                    if (!TrySortTrash(fallingTrash))
+                        SetBounds(fallingTrash);
+
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Drag error: {ex}");
+            if (_activeTrash.Contains(fallingTrash))
+            {
                 fallingTrash.IsDragging = false;
-                fallingTrash.LastPanX = 0;
-                fallingTrash.LastPanY = 0;
-                TrySortTrash(fallingTrash);
-                break;
+                fallingTrash.Image.TranslationX = 0;
+                fallingTrash.Image.TranslationY = 0;
+                SetBounds(fallingTrash);
+            }
         }
     }
 
-    private void TrySortTrash(FallingTrash fallingTrash)
+    private void CommitDrag(FallingTrash fallingTrash)
     {
-        string? droppedCategory = GetBinCategoryAt(fallingTrash);
-
-        if (droppedCategory == null)
+        if (fallingTrash.Image == null)
             return;
 
-        if (droppedCategory == fallingTrash.Trash.Category)
+        fallingTrash.X = Math.Clamp(
+            fallingTrash.X + fallingTrash.Image.TranslationX,
+            0,
+            Math.Max(0, _arenaWidth - TrashSize));
+        fallingTrash.Y = Math.Clamp(
+            fallingTrash.Y + fallingTrash.Image.TranslationY,
+            0,
+            Math.Max(0, _arenaHeight - TrashSize));
+
+        fallingTrash.Image.TranslationX = 0;
+        fallingTrash.Image.TranslationY = 0;
+        SetBounds(fallingTrash);
+    }
+
+    private bool TrySortTrash(FallingTrash fallingTrash)
+    {
+        if (!_activeTrash.Contains(fallingTrash))
+            return true;
+
+        string? droppedCategory = GetBinCategoryAt(fallingTrash);
+        if (droppedCategory == null)
+            return false;
+
+        string itemCategory = fallingTrash.Trash.Category ?? string.Empty;
+
+        if (droppedCategory == itemCategory)
         {
             RemoveTrash(fallingTrash);
             _viewModel.OnTrashSorted(fallingTrash.Trash);
-            return;
+            return true;
         }
 
         RemoveTrash(fallingTrash);
         _viewModel.OnTrashMissed();
+        return true;
     }
 
     private string? GetBinCategoryAt(FallingTrash fallingTrash)
     {
-        double trashCenterX = fallingTrash.X + (TrashSize / 2);
-        double trashBottom = fallingTrash.Y + TrashSize;
-
-        if (trashBottom < _arenaHeight * 0.65)
+        if (_arenaWidth <= 0 || _arenaHeight <= 0)
             return null;
 
+        if (fallingTrash.Y + TrashSize < _arenaHeight * 0.65)
+            return null;
+
+        double trashCenterX = fallingTrash.X + (TrashSize / 2);
         double ratio = trashCenterX / _arenaWidth;
 
         if (ratio < 0.25)
@@ -232,16 +306,18 @@ public partial class GamePage : ContentPage
 
     private void RemoveTrash(FallingTrash fallingTrash)
     {
-        SpawningArena.Children.Remove(fallingTrash.Image);
+        fallingTrash.IsDragging = false;
+
+        if (fallingTrash.Image?.Parent is Layout parent)
+            parent.Children.Remove(fallingTrash.Image);
+
         _activeTrash.Remove(fallingTrash);
     }
 
     private void ClearActiveTrash()
     {
-        foreach (FallingTrash fallingTrash in _activeTrash)
-            SpawningArena.Children.Remove(fallingTrash.Image);
-
-        _activeTrash.Clear();
+        foreach (FallingTrash fallingTrash in _activeTrash.ToList())
+            RemoveTrash(fallingTrash);
     }
 
     private sealed class FallingTrash
@@ -257,7 +333,5 @@ public partial class GamePage : ContentPage
         public double X { get; set; }
         public double Y { get; set; }
         public bool IsDragging { get; set; }
-        public double LastPanX { get; set; }
-        public double LastPanY { get; set; }
     }
 }

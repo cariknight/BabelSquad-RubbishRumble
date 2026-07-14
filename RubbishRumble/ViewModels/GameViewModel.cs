@@ -144,13 +144,15 @@ namespace RubbishRumble.ViewModels
 
         public bool IsTrashFrozen() => _gameService.CurrentSpeedMultiplier <= 0;
 
-        public void OnTrashSorted(TrashItem trash)
+        public void OnTrashSorted(TrashItem? trash)
         {
-            if (IsGameOver)
+            if (IsGameOver || trash == null)
                 return;
 
             _gameService.CollectTrash(trash);
-            _ = FlashBinAsync(trash.Category);
+
+            if (!string.IsNullOrWhiteSpace(trash.Category))
+                _ = FlashBinAsync(trash.Category);
         }
 
         public void OnTrashMissed()
@@ -163,6 +165,9 @@ namespace RubbishRumble.ViewModels
 
         private void OnGameStateChanged()
         {
+            if (Application.Current == null)
+                return;
+
             MainThread.BeginInvokeOnMainThread(SyncGameState);
         }
 

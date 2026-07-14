@@ -91,43 +91,62 @@ namespace RubbishRumble.Services
         }
 
         // After Loading trash data
-        public TrashItem GetRandomTrash()
+        public TrashItem? GetRandomTrash()
         {
-            Rarity selectedRarity = GetRandomRarity();
+            if (_trashItems.Count == 0 || _rarities.Count == 0)
+                return null;
 
-            List<TrashItem> matchingTrash = _trashItems.Where(t => t.Rarity == selectedRarity.RarityName).ToList();
+            Rarity? selectedRarity = GetRandomRarity();
+            if (selectedRarity == null || string.IsNullOrWhiteSpace(selectedRarity.RarityName))
+                return null;
+
+            List<TrashItem> matchingTrash = _trashItems
+                .Where(t => t != null && t.Rarity == selectedRarity.RarityName)
+                .ToList();
 
             if (matchingTrash.Count == 0)
                 return null;
 
-            // generates random index number to select trash
             int index = RandomGenerator.Next(0, matchingTrash.Count);
-
             return matchingTrash[index];
         }
 
-        private Rarity GetRandomRarity()
+        private Rarity? GetRandomRarity()
         {
+            if (_rarities.Count == 0)
+                return null;
+
             double totalWeight = 0;
-            foreach (Rarity rarity in _rarities)
+            foreach (Rarity? rarity in _rarities)
             {
-                totalWeight += GetAdjustedChance(rarity);
+                if (rarity != null)
+                    totalWeight += GetAdjustedChance(rarity);
             }
+
+            if (totalWeight <= 0)
+                return _rarities.FirstOrDefault();
 
             double roll = RandomGenerator.NextDouble() * totalWeight;
             double currentWeight = 0;
 
-            foreach (Rarity rarity in _rarities)
+            foreach (Rarity? rarity in _rarities)
             {
+                if (rarity == null)
+                    continue;
+
                 currentWeight += GetAdjustedChance(rarity);
                 if (roll <= currentWeight)
                     return rarity;
             }
-            return _rarities.First();
+
+            return _rarities.FirstOrDefault();
         }
 
-        private double GetAdjustedChance(Rarity rarity)
+        private double GetAdjustedChance(Rarity? rarity)
         {
+            if (rarity == null)
+                return 0;
+
             double multiplier = 1 + (DifficultyLevel - 1) * 0.1;
 
             return rarity.RarityName switch
@@ -205,9 +224,12 @@ namespace RubbishRumble.Services
             NotifyGameStateChanged();
         }
 
-        public void CollectTrash(TrashItem trash)
+        public void CollectTrash(TrashItem? trash)
         {
-            Rarity? rarity = _rarities.FirstOrDefault(r => r.RarityName == trash.Rarity);
+            if (trash == null)
+                return;
+
+            Rarity? rarity = _rarities.FirstOrDefault(r => r != null && r.RarityName == trash.Rarity);
 
             if (rarity == null)
                 return;
@@ -226,8 +248,11 @@ namespace RubbishRumble.Services
         }
 
         // POWER UPS
-        public async Task ActivatePowerUpAsync(PowerUp powerUp)
+        public async Task ActivatePowerUpAsync(PowerUp? powerUp)
         {
+            if (powerUp == null)
+                return;
+
             CurrentScoreMultiplier = powerUp.ScoreMultiplier;
             CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
 

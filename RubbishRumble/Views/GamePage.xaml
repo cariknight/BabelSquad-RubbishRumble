@@ -117,7 +117,7 @@
                         x:Name="SpawningArena"
                         BackgroundColor="Transparent" />
 
-        <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0">
+        <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0" x:Name="BinsArea">
             <!-- BINS area -->
             <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
                 <Image x:Name="RecycleBin"
