@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "name": "Freeze",
     "durationSeconds": 5,
     "effectType": "Freeze",
@@ -9,7 +8,6 @@
     "speedMultiplier": 0.0
   },
   {
-    "id": 2,
     "name": "Slow",
     "durationSeconds": 5,
     "effectType": "Slow",
@@ -18,7 +16,6 @@
     "speedMultiplier": 0.5
   },
   {
-    "id": 3,
     "name": "Auto Sort",
     "durationSeconds": 5,
     "effectType": "AutoSort",
@@ -27,7 +24,6 @@
     "speedMultiplier": 1.0
   },
   {
-    "id": 4,
     "name": "Speed",
     "durationSeconds": 10,
     "effectType": "Speed",

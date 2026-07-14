@@ -12,6 +12,5 @@ namespace RubbishRumble.Models
         public int DurationSeconds { get; set; }
         public double ScoreMultiplier { get; set; }
         public double SpeedMultiplier { get; set; }
-        public int Quantity { get; set; }
     }
 }

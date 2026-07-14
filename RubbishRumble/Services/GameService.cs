@@ -10,17 +10,17 @@ namespace RubbishRumble.Services
         //End game -done
         //Increase score -done
         //Lose life - done
-        //Spawn trash - 
-        //Activate power-ups
-        //Increase difficulty
+        //Spawn trash - done
+        //Activate power-ups - done
+        //Increase difficulty - done
 
         //1. Load trashitems.json. - done
         //2. Load rarity.json. - done
         //3. Pick a rarity using Chance. - done
         //4. Find all trash items with that rarity.- done
         //5. Randomly choose one of those items. - unsure
-        //6. Give the player the Points from that rarity. - unsure
-        //7. Calculate coins. - unsure
+        //6. Give the player the Points from that rarity. - done
+        //7. Calculate coins. - done
 
         public int Score { get; private set; }
         public int Lives { get; private set; }
@@ -32,10 +32,14 @@ namespace RubbishRumble.Services
         // Data to be changed every level increase
         public double SpawnInterval { get; private set; }
         public double TrashSpeed { get; private set; }
-        //public double RarityMultiplier { get; set; }
 
         private List<TrashItem> _trashItems = new();
         private List<Rarity> _rarities = new();
+
+        // For PowerUp
+        public double CurrentScoreMultiplier { get; private set; } = 1.0;
+        public double CurrentSpeedMultiplier { get; private set; } = 1.0;
+        public bool IsAutoSortActive { get; private set; }
 
         // Load JSON files (DATA)
         public async Task LoadGameDataAsync()
@@ -110,12 +114,9 @@ namespace RubbishRumble.Services
                 "Legendary" => rarity.Chance * (multiplier + 0.4),
                 _ => rarity.Chance
             };
-            //if (rarity.RarityName == "Common")
-            //    return rarity.Chance;
-            //return rarity.Chance * RarityMultiplier;
         }
 
-        // Game basic mechanic
+        // Game basic mechanics
         public bool IsGameOver => Lives <= 0;
 
         public async Task StartGameAsync()
@@ -130,7 +131,6 @@ namespace RubbishRumble.Services
 
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
-            //RarityMultiplier = Constants.STARTING_RARITY_MULTIPLIER;
         }
 
         public void LoseLife()
@@ -170,12 +170,12 @@ namespace RubbishRumble.Services
 
         public void CollectTrash(TrashItem trash)
         {
-            Rarity rarity = _rarities.FirstOrDefault(r => r.RarityName == trash.Rarity);
+            Rarity? rarity = _rarities.FirstOrDefault(r => r.RarityName == trash.Rarity);
 
             if (rarity == null)
                 return;
 
-            int scoreEarned = rarity.PointValue;
+            int scoreEarned = (int) (rarity.PointValue * CurrentScoreMultiplier);
             Score += scoreEarned;
 
             TrashCollected++;
@@ -184,6 +184,25 @@ namespace RubbishRumble.Services
             {
                 IncreaseDifficulty();
             }
+
+        }
+
+        // POWER UPS
+        public async Task ActivatePowerUpAsync(PowerUp powerUp)
+        {
+            CurrentScoreMultiplier = powerUp.ScoreMultiplier;
+            CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
+
+            if (powerUp.EffectType == "AutoSort")
+            {
+                IsAutoSortActive = true;
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(powerUp.DurationSeconds));
+
+            CurrentScoreMultiplier = 1.0;
+            CurrentSpeedMultiplier = 1.0;
+            IsAutoSortActive = false;
 
         }
     }
