@@ -8,6 +8,8 @@ namespace RubbishRumble.ViewModels
         private readonly DatabaseService _databaseService = new();
         private int _totalScore;
         private int _earnedCoins;
+        private int _highestScore;
+        private bool _isNewHighScore;
         private bool _rewardsSaved;
 
         public int TotalScore
@@ -30,6 +32,29 @@ namespace RubbishRumble.ViewModels
             }
         }
 
+        public int HighestScore
+        {
+            get => _highestScore;
+            private set
+            {
+                _highestScore = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsNewHighScore
+        {
+            get => _isNewHighScore;
+            private set
+            {
+                _isNewHighScore = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HighScoreLabel));
+            }
+        }
+
+        public string HighScoreLabel => IsNewHighScore ? "NEW HIGH SCORE!" : "HIGHEST SCORE:";
+
         public ICommand ExitCommand { get; }
 
         public GameOverViewModel()
@@ -47,7 +72,9 @@ namespace RubbishRumble.ViewModels
 
             try
             {
-                await _databaseService.AwardGameRewardsAsync(TotalScore, EarnedCoins);
+                int previousHighScore = (await _databaseService.GetPlayerAsync()).HighestScore;
+                HighestScore = await _databaseService.AwardGameRewardsAsync(TotalScore, EarnedCoins);
+                IsNewHighScore = TotalScore > 0 && TotalScore >= HighestScore && TotalScore > previousHighScore;
             }
             catch (Exception ex)
             {

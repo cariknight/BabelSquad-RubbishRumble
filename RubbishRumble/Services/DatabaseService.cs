@@ -119,7 +119,7 @@ namespace RubbishRumble.Services
             }
         }
 
-        public async Task AwardGameRewardsAsync(int finalScore, int coinsEarned)
+        public async Task<int> AwardGameRewardsAsync(int finalScore, int coinsEarned)
         {
             await InitAsync();
 
@@ -138,6 +138,8 @@ namespace RubbishRumble.Services
                 CoinsEarned = coinsEarned,
                 PlayedAt = DateTime.Now
             });
+
+            return player.HighestScore;
         }
     }
 }

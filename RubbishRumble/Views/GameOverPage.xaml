@@ -21,20 +21,35 @@
                     Padding="20"
                     Margin="0,10,0,10">
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout Spacing="12">
                     <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                         <Label Text="TOTAL SCORE:"
-                       FontSize="22"
-                       FontFamily="PixelifySans"
-                       FontAttributes="Bold"
-                       TextColor="#FDCBB0"
-                       HorizontalTextAlignment="Center"/>
+                               FontSize="22"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
                         <Label Text="{Binding TotalScore}"
-                       FontSize="30"
-                       FontFamily="PixelifySans"
-                       FontAttributes="Bold"
-                       TextColor="#FDCBB0"
-                       HorizontalTextAlignment="Center"/>
+                               FontSize="30"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                        <Label Text="{Binding HighScoreLabel}"
+                               FontSize="18"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding HighestScore}"
+                               FontSize="26"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
 
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
