@@ -62,6 +62,7 @@ public partial class GamePage : ContentPage
         AbsoluteLayout.SetLayoutFlags(_touchLayer, AbsoluteLayoutFlags.All);
         AbsoluteLayout.SetLayoutBounds(_touchLayer, new Rect(0, 0, 1, 1));
 
+#if !ANDROID
         var pointer = new PointerGestureRecognizer();
         pointer.PointerPressed += OnArenaPointerPressed;
         pointer.PointerMoved += OnArenaPointerMoved;
@@ -71,6 +72,7 @@ public partial class GamePage : ContentPage
         var pan = new PanGestureRecognizer();
         pan.PanUpdated += OnArenaPanUpdated;
         _touchLayer.GestureRecognizers.Add(pan);
+#endif
 
         _touchLayer.HandlerChanged += OnTouchLayerHandlerChanged;
         SpawningArena.Children.Add(_touchLayer);
@@ -184,6 +186,7 @@ public partial class GamePage : ContentPage
             Source = imageSource,
             Aspect = Aspect.AspectFit,
             InputTransparent = true,
+            IsEnabled = false,
             WidthRequest = TrashSize,
             HeightRequest = TrashSize,
             HorizontalOptions = LayoutOptions.Center,
@@ -334,7 +337,12 @@ public partial class GamePage : ContentPage
         if (e.Event == null || SpawningArena == null)
             return;
 
-        var point = new Point(e.Event.GetX(), e.Event.GetY());
+        double density = DeviceDisplay.MainDisplayInfo.Density;
+        if (density <= 0)
+            density = 1;
+
+        // BOTH axes must be converted from raw pixels to DIPs — this was the bug.
+        var point = new Point(e.Event.GetX() / density, e.Event.GetY() / density);
         _lastTouchPoint = point;
 
         switch (e.Event.ActionMasked)
@@ -444,6 +452,7 @@ public partial class GamePage : ContentPage
                 {
                     _draggingTrash.View.TranslationX = 0;
                     _draggingTrash.View.TranslationY = 0;
+                    _draggingTrash.View.ZIndex = 0;
                 }
 
                 SetBounds(_draggingTrash);
@@ -465,15 +474,29 @@ public partial class GamePage : ContentPage
 
         fallingTrash.View.TranslationX = 0;
         fallingTrash.View.TranslationY = 0;
+        fallingTrash.View.ZIndex = 0; // release elevated z-order so it stops winning future hit-tests
         SetBounds(fallingTrash);
     }
 
     private FallingTrash? HitTestTrash(Point point)
     {
-        return _activeTrash
-            .Where(trash => ContainsPoint(trash, point))
-            .OrderByDescending(trash => trash.View?.ZIndex ?? 0)
-            .FirstOrDefault();
+        FallingTrash? best = null;
+        int bestZIndex = int.MinValue;
+
+        foreach (FallingTrash trash in _activeTrash)
+        {
+            if (!ContainsPoint(trash, point))
+                continue;
+
+            int zIndex = trash.View?.ZIndex ?? 0;
+            if (best == null || zIndex >= bestZIndex)
+            {
+                best = trash;
+                bestZIndex = zIndex;
+            }
+        }
+
+        return best;
     }
 
     private bool ContainsPoint(FallingTrash fallingTrash, Point point)
