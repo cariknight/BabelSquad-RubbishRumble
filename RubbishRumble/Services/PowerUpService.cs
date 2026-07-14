@@ -11,8 +11,6 @@ namespace RubbishRumble.Services
     public class PowerUpService
     {
         private readonly Dictionary<string, DateTime> _activePowerUps = new();
-
-        private readonly List<PowerUp> _powerUps;
         public List<PowerUp> PowerUps { get; private set; } = new();
 
         //Read powerup.json
@@ -26,19 +24,14 @@ namespace RubbishRumble.Services
             PowerUps = JsonSerializer.Deserialize<List<PowerUp>>(json) ?? new List<PowerUp>();
         }
 
-        public PowerUpService(List<PowerUp> powerUps)
-        {
-            _powerUps = powerUps;
-        }
-
         public bool IsActive(string effectType)
         {
             return _activePowerUps.ContainsKey(effectType);
         }
 
-        public async Task ActivateASync(string effectType)
+        public async Task ActivateAsync(string effectType)
         {
-            PowerUp? powerUp = _powerUps.FirstOrDefault(
+            PowerUp? powerUp = PowerUps.FirstOrDefault(
                 p => p.EffectType == effectType);
 
             if (powerUp == null)

@@ -21,7 +21,10 @@ namespace RubbishRumble.Services
         //5. Randomly choose one of those items. - unsure
         //6. Give the player the Points from that rarity. - done
         //7. Calculate coins. - done
-
+        
+        //Services
+        private readonly DatabaseService _dataService;
+        private readonly PowerUpService _powerUpService;
         public int Score { get; private set; }
         public int Lives { get; private set; }
         public int Coins { get; private set; }
@@ -122,10 +125,18 @@ namespace RubbishRumble.Services
 
         public async Task StartGameAsync()
         {
+            Player player = await _dataService.GetPlayerAsync();
+
+            await _powerUpService.GiveBeginnerPackAsync(player);
+
             await LoadGameDataAsync();
+
             Score = 0;
+
             Lives = Constants.STARTING_LIVES;
+
             TrashCollected = 0;
+
             DifficultyLevel = 1;
 
             SpawnInterval = Constants.STARTING_SPAWN_INTERVAL;
