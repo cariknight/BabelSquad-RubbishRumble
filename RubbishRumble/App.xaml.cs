@@ -6,8 +6,7 @@
         {
             InitializeComponent();
 
-            //MainPage = new AppShell();
-            MainPage = new Views.GameOverPage();
+            MainPage = new AppShell();
         }
     }
 }
