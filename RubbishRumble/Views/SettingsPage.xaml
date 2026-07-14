@@ -1,12 +1,104 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
              x:Class="RubbishRumble.Views.SettingsPage"
-             Title="SettingsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="ViewModels:SettingsViewModel"
+             BackgroundColor="#FDCBB0"
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="*, Auto, *" Padding="10" RowSpacing="50">
+
+        <Image Grid.Row="0" 
+               Source="settings.png"
+               HeightRequest="65" 
+               Aspect="AspectFit"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+
+        <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
+
+            <Border Stroke="#4C3E24"
+                    StrokeThickness="3"
+                    StrokeShape="Rectangle"
+                    Background="#9E4539"
+                    Padding="20"
+                    WidthRequest="300"
+                    HorizontalOptions="Center">
+
+                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                    <Label Grid.Column="0"
+                           Text="MUSIC" 
+                           FontFamily="PixelifySans"
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="#FDCBB0" 
+                           VerticalOptions="Center"/>
+
+                    <ImageButton Grid.Column="1"
+                                 Source="on.png"  
+                                 BackgroundColor="Transparent"
+                                 Aspect="AspectFit"
+                                 WidthRequest="80"
+                                 HeightRequest="45"
+                                 CornerRadius="50"
+                                 Command="{Binding ToggleMusicCommand}">
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" 
+                                         Binding="{Binding IsMusicMuted}" 
+                                         Value="True">
+                                <Setter Property="Source" Value="off.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
+                    </ImageButton>
+                </Grid>
+            </Border>
+
+            <Border Stroke="#4C3E24"
+                    StrokeThickness="3"
+                    StrokeShape="Rectangle"
+                    Background="#9E4539"
+                    Padding="20"
+                    WidthRequest="300"
+                    HorizontalOptions="Center">
+
+                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                    <Label Grid.Column="0"
+                           Text="SOUND FX" 
+                           FontFamily="PixelifySans"
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="#FDCBB0" 
+                           VerticalOptions="Center"/>
+
+                    <ImageButton Grid.Column="1"
+                                 Source="on.png"  
+                                 Aspect="AspectFit"
+                                 WidthRequest="80"
+                                 HeightRequest="45"
+                                 CornerRadius="50"
+                                 Command="{Binding ToggleSfxCommand}">
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" 
+                                         Binding="{Binding IsSfxMuted}" 
+                                         Value="True">
+                                <Setter Property="Source" Value="off.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
+                    </ImageButton>
+                </Grid>
+            </Border>
+        </VerticalStackLayout>
+
+        <ImageButton Grid.Row="2"
+                     Source="exit.png"  
+                     BackgroundColor="#9E4539"
+                     BorderColor="#4C3E24"
+                     BorderWidth="3"
+                     Aspect="AspectFit"
+                     Padding="5"
+                     WidthRequest="160"
+                     HeightRequest="55"
+                     HorizontalOptions="Center"
+                     Clicked="OnExitButtonClicked"/>
+    </Grid>
 </ContentPage>

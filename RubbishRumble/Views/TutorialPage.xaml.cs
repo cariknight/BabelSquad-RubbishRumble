@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Maui.Controls;
+using RubbishRumble.Services;
 
 namespace RubbishRumble.Views
 {
@@ -73,6 +74,7 @@ namespace RubbishRumble.Views
             else
             {
                 // Going to main menu page
+                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
                 await Shell.Current.GoToAsync("..");
             }
         }
