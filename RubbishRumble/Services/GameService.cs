@@ -77,6 +77,7 @@ namespace RubbishRumble.Services
             if (matchingTrash.Count == 0)
                 return null;
 
+            // generates random index number to select trash
             int index = RandomGenerator.Next(0, matchingTrash.Count);
 
             return matchingTrash[index];
@@ -175,7 +176,7 @@ namespace RubbishRumble.Services
             if (rarity == null)
                 return;
 
-            int scoreEarned = (int) (rarity.PointValue * CurrentScoreMultiplier);
+            int scoreEarned = (int) (rarity.PointValue * CurrentScoreMultiplier * (DifficultyLevel*0.1));
             Score += scoreEarned;
 
             TrashCollected++;
