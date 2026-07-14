@@ -205,6 +205,8 @@
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
+                                 IsEnabled="{Binding CanUseFreezePower}"
+                                 Opacity="{Binding FreezeButtonOpacity}"
                                  Command="{Binding UseFreezePowerCommand}" >
                         <ImageButton.Triggers>
                             <DataTrigger TargetType="ImageButton" Binding="{Binding IsFreezeActive}" Value="True">
@@ -244,6 +246,8 @@
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
+                                 IsEnabled="{Binding CanUseSlowPower}"
+                                 Opacity="{Binding SlowButtonOpacity}"
                                  Command="{Binding UseSlowPowerCommand}" >
                         <ImageButton.Triggers>
                             <DataTrigger TargetType="ImageButton" Binding="{Binding IsSlowActive}" Value="True">
@@ -283,6 +287,8 @@
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
+                                 IsEnabled="{Binding CanUseAutoSortPower}"
+                                 Opacity="{Binding AutoSortButtonOpacity}"
                                  Command="{Binding UseAutoSortPowerCommand}" >
                         <ImageButton.Triggers>
                             <DataTrigger TargetType="ImageButton" Binding="{Binding IsAutoSortActive}" Value="True">
@@ -322,6 +328,8 @@
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
+                                 IsEnabled="{Binding CanUseSpeedPower}"
+                                 Opacity="{Binding SpeedButtonOpacity}"
                                  Command="{Binding UseSpeedPowerCommand}" >
                         <ImageButton.Triggers>
                             <DataTrigger TargetType="ImageButton" Binding="{Binding IsSpeedActive}" Value="True">

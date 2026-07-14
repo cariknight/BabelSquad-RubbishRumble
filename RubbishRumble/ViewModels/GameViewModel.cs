@@ -121,6 +121,16 @@ namespace RubbishRumble.ViewModels
         public bool IsAutoSortActive => ActivePowerUpName == "Auto Sort";
         public bool IsSpeedActive => ActivePowerUpName == "Speed";
 
+        public bool CanUseFreezePower => !IsPowerUpActive && CurrentFreezePower > 0;
+        public bool CanUseSlowPower => !IsPowerUpActive && CurrentSlowPower > 0;
+        public bool CanUseAutoSortPower => !IsPowerUpActive && CurrentAutoSortPower > 0;
+        public bool CanUseSpeedPower => !IsPowerUpActive && CurrentSpeedPower > 0;
+
+        public double FreezeButtonOpacity => IsFreezeActive || CanUseFreezePower ? 1.0 : 0.4;
+        public double SlowButtonOpacity => IsSlowActive || CanUseSlowPower ? 1.0 : 0.4;
+        public double AutoSortButtonOpacity => IsAutoSortActive || CanUseAutoSortPower ? 1.0 : 0.4;
+        public double SpeedButtonOpacity => IsSpeedActive || CanUseSpeedPower ? 1.0 : 0.4;
+
         public ICommand PauseGameCommand { get; }
         public ICommand UseFreezePowerCommand { get; }
         public ICommand UseSlowPowerCommand { get; }
@@ -209,6 +219,19 @@ namespace RubbishRumble.ViewModels
             OnPropertyChanged(nameof(IsSlowActive));
             OnPropertyChanged(nameof(IsAutoSortActive));
             OnPropertyChanged(nameof(IsSpeedActive));
+            NotifyPowerUpButtonState();
+        }
+
+        private void NotifyPowerUpButtonState()
+        {
+            OnPropertyChanged(nameof(CanUseFreezePower));
+            OnPropertyChanged(nameof(CanUseSlowPower));
+            OnPropertyChanged(nameof(CanUseAutoSortPower));
+            OnPropertyChanged(nameof(CanUseSpeedPower));
+            OnPropertyChanged(nameof(FreezeButtonOpacity));
+            OnPropertyChanged(nameof(SlowButtonOpacity));
+            OnPropertyChanged(nameof(AutoSortButtonOpacity));
+            OnPropertyChanged(nameof(SpeedButtonOpacity));
         }
 
         private async Task RefreshCoinsAsync()
@@ -223,10 +246,14 @@ namespace RubbishRumble.ViewModels
             CurrentSlowPower = await _inventoryService.GetPowerUpCountAsync("Slow");
             CurrentAutoSortPower = await _inventoryService.GetPowerUpCountAsync("Auto Sort");
             CurrentSpeedPower = await _inventoryService.GetPowerUpCountAsync("Speed");
+            NotifyPowerUpButtonState();
         }
 
         private async Task UsePowerUpAsync(string powerUpName)
         {
+            if (_gameService.IsPowerUpActive)
+                return;
+
             if (await _inventoryService.GetPowerUpCountAsync(powerUpName) <= 0)
                 return;
 
