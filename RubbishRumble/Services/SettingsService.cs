@@ -70,8 +70,17 @@ namespace RubbishRumble.Services
             {
                 var sfxStream = await FileSystem.OpenAppPackageFileAsync(fileName);
                 var sfxPlayer = AudioManager.Current.CreatePlayer(sfxStream);
+                var isCleaningUp = false;
+                EventHandler? onPlaybackEnded = null;
+                onPlaybackEnded = (_, _) =>
+                {
+                    if (isCleaningUp) return;
+                    isCleaningUp = true;
+                    sfxPlayer.PlaybackEnded -= onPlaybackEnded;
+                    sfxPlayer.Dispose();
+                };
+                sfxPlayer.PlaybackEnded += onPlaybackEnded;
                 sfxPlayer.Play();
-                sfxPlayer.PlaybackEnded += (s, e) => sfxPlayer.Dispose();
             }
             catch (Exception ex)
             {
