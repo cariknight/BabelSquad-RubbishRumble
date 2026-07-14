@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Freeze",
+    "durationSeconds": 5,
+    "effectType": "Freeze",
+    "description":  "",
+    "scoreMultiplier": 1.0,
+    "speedMultiplier": 0.0
+  },
+  {
+    "name": "Slow",
+    "durationSeconds": 5,
+    "effectType": "Slow",
+    "description":  "",
+    "scoreMultiplier": 1.0,
+    "speedMultiplier": 0.5
+  },
+  {
+    "name": "Auto Sort",
+    "durationSeconds": 5,
+    "effectType": "AutoSort",
+    "description": "",
+    "scoreMultiplier": 0.5,
+    "speedMultiplier": 1.0
+  },
+  {
+    "name": "Speed",
+    "durationSeconds": 10,
+    "effectType": "Speed",
+    "description": "",
+    "scoreMultiplier": 2.0,
+    "speedMultiplier": 2.0
+  }
+
+]

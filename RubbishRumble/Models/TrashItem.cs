@@ -12,8 +12,8 @@ namespace RubbishRumble.Models
         public string Name { get; set; }
         public string Category { get; set; }
         public string Rarity { get; set; }
-        public int CoinReward { get; set; }
-        public int ScoreValue { get; set; }
+        public string FilePath { get; set; }
+        //public int ScoreValue { get; set; }
         
     }
 }

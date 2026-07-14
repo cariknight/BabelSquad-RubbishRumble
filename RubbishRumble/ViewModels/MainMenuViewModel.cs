@@ -36,7 +36,7 @@ namespace RubbishRumble.ViewModels
 
         private async void OnTutorialExecuted()
         {
-            await Application.Current.MainPage.DisplayAlert("Rubbish Rumble", "Working", "OK");
+            await Shell.Current.GoToAsync("TutorialPage");
         }
 
         private async void OnIndexExecuted()
