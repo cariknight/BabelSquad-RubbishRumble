@@ -105,10 +105,10 @@ namespace RubbishRumble.ViewModels
             }
         }
 
-        public string FreezeDisplayText => $"Freeze\n({OwnedFreeze})";
-        public string SlowDisplayText => $"Slow\n({OwnedSlow})";
-        public string AutoSortDisplayText => $"Auto Sort\n({OwnedAutoSort})";
-        public string SpeedDisplayText => $"Speed\n({OwnedSpeed})";
+        public string FreezeDisplayText => $"Freeze\nOwned: {OwnedFreeze}";
+        public string SlowDisplayText => $"Slow\nOwned: {OwnedSlow}";
+        public string AutoSortDisplayText => $"Auto Sort\nOwned: {OwnedAutoSort}";
+        public string SpeedDisplayText => $"Speed\nOwned: {OwnedSpeed}";
         public string FreezePriceText => $"Coins: {FreezePrice}";
         public string SlowPriceText => $"Coins: {SlowPrice}";
         public string AutoSortPriceText => $"Coins: {AutoSortPrice}";
