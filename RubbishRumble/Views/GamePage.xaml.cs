@@ -200,24 +200,24 @@ public partial class GamePage : ContentPage
             {
                 case GestureStatus.Started:
                     fallingTrash.IsDragging = true;
-                    fallingTrash.Image.TranslationX = 0;
-                    fallingTrash.Image.TranslationY = 0;
+                    fallingTrash.DragOriginX = fallingTrash.X;
+                    fallingTrash.DragOriginY = fallingTrash.Y;
                     break;
 
                 case GestureStatus.Running:
                     if (!fallingTrash.IsDragging)
+                    {
                         fallingTrash.IsDragging = true;
+                        fallingTrash.DragOriginX = fallingTrash.X;
+                        fallingTrash.DragOriginY = fallingTrash.Y;
+                    }
 
-                    double maxOffsetX = Math.Max(0, _arenaWidth - TrashSize) - fallingTrash.X;
-                    double maxOffsetY = Math.Max(0, _arenaHeight - TrashSize) - fallingTrash.Y;
-
-                    fallingTrash.Image.TranslationX = Math.Clamp(args.TotalX, -fallingTrash.X, maxOffsetX);
-                    fallingTrash.Image.TranslationY = Math.Clamp(args.TotalY, -fallingTrash.Y, maxOffsetY);
+                    ApplyDragPosition(fallingTrash, args.TotalX, args.TotalY);
                     break;
 
                 case GestureStatus.Completed:
                 case GestureStatus.Canceled:
-                    CommitDrag(fallingTrash);
+                    ApplyDragPosition(fallingTrash, args.TotalX, args.TotalY);
                     fallingTrash.IsDragging = false;
 
                     if (!TrySortTrash(fallingTrash))
@@ -232,29 +232,18 @@ public partial class GamePage : ContentPage
             if (_activeTrash.Contains(fallingTrash))
             {
                 fallingTrash.IsDragging = false;
-                fallingTrash.Image.TranslationX = 0;
-                fallingTrash.Image.TranslationY = 0;
                 SetBounds(fallingTrash);
             }
         }
     }
 
-    private void CommitDrag(FallingTrash fallingTrash)
+    private void ApplyDragPosition(FallingTrash fallingTrash, double totalX, double totalY)
     {
-        if (fallingTrash.Image == null)
-            return;
+        double maxX = Math.Max(0, _arenaWidth - TrashSize);
+        double maxY = Math.Max(0, _arenaHeight - TrashSize);
 
-        fallingTrash.X = Math.Clamp(
-            fallingTrash.X + fallingTrash.Image.TranslationX,
-            0,
-            Math.Max(0, _arenaWidth - TrashSize));
-        fallingTrash.Y = Math.Clamp(
-            fallingTrash.Y + fallingTrash.Image.TranslationY,
-            0,
-            Math.Max(0, _arenaHeight - TrashSize));
-
-        fallingTrash.Image.TranslationX = 0;
-        fallingTrash.Image.TranslationY = 0;
+        fallingTrash.X = Math.Clamp(fallingTrash.DragOriginX + totalX, 0, maxX);
+        fallingTrash.Y = Math.Clamp(fallingTrash.DragOriginY + totalY, 0, maxY);
         SetBounds(fallingTrash);
     }
 
@@ -332,6 +321,8 @@ public partial class GamePage : ContentPage
         public Image Image { get; }
         public double X { get; set; }
         public double Y { get; set; }
+        public double DragOriginX { get; set; }
+        public double DragOriginY { get; set; }
         public bool IsDragging { get; set; }
     }
 }
