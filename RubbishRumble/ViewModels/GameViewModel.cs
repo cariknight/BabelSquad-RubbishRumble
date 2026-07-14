@@ -98,6 +98,29 @@ namespace RubbishRumble.ViewModels
 
         public bool IsGameOver => _gameService.IsGameOver;
 
+        public bool IsPowerUpActive => _gameService.IsPowerUpActive;
+
+        public string ActivePowerUpName => _gameService.ActivePowerUp?.Name ?? string.Empty;
+
+        public string ActivePowerUpIcon => ActivePowerUpName switch
+        {
+            "Freeze" => "freeze02.png",
+            "Slow" => "slow02.png",
+            "Auto Sort" => "autosort02.png",
+            "Speed" => "speed02.png",
+            _ => string.Empty
+        };
+
+        public int ActivePowerUpRemainingSeconds => _gameService.ActivePowerUpRemainingSeconds;
+
+        public string ActivePowerUpDisplayText =>
+            IsPowerUpActive ? $"{ActivePowerUpName.ToUpper()} {ActivePowerUpRemainingSeconds}s" : string.Empty;
+
+        public bool IsFreezeActive => ActivePowerUpName == "Freeze";
+        public bool IsSlowActive => ActivePowerUpName == "Slow";
+        public bool IsAutoSortActive => ActivePowerUpName == "Auto Sort";
+        public bool IsSpeedActive => ActivePowerUpName == "Speed";
+
         public ICommand PauseGameCommand { get; }
         public ICommand UseFreezePowerCommand { get; }
         public ICommand UseSlowPowerCommand { get; }
@@ -177,6 +200,15 @@ namespace RubbishRumble.ViewModels
             CurrentScore = _gameService.Score;
             CurrentLives = _gameService.Lives;
             OnPropertyChanged(nameof(IsGameOver));
+            OnPropertyChanged(nameof(IsPowerUpActive));
+            OnPropertyChanged(nameof(ActivePowerUpName));
+            OnPropertyChanged(nameof(ActivePowerUpIcon));
+            OnPropertyChanged(nameof(ActivePowerUpRemainingSeconds));
+            OnPropertyChanged(nameof(ActivePowerUpDisplayText));
+            OnPropertyChanged(nameof(IsFreezeActive));
+            OnPropertyChanged(nameof(IsSlowActive));
+            OnPropertyChanged(nameof(IsAutoSortActive));
+            OnPropertyChanged(nameof(IsSpeedActive));
         }
 
         private async Task RefreshCoinsAsync()

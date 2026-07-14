@@ -113,9 +113,33 @@
             </Grid>
         </Grid>
         <!-- SPAWNING area -->
-        <AbsoluteLayout Grid.Row="1"
-                        x:Name="SpawningArena"
-                        BackgroundColor="Transparent" />
+        <Grid Grid.Row="1">
+            <AbsoluteLayout x:Name="SpawningArena"
+                            BackgroundColor="Transparent" />
+
+            <Border IsVisible="{Binding IsPowerUpActive}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start"
+                    Margin="0,8,0,0"
+                    Padding="12,6"
+                    BackgroundColor="#FFF3D6"
+                    Stroke="#9E4539"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 12">
+                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <Image Source="{Binding ActivePowerUpIcon}"
+                           HeightRequest="28"
+                           WidthRequest="28"
+                           Aspect="AspectFit" />
+                    <Label Text="{Binding ActivePowerUpDisplayText}"
+                           FontFamily="PixelifySans"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#9E4539"
+                           VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </Border>
+        </Grid>
 
         <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0" x:Name="BinsArea">
             <!-- BINS area -->
@@ -182,6 +206,11 @@
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
                                  Command="{Binding UseFreezePowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsFreezeActive}" Value="True">
+                                <Setter Property="Source" Value="freeze02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -216,6 +245,11 @@
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
                                  Command="{Binding UseSlowPowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsSlowActive}" Value="True">
+                                <Setter Property="Source" Value="slow02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -250,6 +284,11 @@
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
                                  Command="{Binding UseAutoSortPowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsAutoSortActive}" Value="True">
+                                <Setter Property="Source" Value="autosort02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -284,6 +323,11 @@
                                  BackgroundColor="Transparent" 
                                  CornerRadius="20"
                                  Command="{Binding UseSpeedPowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsSpeedActive}" Value="True">
+                                <Setter Property="Source" Value="speed02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">

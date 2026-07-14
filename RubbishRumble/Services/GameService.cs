@@ -54,6 +54,11 @@ namespace RubbishRumble.Services
         public double CurrentScoreMultiplier { get; private set; } = 1.0;
         public double CurrentSpeedMultiplier { get; private set; } = 1.0;
         public bool IsAutoSortActive { get; private set; }
+        public PowerUp? ActivePowerUp { get; private set; }
+        public int ActivePowerUpRemainingSeconds { get; private set; }
+        public bool IsPowerUpActive => ActivePowerUp != null;
+
+        private CancellationTokenSource? _powerUpCts;
 
         public event Action? GameStateChanged;
 
@@ -182,6 +187,8 @@ namespace RubbishRumble.Services
 
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
+            ClearPowerUpState();
+
             NotifyGameStateChanged();
         }
 
@@ -253,20 +260,56 @@ namespace RubbishRumble.Services
             if (powerUp == null)
                 return;
 
-            CurrentScoreMultiplier = powerUp.ScoreMultiplier;
-            CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
+            _powerUpCts?.Cancel();
+            _powerUpCts?.Dispose();
+            _powerUpCts = new CancellationTokenSource();
+            CancellationToken token = _powerUpCts.Token;
 
-            if (powerUp.EffectType == "AutoSort")
+            ApplyPowerUpEffect(powerUp);
+            NotifyGameStateChanged();
+
+            try
             {
-                IsAutoSortActive = true;
+                while (ActivePowerUpRemainingSeconds > 0)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1), token);
+
+                    if (token.IsCancellationRequested)
+                        return;
+
+                    ActivePowerUpRemainingSeconds--;
+                    NotifyGameStateChanged();
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(powerUp.DurationSeconds));
+            ClearPowerUpState();
+            NotifyGameStateChanged();
+        }
 
+        private void ApplyPowerUpEffect(PowerUp powerUp)
+        {
+            ActivePowerUp = powerUp;
+            ActivePowerUpRemainingSeconds = powerUp.DurationSeconds;
+            CurrentScoreMultiplier = powerUp.ScoreMultiplier;
+            CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
+            IsAutoSortActive = powerUp.EffectType == "AutoSort";
+        }
+
+        private void ClearPowerUpState()
+        {
+            _powerUpCts?.Cancel();
+            _powerUpCts?.Dispose();
+            _powerUpCts = null;
+
+            ActivePowerUp = null;
+            ActivePowerUpRemainingSeconds = 0;
             CurrentScoreMultiplier = 1.0;
             CurrentSpeedMultiplier = 1.0;
             IsAutoSortActive = false;
-
         }
     }
 }
