@@ -1,11 +1,18 @@
+using Microsoft.Maui.Layouts;
 using RubbishRumble.Models;
 using RubbishRumble.ViewModels;
+#if ANDROID
+using Android.Views;
+using Microsoft.Maui.Platform;
+#endif
 
 namespace RubbishRumble.Views;
 
 public partial class GamePage : ContentPage
 {
     private const double TrashSize = 56;
+    private const double TouchPadding = 16;
+    private const double HitSize = TrashSize + TouchPadding * 2;
     private const double SpawnPadding = 10;
 
     private readonly GameViewModel _viewModel;
@@ -13,9 +20,15 @@ public partial class GamePage : ContentPage
     private readonly Random _random = new();
 
     private IDispatcherTimer? _gameLoopTimer;
+    private Grid? _touchLayer;
+    private FallingTrash? _draggingTrash;
+    private double _grabOffsetX;
+    private double _grabOffsetY;
+    private Point? _lastTouchPoint;
     private double _spawnAccumulator;
     private double _arenaWidth;
     private double _arenaHeight;
+    private bool _isPageActive;
 
     public GamePage()
     {
@@ -24,10 +37,43 @@ public partial class GamePage : ContentPage
         BindingContext = _viewModel;
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
-        Loaded += (_, _) => UpdateLayoutMetrics();
+        Loaded += (_, _) =>
+        {
+            UpdateLayoutMetrics();
+            SetupArenaTouchLayer();
+        };
 
         if (SpawningArena != null)
             SpawningArena.SizeChanged += (_, _) => UpdateLayoutMetrics();
+    }
+
+    private void SetupArenaTouchLayer()
+    {
+        if (SpawningArena == null || _touchLayer != null)
+            return;
+
+        _touchLayer = new Grid
+        {
+            BackgroundColor = Colors.Transparent,
+            InputTransparent = false,
+            ZIndex = 1000
+        };
+
+        AbsoluteLayout.SetLayoutFlags(_touchLayer, AbsoluteLayoutFlags.All);
+        AbsoluteLayout.SetLayoutBounds(_touchLayer, new Rect(0, 0, 1, 1));
+
+        var pointer = new PointerGestureRecognizer();
+        pointer.PointerPressed += OnArenaPointerPressed;
+        pointer.PointerMoved += OnArenaPointerMoved;
+        pointer.PointerReleased += OnArenaPointerReleased;
+        _touchLayer.GestureRecognizers.Add(pointer);
+
+        var pan = new PanGestureRecognizer();
+        pan.PanUpdated += OnArenaPanUpdated;
+        _touchLayer.GestureRecognizers.Add(pan);
+
+        _touchLayer.HandlerChanged += OnTouchLayerHandlerChanged;
+        SpawningArena.Children.Add(_touchLayer);
     }
 
     private void UpdateLayoutMetrics()
@@ -41,6 +87,7 @@ public partial class GamePage : ContentPage
 
     private async void OnAppearing(object? sender, EventArgs e)
     {
+        _isPageActive = true;
         StopGameLoop();
         ClearActiveTrash();
 
@@ -54,11 +101,14 @@ public partial class GamePage : ContentPage
         }
 
         UpdateLayoutMetrics();
+        SetupArenaTouchLayer();
         StartGameLoop();
     }
 
     private void OnDisappearing(object? sender, EventArgs e)
     {
+        _isPageActive = false;
+        _draggingTrash = null;
         StopGameLoop();
         ClearActiveTrash();
     }
@@ -133,22 +183,32 @@ public partial class GamePage : ContentPage
         {
             Source = imageSource,
             Aspect = Aspect.AspectFit,
-            InputTransparent = false,
+            InputTransparent = true,
             WidthRequest = TrashSize,
-            HeightRequest = TrashSize
+            HeightRequest = TrashSize,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
         };
 
-        var fallingTrash = new FallingTrash(trash, image)
+        var container = new Grid
+        {
+            WidthRequest = HitSize,
+            HeightRequest = HitSize,
+            BackgroundColor = Colors.Transparent,
+            InputTransparent = true
+        };
+        container.Children.Add(image);
+
+        var fallingTrash = new FallingTrash(trash, container, image)
         {
             X = startX,
             Y = 0
         };
 
-        var panGesture = new PanGestureRecognizer();
-        panGesture.PanUpdated += (_, args) => OnTrashPanned(fallingTrash, args);
-        image.GestureRecognizers.Add(panGesture);
+        SpawningArena.Children.Add(container);
+        if (_touchLayer != null)
+            _touchLayer.ZIndex = 1000;
 
-        SpawningArena.Children.Add(image);
         _activeTrash.Add(fallingTrash);
         SetBounds(fallingTrash);
     }
@@ -181,70 +241,266 @@ public partial class GamePage : ContentPage
 
     private void SetBounds(FallingTrash fallingTrash)
     {
-        if (fallingTrash.Image?.Parent == null)
+        if (SpawningArena == null || fallingTrash.View == null)
             return;
 
+        if (fallingTrash.View.Parent != SpawningArena)
+            return;
+
+        double layoutX = Math.Max(0, fallingTrash.X - TouchPadding);
+        double layoutY = Math.Max(0, fallingTrash.Y - TouchPadding);
+
         AbsoluteLayout.SetLayoutBounds(
-            fallingTrash.Image,
-            new Rect(fallingTrash.X, fallingTrash.Y, TrashSize, TrashSize));
+            fallingTrash.View,
+            new Rect(layoutX, layoutY, HitSize, HitSize));
     }
 
-    private void OnTrashPanned(FallingTrash fallingTrash, PanUpdatedEventArgs args)
+    private void OnArenaPointerPressed(object? sender, PointerEventArgs e)
     {
-        if (!_activeTrash.Contains(fallingTrash) || fallingTrash.Image == null)
+        Point? point = e.GetPosition(SpawningArena);
+        if (point == null)
+            return;
+
+        _lastTouchPoint = point;
+        StartDragAt(point.Value);
+    }
+
+    private void OnArenaPointerMoved(object? sender, PointerEventArgs e)
+    {
+        Point? point = e.GetPosition(SpawningArena);
+        if (point == null)
+            return;
+
+        _lastTouchPoint = point;
+        ContinueDragAt(point.Value);
+    }
+
+    private void OnArenaPointerReleased(object? sender, PointerEventArgs e)
+    {
+        Point? point = e.GetPosition(SpawningArena);
+        _lastTouchPoint = point;
+        EndDragAt(point);
+    }
+
+    private void OnArenaPanUpdated(object? sender, PanUpdatedEventArgs e)
+    {
+        if (e == null)
+            return;
+
+        switch (e.StatusType)
+        {
+            case GestureStatus.Started:
+                if (_draggingTrash == null && _lastTouchPoint.HasValue)
+                    StartDragAt(_lastTouchPoint.Value);
+                break;
+
+            case GestureStatus.Running:
+                if (_draggingTrash == null)
+                {
+                    if (_lastTouchPoint.HasValue)
+                        StartDragAt(_lastTouchPoint.Value);
+                    else
+                        return;
+                }
+
+                ApplyDragTranslation(_draggingTrash!, e.TotalX, e.TotalY);
+                break;
+
+            case GestureStatus.Completed:
+            case GestureStatus.Canceled:
+                if (_draggingTrash == null)
+                    return;
+
+                ApplyDragTranslation(_draggingTrash, e.TotalX, e.TotalY);
+                EndDragAt(_lastTouchPoint);
+                break;
+        }
+    }
+
+    private void OnTouchLayerHandlerChanged(object? sender, EventArgs e)
+    {
+#if ANDROID
+        if (_touchLayer?.Handler?.PlatformView is Android.Views.View nativeView)
+        {
+            nativeView.Touch -= OnAndroidTouch;
+            nativeView.Touch += OnAndroidTouch;
+        }
+#endif
+    }
+
+#if ANDROID
+    private void OnAndroidTouch(object? sender, Android.Views.View.TouchEventArgs e)
+    {
+        if (e.Event == null || SpawningArena == null)
+            return;
+
+        var point = new Point(e.Event.GetX(), e.Event.GetY());
+        _lastTouchPoint = point;
+
+        switch (e.Event.ActionMasked)
+        {
+            case MotionEventActions.Down:
+                StartDragAt(point);
+                break;
+
+            case MotionEventActions.Move:
+                ContinueDragAt(point);
+                break;
+
+            case MotionEventActions.Up:
+            case MotionEventActions.Cancel:
+                EndDragAt(point);
+                break;
+        }
+
+        e.Handled = _draggingTrash != null;
+    }
+#endif
+
+    private void StartDragAt(Point point)
+    {
+        if (!_isPageActive || _draggingTrash != null)
+            return;
+
+        FallingTrash? trash = HitTestTrash(point);
+        if (trash?.View == null)
+            return;
+
+        _draggingTrash = trash;
+        trash.IsDragging = true;
+        trash.DragOriginX = trash.X;
+        trash.DragOriginY = trash.Y;
+        _grabOffsetX = point.X - trash.X;
+        _grabOffsetY = point.Y - trash.Y;
+        trash.View.TranslationX = 0;
+        trash.View.TranslationY = 0;
+        BringToFront(trash);
+    }
+
+    private void ContinueDragAt(Point point)
+    {
+        if (_draggingTrash?.View == null)
+            return;
+
+        SetDragTarget(_draggingTrash, point.X - _grabOffsetX, point.Y - _grabOffsetY);
+    }
+
+    private void ApplyDragTranslation(FallingTrash fallingTrash, double totalX, double totalY)
+    {
+        if (fallingTrash.View == null)
+            return;
+
+        double maxX = Math.Max(0, _arenaWidth - TrashSize);
+        double maxY = Math.Max(0, _arenaHeight - TrashSize);
+
+        double targetX = Math.Clamp(fallingTrash.DragOriginX + totalX, 0, maxX);
+        double targetY = Math.Clamp(fallingTrash.DragOriginY + totalY, 0, maxY);
+
+        fallingTrash.View.TranslationX = targetX - fallingTrash.DragOriginX;
+        fallingTrash.View.TranslationY = targetY - fallingTrash.DragOriginY;
+    }
+
+    private void SetDragTarget(FallingTrash fallingTrash, double targetX, double targetY)
+    {
+        if (fallingTrash.View == null)
+            return;
+
+        double maxX = Math.Max(0, _arenaWidth - TrashSize);
+        double maxY = Math.Max(0, _arenaHeight - TrashSize);
+
+        targetX = Math.Clamp(targetX, 0, maxX);
+        targetY = Math.Clamp(targetY, 0, maxY);
+
+        fallingTrash.View.TranslationX = targetX - fallingTrash.DragOriginX;
+        fallingTrash.View.TranslationY = targetY - fallingTrash.DragOriginY;
+    }
+
+    private void EndDragAt(Point? point)
+    {
+        if (_draggingTrash == null)
             return;
 
         try
         {
-            switch (args.StatusType)
-            {
-                case GestureStatus.Started:
-                    fallingTrash.IsDragging = true;
-                    fallingTrash.DragOriginX = fallingTrash.X;
-                    fallingTrash.DragOriginY = fallingTrash.Y;
-                    break;
+            if (point.HasValue)
+                ContinueDragAt(point.Value);
 
-                case GestureStatus.Running:
-                    if (!fallingTrash.IsDragging)
-                    {
-                        fallingTrash.IsDragging = true;
-                        fallingTrash.DragOriginX = fallingTrash.X;
-                        fallingTrash.DragOriginY = fallingTrash.Y;
-                    }
+            CommitDrag(_draggingTrash);
 
-                    ApplyDragPosition(fallingTrash, args.TotalX, args.TotalY);
-                    break;
+            FallingTrash trash = _draggingTrash;
+            _draggingTrash = null;
+            trash.IsDragging = false;
 
-                case GestureStatus.Completed:
-                case GestureStatus.Canceled:
-                    ApplyDragPosition(fallingTrash, args.TotalX, args.TotalY);
-                    fallingTrash.IsDragging = false;
-
-                    if (!TrySortTrash(fallingTrash))
-                        SetBounds(fallingTrash);
-
-                    break;
-            }
+            if (_activeTrash.Contains(trash) && !TrySortTrash(trash))
+                SetBounds(trash);
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Drag error: {ex}");
-            if (_activeTrash.Contains(fallingTrash))
+            if (_draggingTrash != null)
             {
-                fallingTrash.IsDragging = false;
-                SetBounds(fallingTrash);
+                _draggingTrash.IsDragging = false;
+                if (_draggingTrash.View != null)
+                {
+                    _draggingTrash.View.TranslationX = 0;
+                    _draggingTrash.View.TranslationY = 0;
+                }
+
+                SetBounds(_draggingTrash);
+                _draggingTrash = null;
             }
         }
     }
 
-    private void ApplyDragPosition(FallingTrash fallingTrash, double totalX, double totalY)
+    private void CommitDrag(FallingTrash fallingTrash)
     {
+        if (fallingTrash.View == null || SpawningArena == null || fallingTrash.View.Parent != SpawningArena)
+            return;
+
         double maxX = Math.Max(0, _arenaWidth - TrashSize);
         double maxY = Math.Max(0, _arenaHeight - TrashSize);
 
-        fallingTrash.X = Math.Clamp(fallingTrash.DragOriginX + totalX, 0, maxX);
-        fallingTrash.Y = Math.Clamp(fallingTrash.DragOriginY + totalY, 0, maxY);
+        fallingTrash.X = Math.Clamp(fallingTrash.DragOriginX + fallingTrash.View.TranslationX, 0, maxX);
+        fallingTrash.Y = Math.Clamp(fallingTrash.DragOriginY + fallingTrash.View.TranslationY, 0, maxY);
+
+        fallingTrash.View.TranslationX = 0;
+        fallingTrash.View.TranslationY = 0;
         SetBounds(fallingTrash);
+    }
+
+    private FallingTrash? HitTestTrash(Point point)
+    {
+        return _activeTrash
+            .Where(trash => ContainsPoint(trash, point))
+            .OrderByDescending(trash => trash.View?.ZIndex ?? 0)
+            .FirstOrDefault();
+    }
+
+    private bool ContainsPoint(FallingTrash fallingTrash, Point point)
+    {
+        double left = fallingTrash.X - TouchPadding;
+        double top = fallingTrash.Y - TouchPadding;
+
+        return point.X >= left
+            && point.X <= left + HitSize
+            && point.Y >= top
+            && point.Y <= top + HitSize;
+    }
+
+    private void BringToFront(FallingTrash fallingTrash)
+    {
+        if (SpawningArena == null || fallingTrash.View == null)
+            return;
+
+        foreach (IView child in SpawningArena.Children)
+        {
+            if (child is VisualElement element && child != _touchLayer)
+                element.ZIndex = 0;
+        }
+
+        fallingTrash.View.ZIndex = 1;
+        if (_touchLayer != null)
+            _touchLayer.ZIndex = 1000;
     }
 
     private bool TrySortTrash(FallingTrash fallingTrash)
@@ -295,29 +551,36 @@ public partial class GamePage : ContentPage
 
     private void RemoveTrash(FallingTrash fallingTrash)
     {
+        if (_draggingTrash == fallingTrash)
+            _draggingTrash = null;
+
         fallingTrash.IsDragging = false;
 
-        if (fallingTrash.Image?.Parent is Layout parent)
-            parent.Children.Remove(fallingTrash.Image);
+        if (fallingTrash.View?.Parent is Layout parent)
+            parent.Children.Remove(fallingTrash.View);
 
         _activeTrash.Remove(fallingTrash);
     }
 
     private void ClearActiveTrash()
     {
+        _draggingTrash = null;
+
         foreach (FallingTrash fallingTrash in _activeTrash.ToList())
             RemoveTrash(fallingTrash);
     }
 
     private sealed class FallingTrash
     {
-        public FallingTrash(TrashItem trash, Image image)
+        public FallingTrash(TrashItem trash, VisualElement view, Image image)
         {
             Trash = trash;
+            View = view;
             Image = image;
         }
 
         public TrashItem Trash { get; }
+        public VisualElement View { get; }
         public Image Image { get; }
         public double X { get; set; }
         public double Y { get; set; }
