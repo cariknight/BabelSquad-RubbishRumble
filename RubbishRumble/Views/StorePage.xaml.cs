@@ -1,12 +1,24 @@
 using RubbishRumble.Services;
+using RubbishRumble.ViewModels;
+
 namespace RubbishRumble.Views;
 
 public partial class StorePage : ContentPage
 {
-	public StorePage()
-	{
-		InitializeComponent();
-	}
+    private readonly StoreViewModel _viewModel;
+
+    public StorePage()
+    {
+        InitializeComponent();
+        _viewModel = new StoreViewModel();
+        BindingContext = _viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.InitializeAsync();
+    }
 
     private async void OnExitButtonClicked(object sender, EventArgs e)
     {
