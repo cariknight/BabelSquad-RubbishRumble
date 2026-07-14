@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace RubbishRumble.Helper
 {
-    internal class RandomGenerator
+    public static class RandomGenerator
     {
+        private static readonly Random _random = new();
+        public static double NextDouble() { return _random.NextDouble(); }
+        public static int Next(int min, int max) { return _random.Next(min, max); }
     }
 }
