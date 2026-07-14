@@ -2,11 +2,319 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RubbishRumble.Views.GamePage"
-             Title="GamePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             BackgroundColor="#FDCBB0"
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="Auto, *, Auto" Padding="15" RowSpacing="10">
+
+        <Grid Grid.Row="0" RowDefinitions="Auto, Auto" RowSpacing="10">
+            <!-- TOP HUD area -->
+            <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center">
+                <HorizontalStackLayout HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
+                    <!-- TOFIX: <Label Text="{Binding CurrentCoins}" -->
+                    <Label Text="0" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24"
+                           VerticalTextAlignment="Center"/>
+                    <Image Source="coin.png" 
+                           HeightRequest="40" 
+                           WidthRequest="40"/>
+                </HorizontalStackLayout>
+                <!-- LOGO -->
+                <Image Grid.Column="1" 
+                       Source="logo.png" 
+                       HeightRequest="65" 
+                       HorizontalOptions="Center"/>
+                <!-- PAUSE button -->
+                <Grid HorizontalOptions="End" WidthRequest="65" VerticalOptions="Center">
+                    <ImageButton Grid.Column="2" 
+                                 Source="pause.png"
+                                 HeightRequest="50" 
+                                 WidthRequest="50" 
+                                 CornerRadius="10" 
+                                 HorizontalOptions="Center"
+                                 Command="{Binding PauseGameCommand}"/>
+                    <!-- TODO: create the pause overlay -->
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
+                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center">
+                    <Label Text="LEVEL:" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24" 
+                           HorizontalTextAlignment="Center"/>
+                    <!-- TOFIX: <Label Text="{Binding CurrentLevel}" -->
+                    <Label Text="0" 
+                           FontFamily="PixelifySans" 
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="#9E4539" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+                <!-- PLAYER HEARTS area -->
+                <HorizontalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                    <Image Source="fullheart.png" 
+                           HeightRequest="30" 
+                           WidthRequest="30">
+                        <Image.Triggers>
+                            <!-- TOFIX: damaged heart 1  -->
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="0">
+                                <Setter Property="Source" Value="damagedheart.png" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                    </Image>
+                    <Image Source="fullheart.png" 
+                           HeightRequest="30" 
+                           WidthRequest="30">
+                        <Image.Triggers>
+                            <!-- TOFIX: damaged heart 2  -->
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="1">
+                                <Setter Property="Source" Value="damagedheart.png" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="0">
+                                <Setter Property="Source" Value="damagedheart.png" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                    </Image>
+                    <Image Source="fullheart.png" 
+                           HeightRequest="30" 
+                           WidthRequest="30">
+                        <Image.Triggers>
+                            <!-- TOFIX: damaged heart 3  -->
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="2">
+                                <Setter Property="Source" Value="damagedheart.png" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="1">
+                                <Setter Property="Source" Value="damagedheart.png" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="0">
+                                <Setter Property="Source" Value="damagedheart.png" />
+                            </DataTrigger>
+                        </Image.Triggers>
+                    </Image>
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center">
+                    <Label Text="SCORE:" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24" 
+                           HorizontalTextAlignment="Center"/>
+                    <!-- TOFIX: <Label Text="{Binding CurrentScore}" -->
+                    <Label Text="0" 
+                           FontFamily="PixelifySans" 
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="#9E4539" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+        <!-- SPAWNING area -->
+        <Grid Grid.Row="1" x:Name="SpawningArena">
+            <Label Text="[Trash Spawns Here]" 
+                   FontFamily="PixelifySans" 
+                   TextColor="#4C3E24" 
+                   Opacity="0.3" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Start" />
+        </Grid>
+
+        <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0">
+            <!-- BINS area -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
+                <Image Grid.Column="0" 
+                       Source="recyclebin01.png" 
+                       HeightRequest="180" 
+                       Aspect="AspectFit">
+                    <Image.Triggers>
+                        <!-- TOFIX: open bin for recylables  -->
+                        <DataTrigger TargetType="Image" Binding="{Binding IsRecycleBinOpen}" Value="True">
+                            <Setter Property="Source" Value="recyclebin02.png" />
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
+
+                <Image Grid.Column="1" 
+                       Source="biodegradablebin01.png" 
+                       HeightRequest="180" 
+                       Aspect="AspectFit">
+                    <Image.Triggers>
+                        <!-- TOFIX: open bin for biodegradable  -->
+                        <DataTrigger TargetType="Image" Binding="{Binding IsBioBinOpen}" Value="True">
+                            <Setter Property="Source" Value="biodegradablebin02.png" />
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
+                
+                <Image Grid.Column="2" 
+                       Source="hazardousbin01.png" 
+                       HeightRequest="180" 
+                       Aspect="AspectFit">
+                    <Image.Triggers>
+                        <!-- TOFIX: open bin for biohazard  -->
+                        <DataTrigger TargetType="Image" Binding="{Binding IsHazardBinOpen}" Value="True">
+                            <Setter Property="Source" Value="hazardousbin02.png" />
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
+
+                <Image Grid.Column="3" 
+                       Source="landfillbin01.png" 
+                       HeightRequest="180" 
+                       Aspect="AspectFit">
+                    <Image.Triggers>
+                        <!-- TOFIX: open bin for landfill  -->
+                        <DataTrigger TargetType="Image" Binding="{Binding IsLandfillBinOpen}" Value="True">
+                            <Setter Property="Source" Value="landfillbin02.png" />
+                        </DataTrigger>
+                    </Image.Triggers>
+                </Image>
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
+                <!-- POWER UP area -->
+                <VerticalStackLayout Grid.Column="0" Spacing="8" HorizontalOptions="Center">
+                    <ImageButton Source="freeze01.png" 
+                                 HeightRequest="50" 
+                                 WidthRequest="50" 
+                                 BackgroundColor="Transparent" 
+                                 CornerRadius="20" >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="freeze01.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="freeze02.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </ImageButton>
+                    <!-- TOFIX: <Label Text="{Binding CurrentFreezePower}" -->
+                    <Label Text="3" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20"  
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center">
+                    <ImageButton Source="slow01.png" 
+                                 HeightRequest="50" 
+                                 WidthRequest="50" 
+                                 BackgroundColor="Transparent" 
+                                 CornerRadius="20" >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="slow01.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="slow02.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </ImageButton>
+                    <!-- TOFIX: <Label Text="{Binding CurrentSlowPower}" -->
+                    <Label Text="3" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20"  
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="Center">
+                    <ImageButton Source="autosort01.png" 
+                                 HeightRequest="50" 
+                                 WidthRequest="50" 
+                                 BackgroundColor="Transparent" 
+                                 CornerRadius="20" >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="autosort01.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="autosort02.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </ImageButton>
+                    <!-- TOFIX: <Label Text="{Binding CurrentAutoSortPower}" -->
+                    <Label Text="3" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20"  
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="3" Spacing="8" HorizontalOptions="Center">
+                    <ImageButton Source="speed01.png" 
+                                 HeightRequest="50" 
+                                 WidthRequest="50" 
+                                 BackgroundColor="Transparent" 
+                                 CornerRadius="20" >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup x:Name="CommonStates">
+
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="speed01.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Property="Source" Value="speed02.png" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                    </ImageButton>
+                    <!-- TOFIX: <Label Text="{Binding CurrentSpeedPower}" -->
+                    <Label Text="3" 
+                           FontFamily="PixelifySans" 
+                           FontSize="20"  
+                           FontAttributes="Bold" 
+                           TextColor="#4C3E24" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>
