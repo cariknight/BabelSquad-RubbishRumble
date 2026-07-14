@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RubbishRumble.Services
 {
-    internal class SaveService
+    internal class StoreService
     {
     }
 }
