@@ -1,0 +1,26 @@
+[
+  {
+    "rarity": "Common",
+    "points": 1,
+    "chance": 1
+  },
+
+  {
+    "rarity": "Uncommon",
+    "points":  1,
+    "chance": 1.0
+  },
+
+  {
+    "rarity": "Rare",
+    "points": 1,
+    "chance": 1.0
+  },
+
+  {
+    "rarity": "Epic",
+    "points": 1,
+    "chance": 1.0
+  }
+
+]
