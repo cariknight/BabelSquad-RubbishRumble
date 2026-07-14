@@ -17,8 +17,7 @@
                    VerticalOptions="Center"/>
 
             <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
-                <!-- TOFIX: <Label Text="0" to Current value of players coins -->
-                <Label Text="0" 
+                <Label Text="{Binding Coins}" 
                        FontFamily="PixelifySans" 
                        FontSize="22" 
                        FontAttributes="Bold" 
@@ -44,9 +43,7 @@
                         Background="#9E4539"
                         Padding="20">
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                        <!-- TOFIX: <Label Text="{Binding OwnedFreeze, StringFormat='Freeze&#10;({0})'}" -->
-                        <!-- Basically, (3) is the number of times they have the freeze item -->
-                        <Label Text="Freeze&#10;(3)" 
+                        <Label Text="{Binding FreezeDisplayText}" 
                                    FontFamily="PixelifySans"
                                    FontSize="18" 
                                    FontAttributes="Bold" 
@@ -57,7 +54,7 @@
                                HeightRequest="60" 
                                WidthRequest="60" 
                                Aspect="AspectFit"/>
-                        <Label Text="Coins: 15" 
+                        <Label Text="{Binding FreezePriceText}" 
                                FontFamily="PixelifySans" 
                                FontSize="18" 
                                FontAttributes="Bold"
@@ -65,7 +62,6 @@
                                HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </Border>
-                <!-- TOFIX: Command="{Binding BuyFreezeCommand}}" -->
                 <ImageButton Source="buy.png"  
                              BackgroundColor="#9E4539"
                              BorderColor="#4C3E24"
@@ -85,8 +81,7 @@
                         Background="#9E4539"
                         Padding="20">
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                        <!-- TOFIX: <Label Text="{Binding OwnedSlow, StringFormat='Slow&#10;({0})'}" -->
-                        <Label Text="Slow&#10;(3)" 
+                        <Label Text="{Binding SlowDisplayText}" 
                                    FontFamily="PixelifySans"
                                    FontSize="18" 
                                    FontAttributes="Bold" 
@@ -98,7 +93,7 @@
                                WidthRequest="60" 
                                Aspect="AspectFit"/>
 
-                        <Label Text="Coins: 15" 
+                        <Label Text="{Binding SlowPriceText}" 
                                FontFamily="PixelifySans" 
                                FontSize="18" 
                                FontAttributes="Bold"
@@ -106,7 +101,6 @@
                                HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </Border>
-                <!-- TOFIX: Command="{Binding BuySlowCommand}}" -->
                 <ImageButton Source="buy.png"  
                              BackgroundColor="#9E4539"
                              BorderColor="#4C3E24"
@@ -127,8 +121,7 @@
                         Padding="20">
 
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                        <!-- TOFIX: <Label Text="{Binding OwnedAutoSort, StringFormat='AutoSort&#10;({0})'}" -->
-                        <Label Text="Auto Sort&#10;(3)" 
+                        <Label Text="{Binding AutoSortDisplayText}" 
                                FontFamily="PixelifySans"
                                FontSize="18" 
                                FontAttributes="Bold" 
@@ -140,7 +133,7 @@
                                WidthRequest="60" 
                                Aspect="AspectFit"/>
 
-                        <Label Text="Coins: 50" 
+                        <Label Text="{Binding AutoSortPriceText}" 
                                FontFamily="PixelifySans" 
                                FontSize="18" 
                                FontAttributes="Bold"
@@ -148,7 +141,6 @@
                                HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </Border>
-                <!-- TOFIX: Command="{Binding BuyAutoSortCommand}}" -->
                 <ImageButton Source="buy.png"  
                              BackgroundColor="#9E4539"
                              BorderColor="#4C3E24"
@@ -168,8 +160,7 @@
                         Background="#9E4539"
                         Padding="20">
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                        <!-- TOFIX: <Label Text="{Binding OwnedSpeed, StringFormat='Speed&#10;({0})'}" -->
-                        <Label Text="Speed&#10;(3)" 
+                        <Label Text="{Binding SpeedDisplayText}" 
                                    FontFamily="PixelifySans"
                                    FontSize="18" 
                                    FontAttributes="Bold" 
@@ -181,7 +172,7 @@
                                WidthRequest="60" 
                                Aspect="AspectFit"/>
 
-                        <Label Text="Coins: 10" 
+                        <Label Text="{Binding SpeedPriceText}" 
                                FontFamily="PixelifySans" 
                                FontSize="18" 
                                FontAttributes="Bold"
@@ -189,7 +180,6 @@
                                HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </Border>
-                <!-- TOFIX: Command="{Binding BuySpeedCommand}}" -->
                 <ImageButton Source="buy.png"  
                              BackgroundColor="#9E4539"
                              BorderColor="#4C3E24"
