@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using RubbishRumble.Helper;
 using RubbishRumble.Services;
 
 namespace RubbishRumble.ViewModels
@@ -50,10 +51,18 @@ namespace RubbishRumble.ViewModels
                 _isNewHighScore = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HighScoreLabel));
+                OnPropertyChanged(nameof(CoinBonusText));
+                OnPropertyChanged(nameof(ShowCoinBonus));
             }
         }
 
         public string HighScoreLabel => IsNewHighScore ? "NEW HIGH SCORE!" : "HIGHEST SCORE:";
+
+        public string CoinBonusText => IsNewHighScore
+            ? $"{Constants.HIGH_SCORE_COIN_MULTIPLIER:0.#}x high score bonus!"
+            : string.Empty;
+
+        public bool ShowCoinBonus => IsNewHighScore;
 
         public ICommand ExitCommand { get; }
 
@@ -73,8 +82,12 @@ namespace RubbishRumble.ViewModels
             try
             {
                 int previousHighScore = (await _databaseService.GetPlayerAsync()).HighestScore;
-                HighestScore = await _databaseService.AwardGameRewardsAsync(TotalScore, EarnedCoins);
-                IsNewHighScore = TotalScore > 0 && TotalScore >= HighestScore && TotalScore > previousHighScore;
+                IsNewHighScore = TotalScore > 0 && TotalScore > previousHighScore;
+
+                int coinsToAward = EconomyHelper.CalculateEarnedCoins(TotalScore, IsNewHighScore);
+                EarnedCoins = coinsToAward;
+
+                HighestScore = await _databaseService.AwardGameRewardsAsync(TotalScore, coinsToAward);
             }
             catch (Exception ex)
             {

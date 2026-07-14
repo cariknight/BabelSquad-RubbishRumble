@@ -68,6 +68,14 @@
                                HorizontalTextAlignment="Start"/>
                     </HorizontalStackLayout>
 
+                    <Label Text="{Binding CoinBonusText}"
+                           IsVisible="{Binding ShowCoinBonus}"
+                           FontSize="14"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+
                 </VerticalStackLayout>
             </Border>
 

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using RubbishRumble.Helper;
 using RubbishRumble.Models;
 using RubbishRumble.Helper;
 
@@ -206,10 +207,7 @@ namespace RubbishRumble.Services
 
         public int CalculateCoins()
         {
-            if (Score <= 0)
-                return 0;
-
-            return Math.Max(Constants.MIN_COINS_EARNED, Score / Constants.SCORE_TO_COINS_DIVISOR);
+            return EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore: false);
         }
         public GameSession EndGame()
         {

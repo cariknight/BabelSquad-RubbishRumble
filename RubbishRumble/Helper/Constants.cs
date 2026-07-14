@@ -24,5 +24,8 @@
         // Economy: 10 score = 1 coin (Speed costs 10, Freeze/Slow 15, Auto Sort 50)
         public const int SCORE_TO_COINS_DIVISOR = 10;
         public const int MIN_COINS_EARNED = 1;
+
+        // Bonus when beating personal best: 1.5x coins (e.g. 300 score -> 30 base -> 45 coins)
+        public const double HIGH_SCORE_COIN_MULTIPLIER = 1.5;
     }
 }
