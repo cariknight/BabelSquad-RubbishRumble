@@ -64,7 +64,6 @@
                             <!-- TOFIX: damaged heart 1  -->
                             <DataTrigger TargetType="Image" Binding="{Binding CurrentLives}" Value="0">
                                 <Setter Property="Source" Value="damagedheart.png" />
-                                <!-- TODO: upload the damaged heart asset -->
                             </DataTrigger>
                         </Image.Triggers>
                     </Image>
