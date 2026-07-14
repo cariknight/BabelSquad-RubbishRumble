@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Android.Telephony.CarrierConfigManager;
-using static Microsoft.Maui.LifecycleEvents.AndroidLifecycle;
+//using static Android.Telephony.CarrierConfigManager;
+//using static Microsoft.Maui.LifecycleEvents.AndroidLifecycle;
 
 namespace RubbishRumble.Services
 {
