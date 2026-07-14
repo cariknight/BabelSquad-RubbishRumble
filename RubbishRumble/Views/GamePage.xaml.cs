@@ -596,4 +596,9 @@ public partial class GamePage : ContentPage
     {
         await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
     }
+
+    private async void OnExitButtonClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
 }
