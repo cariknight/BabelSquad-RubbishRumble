@@ -231,6 +231,8 @@ namespace RubbishRumble.Services
             NotifyGameStateChanged();
         }
 
+        private double GetDifficultyScoreMultiplier() => 1 + (DifficultyLevel - 1) * 0.1;
+
         public void CollectTrash(TrashItem? trash)
         {
             if (trash == null)
@@ -241,7 +243,7 @@ namespace RubbishRumble.Services
             if (rarity == null)
                 return;
 
-            int scoreEarned = (int) (rarity.PointValue * CurrentScoreMultiplier * (DifficultyLevel*0.1));
+            int scoreEarned = (int)Math.Round(rarity.PointValue * CurrentScoreMultiplier * GetDifficultyScoreMultiplier());
             Score += scoreEarned;
 
             TrashCollected++;
