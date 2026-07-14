@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using RubbishRumble.Models;
 using RubbishRumble.Helper;
+using System.Threading.Tasks;
 
 
 
@@ -30,13 +31,43 @@ namespace RubbishRumble.Services
         public int DifficultyLevel { get; private set; }
         public double SpawnInterval { get; private set; }
         public double TrashSpeed { get; private set; }
-        public double RarityMultiplier { get; set; } 
+        public double RarityMultiplier { get; set; }
+
+        private List<TrashItem> _trashItems = new();
+        private List<Rarity> _rarities = new();
+
+        // Load JSON files
+        public async Task LoadGameDataAsync()
+        {
+            await LoadTrashItemsAsync();
+            await LoadRaritiesAsync();
+        }
+
+        private async Task LoadTrashItemsAsync()
+        {
+            using Stream stream = await FileSystem.OpenAppPackageFileAsync("TrashData/trashitems.json");
+            using StreamReader reader = new(stream);
+
+            string json = await reader.ReadToEndAsync();
+            _trashItems = JsonSerializer.Deserialize<List<TrashItem>>(json) ?? new List<TrashItem>();
+        }
+
+        private async Task LoadRaritiesAsync()
+        {
+            using Stream stream = await FileSystem.OpenAppPackageFileAsync("TrashData/rarity.json");
+            using StreamReader reader = new(stream);
+
+            string json = await reader.ReadToEndAsync();
+
+            _rarities = JsonSerializer.Deserialize<List<Rarity>>(json) ?? new List<Rarity>();
+        }
 
         // Game
         public bool IsGameOver => Lives <= 0;
 
-        public void StartGame()
+        public async Task StartGameAsync()
         {
+            await LoadGameDataAsync();
             Score = 0;
             Lives = Constants.STARTING_LIVES;
 
