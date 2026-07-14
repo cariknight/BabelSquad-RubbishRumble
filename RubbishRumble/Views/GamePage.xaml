@@ -10,8 +10,7 @@
             <!-- TOP HUD area -->
             <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center">
                 <HorizontalStackLayout HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
-                    <!-- TOFIX: <Label Text="{Binding CurrentCoins}" -->
-                    <Label Text="0" 
+                    <Label Text="{Binding CurrentCoins}" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
                            FontAttributes="Bold" 
@@ -47,8 +46,7 @@
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                    <!-- TOFIX: <Label Text="{Binding CurrentLevel}" -->
-                    <Label Text="0" 
+                    <Label Text="{Binding CurrentLevel}" 
                            FontFamily="PixelifySans" 
                            FontSize="22" 
                            FontAttributes="Bold" 
@@ -105,8 +103,7 @@
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                    <!-- TOFIX: <Label Text="{Binding CurrentScore}" -->
-                    <Label Text="0" 
+                    <Label Text="{Binding CurrentScore}" 
                            FontFamily="PixelifySans" 
                            FontSize="22" 
                            FontAttributes="Bold" 
@@ -116,19 +113,39 @@
             </Grid>
         </Grid>
         <!-- SPAWNING area -->
-        <Grid Grid.Row="1" x:Name="SpawningArena">
-            <Label Text="[Trash Spawns Here]" 
-                   FontFamily="PixelifySans" 
-                   TextColor="#4C3E24" 
-                   Opacity="0.3" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Start" />
+        <Grid Grid.Row="1">
+            <AbsoluteLayout x:Name="SpawningArena"
+                            BackgroundColor="Transparent" />
+
+            <Border IsVisible="{Binding IsPowerUpActive}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Start"
+                    Margin="0,8,0,0"
+                    Padding="12,6"
+                    BackgroundColor="#FFF3D6"
+                    Stroke="#9E4539"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 12">
+                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <Image Source="{Binding ActivePowerUpIcon}"
+                           HeightRequest="28"
+                           WidthRequest="28"
+                           Aspect="AspectFit" />
+                    <Label Text="{Binding ActivePowerUpDisplayText}"
+                           FontFamily="PixelifySans"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#9E4539"
+                           VerticalTextAlignment="Center" />
+                </HorizontalStackLayout>
+            </Border>
         </Grid>
 
-        <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0">
+        <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0" x:Name="BinsArea">
             <!-- BINS area -->
             <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
-                <Image Grid.Column="0" 
+                <Image x:Name="RecycleBin"
+                       Grid.Column="0" 
                        Source="recyclebin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -140,7 +157,8 @@
                     </Image.Triggers>
                 </Image>
 
-                <Image Grid.Column="1" 
+                <Image x:Name="BioBin"
+                       Grid.Column="1" 
                        Source="biodegradablebin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -152,7 +170,8 @@
                     </Image.Triggers>
                 </Image>
                 
-                <Image Grid.Column="2" 
+                <Image x:Name="HazardBin"
+                       Grid.Column="2" 
                        Source="hazardousbin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -164,7 +183,8 @@
                     </Image.Triggers>
                 </Image>
 
-                <Image Grid.Column="3" 
+                <Image x:Name="LandfillBin"
+                       Grid.Column="3" 
                        Source="landfillbin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -184,7 +204,15 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 IsEnabled="{Binding CanUseFreezePower}"
+                                 Opacity="{Binding FreezeButtonOpacity}"
+                                 Command="{Binding UseFreezePowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsFreezeActive}" Value="True">
+                                <Setter Property="Source" Value="freeze02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -204,8 +232,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentFreezePower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentFreezePower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
@@ -218,7 +245,15 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 IsEnabled="{Binding CanUseSlowPower}"
+                                 Opacity="{Binding SlowButtonOpacity}"
+                                 Command="{Binding UseSlowPowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsSlowActive}" Value="True">
+                                <Setter Property="Source" Value="slow02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -238,8 +273,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentSlowPower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentSlowPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
@@ -252,7 +286,15 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 IsEnabled="{Binding CanUseAutoSortPower}"
+                                 Opacity="{Binding AutoSortButtonOpacity}"
+                                 Command="{Binding UseAutoSortPowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsAutoSortActive}" Value="True">
+                                <Setter Property="Source" Value="autosort02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -272,8 +314,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentAutoSortPower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentAutoSortPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
@@ -286,7 +327,15 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 IsEnabled="{Binding CanUseSpeedPower}"
+                                 Opacity="{Binding SpeedButtonOpacity}"
+                                 Command="{Binding UseSpeedPowerCommand}" >
+                        <ImageButton.Triggers>
+                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsSpeedActive}" Value="True">
+                                <Setter Property="Source" Value="speed02.png" />
+                            </DataTrigger>
+                        </ImageButton.Triggers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -306,8 +355,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentSpeedPower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentSpeedPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 

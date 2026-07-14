@@ -1,26 +1,22 @@
 [
   {
-    "rarity": "Common",
-    "points": 1,
-    "chance": 1
+    "rarityName": "Common",
+    "pointValue": 5,
+    "chance": 60
   },
-
   {
-    "rarity": "Uncommon",
-    "points":  1,
-    "chance": 1.0
+    "rarityName": "Uncommon",
+    "pointValue": 10,
+    "chance": 25
   },
-
   {
-    "rarity": "Rare",
-    "points": 1,
-    "chance": 1.0
+    "rarityName": "Rare",
+    "pointValue": 20,
+    "chance": 10
   },
-
   {
-    "rarity": "Epic",
-    "points": 1,
-    "chance": 1.0
+    "rarityName": "Epic",
+    "pointValue": 50,
+    "chance": 5
   }
-
 ]

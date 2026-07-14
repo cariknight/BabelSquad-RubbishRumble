@@ -54,6 +54,15 @@ namespace RubbishRumble.Services
         public double CurrentScoreMultiplier { get; private set; } = 1.0;
         public double CurrentSpeedMultiplier { get; private set; } = 1.0;
         public bool IsAutoSortActive { get; private set; }
+        public PowerUp? ActivePowerUp { get; private set; }
+        public int ActivePowerUpRemainingSeconds { get; private set; }
+        public bool IsPowerUpActive => ActivePowerUp != null;
+
+        private CancellationTokenSource? _powerUpCts;
+
+        public event Action? GameStateChanged;
+
+        private void NotifyGameStateChanged() => GameStateChanged?.Invoke();
 
         // Load JSON files (DATA)
         public async Task LoadGameDataAsync()
@@ -62,13 +71,18 @@ namespace RubbishRumble.Services
             await LoadRaritiesAsync();
         }
 
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         private async Task LoadTrashItemsAsync()
         {
             using Stream stream = await FileSystem.OpenAppPackageFileAsync("TrashData/trashitems.json");
             using StreamReader reader = new(stream);
 
             string json = await reader.ReadToEndAsync();
-            _trashItems = JsonSerializer.Deserialize<List<TrashItem>>(json) ?? new List<TrashItem>();
+            _trashItems = JsonSerializer.Deserialize<List<TrashItem>>(json, JsonOptions) ?? new List<TrashItem>();
         }
 
         private async Task LoadRaritiesAsync()
@@ -78,47 +92,66 @@ namespace RubbishRumble.Services
 
             string json = await reader.ReadToEndAsync();
 
-            _rarities = JsonSerializer.Deserialize<List<Rarity>>(json) ?? new List<Rarity>();
+            _rarities = JsonSerializer.Deserialize<List<Rarity>>(json, JsonOptions) ?? new List<Rarity>();
         }
 
         // After Loading trash data
-        public TrashItem GetRandomTrash()
+        public TrashItem? GetRandomTrash()
         {
-            Rarity selectedRarity = GetRandomRarity();
+            if (_trashItems.Count == 0 || _rarities.Count == 0)
+                return null;
 
-            List<TrashItem> matchingTrash = _trashItems.Where(t => t.Rarity == selectedRarity.RarityName).ToList();
+            Rarity? selectedRarity = GetRandomRarity();
+            if (selectedRarity == null || string.IsNullOrWhiteSpace(selectedRarity.RarityName))
+                return null;
+
+            List<TrashItem> matchingTrash = _trashItems
+                .Where(t => t != null && t.Rarity == selectedRarity.RarityName)
+                .ToList();
 
             if (matchingTrash.Count == 0)
                 return null;
 
-            // generates random index number to select trash
             int index = RandomGenerator.Next(0, matchingTrash.Count);
-
             return matchingTrash[index];
         }
 
-        private Rarity GetRandomRarity()
+        private Rarity? GetRandomRarity()
         {
+            if (_rarities.Count == 0)
+                return null;
+
             double totalWeight = 0;
-            foreach (Rarity rarity in _rarities)
+            foreach (Rarity? rarity in _rarities)
             {
-                totalWeight += GetAdjustedChance(rarity);
+                if (rarity != null)
+                    totalWeight += GetAdjustedChance(rarity);
             }
+
+            if (totalWeight <= 0)
+                return _rarities.FirstOrDefault();
 
             double roll = RandomGenerator.NextDouble() * totalWeight;
             double currentWeight = 0;
 
-            foreach (Rarity rarity in _rarities)
+            foreach (Rarity? rarity in _rarities)
             {
+                if (rarity == null)
+                    continue;
+
                 currentWeight += GetAdjustedChance(rarity);
                 if (roll <= currentWeight)
                     return rarity;
             }
-            return _rarities.First();
+
+            return _rarities.FirstOrDefault();
         }
 
-        private double GetAdjustedChance(Rarity rarity)
+        private double GetAdjustedChance(Rarity? rarity)
         {
+            if (rarity == null)
+                return 0;
+
             double multiplier = 1 + (DifficultyLevel - 1) * 0.1;
 
             return rarity.RarityName switch
@@ -154,11 +187,16 @@ namespace RubbishRumble.Services
 
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
+            ClearPowerUpState();
+
+            NotifyGameStateChanged();
         }
 
         public void LoseLife()
         {
             Lives--;
+
+            NotifyGameStateChanged();
 
             if (Lives <= 0)
             {
@@ -189,16 +227,23 @@ namespace RubbishRumble.Services
 
             SpawnInterval = Math.Max(Constants.MIN_SPAWN_INTERVAL, SpawnInterval - 0.1);
             TrashSpeed = Math.Min(Constants.MAX_TRASH_SPEED, TrashSpeed + Constants.TRASH_SPEED_INCREASE);
+
+            NotifyGameStateChanged();
         }
 
-        public void CollectTrash(TrashItem trash)
+        private double GetDifficultyScoreMultiplier() => 1 + (DifficultyLevel - 1) * 0.1;
+
+        public void CollectTrash(TrashItem? trash)
         {
-            Rarity? rarity = _rarities.FirstOrDefault(r => r.RarityName == trash.Rarity);
+            if (trash == null)
+                return;
+
+            Rarity? rarity = _rarities.FirstOrDefault(r => r != null && r.RarityName == trash.Rarity);
 
             if (rarity == null)
                 return;
 
-            int scoreEarned = (int) (rarity.PointValue * CurrentScoreMultiplier * (DifficultyLevel*0.1));
+            int scoreEarned = (int)Math.Round(rarity.PointValue * CurrentScoreMultiplier * GetDifficultyScoreMultiplier());
             Score += scoreEarned;
 
             TrashCollected++;
@@ -208,25 +253,137 @@ namespace RubbishRumble.Services
                 IncreaseDifficulty();
             }
 
+            NotifyGameStateChanged();
+        }
+
+        public bool IsTrashInBinZone(double trashBottomY, double arenaHeight)
+            => arenaHeight > 0 && trashBottomY >= arenaHeight * Constants.BIN_ZONE_START_RATIO;
+
+        public string? GetBinCategoryAtPosition(
+            double trashCenterX,
+            double trashBottomY,
+            double arenaWidth,
+            double arenaHeight)
+        {
+            if (arenaWidth <= 0 || arenaHeight <= 0)
+                return null;
+
+            if (!IsTrashInBinZone(trashBottomY, arenaHeight))
+                return null;
+
+            double ratio = trashCenterX / arenaWidth;
+
+            if (ratio < 0.25)
+                return "Recyclables";
+
+            if (ratio < 0.5)
+                return "Biodegradable";
+
+            if (ratio < 0.75)
+                return "Biohazard";
+
+            return "Landfill";
+        }
+
+        public bool TryAutoSortTrash(TrashItem? trash, double trashBottomY, double arenaHeight)
+        {
+            if (!IsAutoSortActive || IsGameOver || trash == null)
+                return false;
+
+            if (!IsTrashInBinZone(trashBottomY, arenaHeight))
+                return false;
+
+            CollectTrash(trash);
+            return true;
+        }
+
+        public TrashSortOutcome TryManualSortTrash(
+            TrashItem? trash,
+            double trashCenterX,
+            double trashBottomY,
+            double arenaWidth,
+            double arenaHeight)
+        {
+            if (IsGameOver || trash == null)
+                return TrashSortOutcome.NotInBinZone;
+
+            string? droppedCategory = GetBinCategoryAtPosition(
+                trashCenterX,
+                trashBottomY,
+                arenaWidth,
+                arenaHeight);
+
+            if (droppedCategory == null)
+                return TrashSortOutcome.NotInBinZone;
+
+            string itemCategory = trash.Category ?? string.Empty;
+
+            if (droppedCategory == itemCategory)
+            {
+                CollectTrash(trash);
+                return TrashSortOutcome.Correct;
+            }
+
+            LoseLife();
+            return TrashSortOutcome.Incorrect;
         }
 
         // POWER UPS
-        public async Task ActivatePowerUpAsync(PowerUp powerUp)
+        public async Task ActivatePowerUpAsync(PowerUp? powerUp)
         {
-            CurrentScoreMultiplier = powerUp.ScoreMultiplier;
-            CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
+            if (powerUp == null)
+                return;
 
-            if (powerUp.EffectType == "AutoSort")
+            _powerUpCts?.Cancel();
+            _powerUpCts?.Dispose();
+            _powerUpCts = new CancellationTokenSource();
+            CancellationToken token = _powerUpCts.Token;
+
+            ApplyPowerUpEffect(powerUp);
+            NotifyGameStateChanged();
+
+            try
             {
-                IsAutoSortActive = true;
+                while (ActivePowerUpRemainingSeconds > 0)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1), token);
+
+                    if (token.IsCancellationRequested)
+                        return;
+
+                    ActivePowerUpRemainingSeconds--;
+                    NotifyGameStateChanged();
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return;
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(powerUp.DurationSeconds));
+            ClearPowerUpState();
+            NotifyGameStateChanged();
+        }
 
+        private void ApplyPowerUpEffect(PowerUp powerUp)
+        {
+            ActivePowerUp = powerUp;
+            ActivePowerUpRemainingSeconds = powerUp.DurationSeconds;
+            CurrentScoreMultiplier = powerUp.ScoreMultiplier;
+            CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
+            IsAutoSortActive = powerUp.EffectType == "AutoSort";
+        }
+
+        private void ClearPowerUpState()
+        {
+            _powerUpCts?.Cancel();
+            _powerUpCts?.Dispose();
+            _powerUpCts = null;
+
+            ActivePowerUp = null;
+            ActivePowerUpRemainingSeconds = 0;
             CurrentScoreMultiplier = 1.0;
             CurrentSpeedMultiplier = 1.0;
             IsAutoSortActive = false;
-
         }
     }
 }
