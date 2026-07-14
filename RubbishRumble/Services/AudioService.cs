@@ -1,12 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RubbishRumble.Services
+﻿namespace RubbishRumble.Services
 {
-    internal class AudioService
+    public class AudioService
     {
+        public bool IsMusicEnabled { get; private set; }
+        public bool IsSoundEffectsEnabled { get; private set; }
+
+        public void SetMusicEnabled(bool enabled)
+        {
+            IsMusicEnabled = enabled;
+
+            if (enabled)
+            {
+                // Start background music when audio assets are available.
+            }
+            else
+            {
+                // Stop background music when audio assets are available.
+            }
+        }
+
+        public void SetSoundEffectsEnabled(bool enabled)
+        {
+            IsSoundEffectsEnabled = enabled;
+        }
+
+        public void PlaySoundEffect(string soundName)
+        {
+            if (!IsSoundEffectsEnabled)
+                return;
+
+            // Play sound effect when audio assets are available.
+        }
     }
 }

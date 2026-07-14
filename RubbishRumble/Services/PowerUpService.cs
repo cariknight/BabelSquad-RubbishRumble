@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RubbishRumble.Models;
+﻿using RubbishRumble.Models;
 using System.Text.Json;
 
 namespace RubbishRumble.Services
@@ -11,8 +6,6 @@ namespace RubbishRumble.Services
     public class PowerUpService
     {
         private readonly Dictionary<string, DateTime> _activePowerUps = new();
-
-        private readonly List<PowerUp> _powerUps;
         public List<PowerUp> PowerUps { get; private set; } = new();
 
         //Read powerup.json
@@ -23,12 +16,13 @@ namespace RubbishRumble.Services
             using StreamReader reader = new(stream);
 
             string json = await reader.ReadToEndAsync();
-            PowerUps = JsonSerializer.Deserialize<List<PowerUp>>(json) ?? new List<PowerUp>();
-        }
 
-        public PowerUpService(List<PowerUp> powerUps)
-        {
-            _powerUps = powerUps;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            PowerUps = JsonSerializer.Deserialize<List<PowerUp>>(json, options) ?? new List<PowerUp>();
         }
 
         public bool IsActive(string effectType)
@@ -36,9 +30,9 @@ namespace RubbishRumble.Services
             return _activePowerUps.ContainsKey(effectType);
         }
 
-        public async Task ActivateASync(string effectType)
+        public async Task ActivateAsync(string effectType)
         {
-            PowerUp? powerUp = _powerUps.FirstOrDefault(
+            PowerUp? powerUp = PowerUps.FirstOrDefault(
                 p => p.EffectType == effectType);
 
             if (powerUp == null)

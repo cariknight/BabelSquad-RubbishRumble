@@ -5,15 +5,17 @@
     "effectType": "Freeze",
     "description":  "",
     "scoreMultiplier": 1.0,
-    "speedMultiplier": 0.0
+    "speedMultiplier": 0.0,
+    "price": 15
   },
   {
     "name": "Slow",
     "durationSeconds": 5,
     "effectType": "Slow",
-    "description":  "",
+    "description": "",
     "scoreMultiplier": 1.0,
-    "speedMultiplier": 0.5
+    "speedMultiplier": 0.5,
+    "price": 15
   },
   {
     "name": "Auto Sort",
@@ -21,7 +23,8 @@
     "effectType": "AutoSort",
     "description": "",
     "scoreMultiplier": 0.5,
-    "speedMultiplier": 1.0
+    "speedMultiplier": 1.0,
+    "price": 50
   },
   {
     "name": "Speed",
@@ -29,7 +32,8 @@
     "effectType": "Speed",
     "description": "",
     "scoreMultiplier": 2.0,
-    "speedMultiplier": 2.0
+    "speedMultiplier": 2.0,
+    "price": 10
   }
 
 ]

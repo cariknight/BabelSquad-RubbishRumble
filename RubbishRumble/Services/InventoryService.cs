@@ -1,12 +1,100 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RubbishRumble.Models;
 
 namespace RubbishRumble.Services
 {
-    internal class InventoryService
+    public class InventoryService
     {
+        private const int BeginnerPackQuantity = 3;
+
+        private static readonly string[] DefaultPowerUpNames =
+        {
+            "Freeze",
+            "Slow",
+            "Auto Sort",
+            "Speed"
+        };
+
+        private readonly DatabaseService _database;
+        private readonly PowerUpService _powerUpService;
+
+        public InventoryService(DatabaseService database, PowerUpService powerUpService)
+        {
+            _database = database;
+            _powerUpService = powerUpService;
+        }
+
+        public async Task ApplyBeginnerPackAsync(Player player)
+        {
+            if (player.ReceivedBeginnerPack)
+                return;
+
+            IEnumerable<string> powerUpNames = _powerUpService.PowerUps.Count > 0
+                ? _powerUpService.PowerUps.Select(p => p.Name)
+                : DefaultPowerUpNames;
+
+            foreach (string powerUpName in powerUpNames)
+            {
+                await AddPowerUpAsync(powerUpName, BeginnerPackQuantity);
+            }
+
+            player.ReceivedBeginnerPack = true;
+            await _database.SavePlayerAsync(player);
+        }
+
+        public async Task AddPowerUpAsync(string powerUpName, int amount)
+        {
+            List<Inventory> inventory = await _database.GetInventoryAsync();
+            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+
+            if (item == null)
+            {
+                await _database.SaveInventoryAsync(new Inventory
+                {
+                    PowerUpName = powerUpName,
+                    Quantity = amount
+                });
+            }
+            else
+            {
+                item.Quantity += amount;
+                await _database.SaveInventoryAsync(item);
+            }
+        }
+
+        public Task<bool> UsePowerUpAsync(PowerUp powerUp)
+        {
+            return UsePowerUpAsync(powerUp.Name);
+        }
+
+        public async Task<bool> UsePowerUpAsync(string powerUpName)
+        {
+            List<Inventory> inventory = await _database.GetInventoryAsync();
+            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+
+            if (item == null || item.Quantity <= 0)
+                return false;
+
+            item.Quantity--;
+            await _database.SaveInventoryAsync(item);
+            return true;
+        }
+
+        public Task<int> GetPowerUpCountAsync(PowerUp powerUp)
+        {
+            return GetPowerUpCountAsync(powerUp.Name);
+        }
+
+        public async Task<int> GetPowerUpCountAsync(string powerUpName)
+        {
+            List<Inventory> inventory = await _database.GetInventoryAsync();
+            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+
+            return item?.Quantity ?? 0;
+        }
+
+        public Task<List<Inventory>> GetInventoryAsync()
+        {
+            return _database.GetInventoryAsync();
+        }
     }
 }
