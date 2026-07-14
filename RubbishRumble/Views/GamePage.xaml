@@ -10,8 +10,7 @@
             <!-- TOP HUD area -->
             <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center">
                 <HorizontalStackLayout HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
-                    <!-- TOFIX: <Label Text="{Binding CurrentCoins}" -->
-                    <Label Text="0" 
+                    <Label Text="{Binding CurrentCoins}" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
                            FontAttributes="Bold" 
@@ -47,8 +46,7 @@
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                    <!-- TOFIX: <Label Text="{Binding CurrentLevel}" -->
-                    <Label Text="0" 
+                    <Label Text="{Binding CurrentLevel}" 
                            FontFamily="PixelifySans" 
                            FontSize="22" 
                            FontAttributes="Bold" 
@@ -105,8 +103,7 @@
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                    <!-- TOFIX: <Label Text="{Binding CurrentScore}" -->
-                    <Label Text="0" 
+                    <Label Text="{Binding CurrentScore}" 
                            FontFamily="PixelifySans" 
                            FontSize="22" 
                            FontAttributes="Bold" 
@@ -184,7 +181,8 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 Command="{Binding UseFreezePowerCommand}" >
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -204,8 +202,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentFreezePower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentFreezePower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
@@ -218,7 +215,8 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 Command="{Binding UseSlowPowerCommand}" >
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -238,8 +236,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentSlowPower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentSlowPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
@@ -252,7 +249,8 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 Command="{Binding UseAutoSortPowerCommand}" >
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -272,8 +270,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentAutoSortPower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentAutoSortPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
@@ -286,7 +283,8 @@
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
-                                 CornerRadius="20" >
+                                 CornerRadius="20"
+                                 Command="{Binding UseSpeedPowerCommand}" >
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -306,8 +304,7 @@
                             </VisualStateGroupList>
                         </VisualStateManager.VisualStateGroups>
                     </ImageButton>
-                    <!-- TOFIX: <Label Text="{Binding CurrentSpeedPower}" -->
-                    <Label Text="3" 
+                    <Label Text="{Binding CurrentSpeedPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 

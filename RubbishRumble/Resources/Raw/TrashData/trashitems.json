@@ -1,334 +1,242 @@
 [
   {
-    "id":,
-    "name": "Joja Cola",
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-  {
-
-    "id":,
-    "name": "Angela\\'s Doll",
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-
-  {
-    "id":,
-    "name": "Red Spider Lily",
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-  {
-    "id":,
-    "name": "Ox Bezoar",
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-  {
-    "id":,
-    "name": "Floating Eye",
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-  {
-    "id":,
     "name": "Plastic Bottle",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_01.png",
+    "rarity": "Common",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Soda Can",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_02.png",
+    "rarity": "Common",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Glass Bottle",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_03.png",
+    "rarity": "Uncommon",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Cardboard Box",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_04.png",
+    "rarity": "Common",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Newspaper",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_05.png",
+    "rarity": "Common",
+    "category": "Recyclables"
   },
   {
-    "id":,
-    "name": "Blankpaper",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Blank Paper",
+    "filePath": "Resources/Images/Trash/recyclables_06.png",
+    "rarity": "Rare",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Shampoo Bottle",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_07.png",
+    "rarity": "Uncommon",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Clean Pizza Box",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_08.png",
+    "rarity": "Rare",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Milk Carton",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/recyclables_09.png",
+    "rarity": "Uncommon",
+    "category": "Recyclables"
   },
   {
-    "id":,
-    "name": "Plastic Cup",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Tin Can",
+    "filePath": "Resources/Images/Trash/recyclables_10.png",
+    "rarity": "Epic",
+    "category": "Recyclables"
   },
   {
-    "id":,
     "name": "Banana Peel",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biodegradable_01.png",
+    "rarity": "Common",
+    "category": "Biodegradable"
   },
   {
-    "id":,
     "name": "Apple Core",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biodegradable_02.png",
+    "rarity": "Common",
+    "category": "Biodegradable"
   },
   {
-    "id":,
-    "name": "Orange Peel",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Fresh Orange",
+    "filePath": "Resources/Images/Trash/biodegradable_03.png",
+    "rarity": "Rare",
+    "category": "Biodegradable"
   },
   {
-    "id":,
     "name": "Eggshell",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biodegradable_04.png",
+    "rarity": "Common",
+    "category": "Biodegradable"
   },
   {
-    "id":,
     "name": "Leaf",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biodegradable_05.png",
+    "rarity": "Common",
+    "category": "Biodegradable"
   },
   {
-    "id":,
     "name": "Flower",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biodegradable_06.png",
+    "rarity": "Uncommon",
+    "category": "Biodegradable"
   },
   {
-    "id":,
-    "name": "Carrot Top",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Carrot",
+    "filePath": "Resources/Images/Trash/biodegradable_07.png",
+    "rarity": "Uncommon",
+    "category": "Biodegradable"
   },
   {
-    "id":,
-    "name": "Corn Cob",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Corn",
+    "filePath": "Resources/Images/Trash/biodegradable_08.png",
+    "rarity": "Uncommon",
+    "category": "Biodegradable"
   },
   {
-    "id":,
     "name": "Tea Bag",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biodegradable_09.png",
+    "rarity": "Rare",
+    "category": "Biodegradable"
   },
   {
-    "id":,
-    "name": "Coffee Grounds Cup",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Acorn",
+    "filePath": "Resources/Images/Trash/biodegradable_10.png",
+    "rarity": "Epic",
+    "category": "Biodegradable"
   },
   {
-    "id":,
     "name": "Battery",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biohazard_01.png",
+    "rarity": "Uncommon",
+    "category": "Biohazard"
   },
   {
-    "id":,
     "name": "Light Bulb",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biohazard_02.png",
+    "rarity": "Uncommon",
+    "category": "Biohazard"
   },
   {
-    "id":,
     "name": "Paint Can",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biohazard_03.png",
+    "rarity": "Common",
+    "category": "Biohazard"
   },
   {
-    "id":,
     "name": "Spray Can",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biohazard_04.png",
+    "rarity": "Common",
+    "category": "Biohazard"
   },
   {
-    "id":,
-    "name": "Medicine Bottle",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Syringe",
+    "filePath": "Resources/Images/Trash/biohazard_05.png",
+    "rarity": "Common",
+    "category": "Biohazard"
   },
   {
-    "id":,
-    "name": "Phone Battery",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Gas",
+    "filePath": "Resources/Images/Trash/biohazard_06.png",
+    "rarity": "Epic",
+    "category": "Biohazard"
   },
   {
-    "id":,
-    "name": "Thermometer",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Propane Tank",
+    "filePath": "Resources/Images/Trash/biohazard_07.png",
+    "rarity": "Common",
+    "category": "Biohazard"
   },
   {
-    "id":,
-    "name": "Pesticide Bottle",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Fire extinguisher",
+    "filePath": "Resources/Images/Trash/biohazard_08.png",
+    "rarity": "Rare",
+    "category": "Biohazard"
   },
   {
-    "id":,
-    "name": "Ink Cartridge",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Phone",
+    "filePath": "Resources/Images/Trash/biohazard_09.png",
+    "rarity": "Rare",
+    "category": "Biohazard"
   },
   {
-    "id":,
     "name": "Cleaning Chemical Bottle",
-    "filepath":,
-    "rarity":,
-    "category":
+    "filePath": "Resources/Images/Trash/biohazard_10.png",
+    "rarity": "Uncommon",
+    "category": "Biohazard"
   },
   {
-    "id":,
-    "name": "Candy Wrapper",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Cigarette butt",
+    "filePath": "Resources/Images/Trash/landfall_01.png",
+    "rarity": "Common",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Chip Bag",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Plastic spoon",
+    "filePath": "Resources/Images/Trash/landfall_02.png",
+    "rarity": "Common",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Dirty Tissue",
-    "filepath":,
-    "rarity":,
-    "category":
-
+    "name": "Plastic fork",
+    "filePath": "Resources/Images/Trash/landfall_03.png",
+    "rarity": "Common",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Styrofoam Cup",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Plastic knife",
+    "filePath": "Resources/Images/Trash/landfall_04.png",
+    "rarity": "Common",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Broken Plate",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Broken teacup",
+    "filePath": "Resources/Images/Trash/landfall_05.png",
+    "rarity": "Uncommon",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Used Sponge",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Chips bag",
+    "filePath": "Resources/Images/Trash/landfall_06.png",
+    "rarity": "Epic",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Diaper",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "Broken plate",
+    "filePath": "Resources/Images/Trash/landfall_07.png",
+    "rarity": "Uncommon",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Cigarette Butt",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "q-tip",
+    "filePath": "Resources/Images/Trash/landfall_08.png",
+    "rarity": "Uncommon",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Greasy Pizza Box",
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "toothbrush",
+    "filePath": "Resources/Images/Trash/landfall_09.png",
+    "rarity": "Rare",
+    "category": "Landfill"
   },
   {
-    "id":,
-    "name": "Broken Toy",
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-  {
-    "id":,
-    "name":,
-    "filepath":,
-    "rarity":,
-    "category":
-  },
-  {
-    "id":,
-    "name":,
-    "filepath":,
-    "rarity":,
-    "category":
+    "name": "toothpaste",
+    "filePath": "Resources/Images/Trash/landfall_10.png",
+    "rarity": "Rare",
+    "category": "Landfill"
   }
 ]

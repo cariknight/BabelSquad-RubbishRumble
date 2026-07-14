@@ -55,6 +55,10 @@ namespace RubbishRumble.Services
         public double CurrentSpeedMultiplier { get; private set; } = 1.0;
         public bool IsAutoSortActive { get; private set; }
 
+        public event Action? GameStateChanged;
+
+        private void NotifyGameStateChanged() => GameStateChanged?.Invoke();
+
         // Load JSON files (DATA)
         public async Task LoadGameDataAsync()
         {
@@ -62,13 +66,18 @@ namespace RubbishRumble.Services
             await LoadRaritiesAsync();
         }
 
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         private async Task LoadTrashItemsAsync()
         {
             using Stream stream = await FileSystem.OpenAppPackageFileAsync("TrashData/trashitems.json");
             using StreamReader reader = new(stream);
 
             string json = await reader.ReadToEndAsync();
-            _trashItems = JsonSerializer.Deserialize<List<TrashItem>>(json) ?? new List<TrashItem>();
+            _trashItems = JsonSerializer.Deserialize<List<TrashItem>>(json, JsonOptions) ?? new List<TrashItem>();
         }
 
         private async Task LoadRaritiesAsync()
@@ -78,7 +87,7 @@ namespace RubbishRumble.Services
 
             string json = await reader.ReadToEndAsync();
 
-            _rarities = JsonSerializer.Deserialize<List<Rarity>>(json) ?? new List<Rarity>();
+            _rarities = JsonSerializer.Deserialize<List<Rarity>>(json, JsonOptions) ?? new List<Rarity>();
         }
 
         // After Loading trash data
@@ -154,11 +163,14 @@ namespace RubbishRumble.Services
 
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
+            NotifyGameStateChanged();
         }
 
         public void LoseLife()
         {
             Lives--;
+
+            NotifyGameStateChanged();
 
             if (Lives <= 0)
             {
@@ -189,6 +201,8 @@ namespace RubbishRumble.Services
 
             SpawnInterval = Math.Max(Constants.MIN_SPAWN_INTERVAL, SpawnInterval - 0.1);
             TrashSpeed = Math.Min(Constants.MAX_TRASH_SPEED, TrashSpeed + Constants.TRASH_SPEED_INCREASE);
+
+            NotifyGameStateChanged();
         }
 
         public void CollectTrash(TrashItem trash)
@@ -208,6 +222,7 @@ namespace RubbishRumble.Services
                 IncreaseDifficulty();
             }
 
+            NotifyGameStateChanged();
         }
 
         // POWER UPS

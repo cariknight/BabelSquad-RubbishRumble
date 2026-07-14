@@ -1,7 +1,10 @@
-﻿namespace RubbishRumble.Models
+﻿using SQLite;
+
+namespace RubbishRumble.Models
 {
     public class Player
     {
+        [PrimaryKey]
         public int Id { get; set; } = 1;
         public int Coins { get; set; }
         public int HighestScore { get; set; }
