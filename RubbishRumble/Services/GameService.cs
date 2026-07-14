@@ -25,6 +25,17 @@ namespace RubbishRumble.Services
         //Services
         private readonly DatabaseService _dataService;
         private readonly PowerUpService _powerUpService;
+        private readonly InventoryService _inventoryService;
+
+        public GameService(
+            DatabaseService dataService,
+            PowerUpService powerUpService,
+            InventoryService inventoryService)
+        {
+            _dataService = dataService;
+            _powerUpService = powerUpService;
+            _inventoryService = inventoryService;
+        }
         public int Score { get; private set; }
         public int Lives { get; private set; }
         public int Coins { get; private set; }
@@ -127,7 +138,7 @@ namespace RubbishRumble.Services
         {
             Player player = await _dataService.GetPlayerAsync();
 
-            await _powerUpService.GiveBeginnerPackAsync(player);
+            await _inventoryService.ApplyBeginnerPackAsync(player);
 
             await LoadGameDataAsync();
 
