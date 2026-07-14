@@ -26,7 +26,7 @@ namespace RubbishRumble.ViewModels
 
         private async void OnPlayExecuted()
         {
-            await Application.Current.MainPage.DisplayAlert("Rubbish Rumble", "Working", "OK");
+            await Shell.Current.GoToAsync("GamePage");
         }
 
         private async void OnSettingsExecuted()
