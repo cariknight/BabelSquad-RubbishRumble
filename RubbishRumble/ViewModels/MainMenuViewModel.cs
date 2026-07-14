@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using RubbishRumble.Services;
 
 namespace RubbishRumble.ViewModels
 {
@@ -11,37 +12,39 @@ namespace RubbishRumble.ViewModels
     {
         public ICommand PlayCommand { get; }
         public ICommand SettingsCommand { get; }
-        public ICommand ExitCommand { get; }
+        public ICommand StoreCommand { get; }
         public ICommand TutorialCommand { get; }
-        public ICommand IndexCommand { get; }
 
         public MainMenuViewModel()
         {
             PlayCommand = new Command(OnPlayExecuted);
             SettingsCommand = new Command(OnSettingsExecuted);
-            ExitCommand = new Command(OnSettingsExecuted);
+            StoreCommand = new Command(OnStoreExecuted);
             TutorialCommand = new Command(OnTutorialExecuted);
-            IndexCommand = new Command(OnIndexExecuted);
         }
 
         private async void OnPlayExecuted()
         {
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
             await Shell.Current.GoToAsync("GamePage");
         }
 
         private async void OnSettingsExecuted()
         {
-            await Application.Current.MainPage.DisplayAlert("Rubbish Rumble", "Working", "OK");
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+            await Shell.Current.GoToAsync("SettingsPage");
         }
 
         private async void OnTutorialExecuted()
         {
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
             await Shell.Current.GoToAsync("TutorialPage");
         }
 
-        private async void OnIndexExecuted()
+        private async void OnStoreExecuted()
         {
-            await Application.Current.MainPage.DisplayAlert("Rubbish Rumble", "Working", "OK");
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+            await Shell.Current.GoToAsync("StorePage");
         }
     }
 }

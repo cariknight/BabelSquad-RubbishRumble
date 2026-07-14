@@ -5,6 +5,7 @@ using RubbishRumble.ViewModels;
 using Android.Views;
 using Microsoft.Maui.Platform;
 #endif
+using RubbishRumble.Services;
 
 namespace RubbishRumble.Views;
 
@@ -589,5 +590,10 @@ public partial class GamePage : ContentPage
         public double DragOriginX { get; set; }
         public double DragOriginY { get; set; }
         public bool IsDragging { get; set; }
+    }
+
+    private async void OnPauseButtonClicked(object sender, EventArgs e)
+    {
+        await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
     }
 }
