@@ -11,7 +11,7 @@ namespace RubbishRumble.ViewModels
     {
         public ICommand PlayCommand { get; }
         public ICommand SettingsCommand { get; }
-        public ICommand ExitCommand { get; }
+        public ICommand StoreCommand { get; }
         public ICommand TutorialCommand { get; }
         public ICommand IndexCommand { get; }
 
@@ -19,7 +19,7 @@ namespace RubbishRumble.ViewModels
         {
             PlayCommand = new Command(OnPlayExecuted);
             SettingsCommand = new Command(OnSettingsExecuted);
-            ExitCommand = new Command(OnSettingsExecuted);
+            StoreCommand = new Command(OnStoreExecuted);
             TutorialCommand = new Command(OnTutorialExecuted);
             IndexCommand = new Command(OnIndexExecuted);
         }
@@ -37,6 +37,11 @@ namespace RubbishRumble.ViewModels
         private async void OnTutorialExecuted()
         {
             await Shell.Current.GoToAsync("TutorialPage");
+        }
+
+        private async void OnStoreExecuted()
+        {
+            await Shell.Current.GoToAsync("StorePage");
         }
 
         private async void OnIndexExecuted()

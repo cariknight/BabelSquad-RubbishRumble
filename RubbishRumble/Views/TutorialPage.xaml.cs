@@ -23,7 +23,7 @@ namespace RubbishRumble.Views
                     {
                         Title = "Swipe left or right\r\nto move items",
                         Description = "Match trash with\r\nits correct bin!",
-                        ImageUrl = "Tutorial_Images/tutorial_slide1.png"
+                        ImageUrl = "tutorial_slide1.png"
                     },
                     new TutorialSlide
                     {
@@ -45,9 +45,9 @@ namespace RubbishRumble.Views
                     },
                     new TutorialSlide
                     {
-                        Title = "Earn coins per item\r\nRare trash gives bonus",
-                        Description = "Unlock Trash Index\r\nby finding items",
-                        ImageUrl = "tutorial_slide5.gif"
+                        Title = "Earn coins per item",
+                        Description = "Epic trash gives\r\nmore points",
+                        ImageUrl = "tutorial_slide5.png"
                     },
                     new TutorialSlide
                     {
