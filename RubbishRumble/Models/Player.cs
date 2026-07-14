@@ -10,10 +10,7 @@ namespace RubbishRumble.Models
     public class Player
     {
         [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-
-        [Unique]
-        public string Username { get; set; }
+        public int Id { get; set; } = 1;
         public int Coins { get; set; }
         public int HighestScore { get; set; }
         public int TotalGamesPlayed { get; set; }

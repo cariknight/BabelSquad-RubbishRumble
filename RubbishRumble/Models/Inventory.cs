@@ -11,7 +11,6 @@ namespace RubbishRumble.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string PlayerId { get; set; }
         public string PowerUpName { get; set; }
         public int Quantity { get; set; }
     }
