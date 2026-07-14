@@ -113,19 +113,15 @@
             </Grid>
         </Grid>
         <!-- SPAWNING area -->
-        <Grid Grid.Row="1" x:Name="SpawningArena">
-            <Label Text="[Trash Spawns Here]" 
-                   FontFamily="PixelifySans" 
-                   TextColor="#4C3E24" 
-                   Opacity="0.3" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Start" />
-        </Grid>
+        <AbsoluteLayout Grid.Row="1"
+                        x:Name="SpawningArena"
+                        BackgroundColor="Transparent" />
 
         <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0">
             <!-- BINS area -->
             <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
-                <Image Grid.Column="0" 
+                <Image x:Name="RecycleBin"
+                       Grid.Column="0" 
                        Source="recyclebin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -137,7 +133,8 @@
                     </Image.Triggers>
                 </Image>
 
-                <Image Grid.Column="1" 
+                <Image x:Name="BioBin"
+                       Grid.Column="1" 
                        Source="biodegradablebin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -149,7 +146,8 @@
                     </Image.Triggers>
                 </Image>
                 
-                <Image Grid.Column="2" 
+                <Image x:Name="HazardBin"
+                       Grid.Column="2" 
                        Source="hazardousbin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">
@@ -161,7 +159,8 @@
                     </Image.Triggers>
                 </Image>
 
-                <Image Grid.Column="3" 
+                <Image x:Name="LandfillBin"
+                       Grid.Column="3" 
                        Source="landfillbin01.png" 
                        HeightRequest="180" 
                        Aspect="AspectFit">

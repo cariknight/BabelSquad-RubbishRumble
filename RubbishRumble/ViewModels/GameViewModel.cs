@@ -19,6 +19,10 @@ namespace RubbishRumble.ViewModels
         private int _currentSlowPower;
         private int _currentAutoSortPower;
         private int _currentSpeedPower;
+        private bool _isRecycleBinOpen;
+        private bool _isBioBinOpen;
+        private bool _isHazardBinOpen;
+        private bool _isLandfillBinOpen;
 
         public int CurrentCoins
         {
@@ -68,10 +72,31 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _currentSpeedPower, value);
         }
 
-        public bool IsRecycleBinOpen { get; private set; }
-        public bool IsBioBinOpen { get; private set; }
-        public bool IsHazardBinOpen { get; private set; }
-        public bool IsLandfillBinOpen { get; private set; }
+        public bool IsRecycleBinOpen
+        {
+            get => _isRecycleBinOpen;
+            private set => SetProperty(ref _isRecycleBinOpen, value);
+        }
+
+        public bool IsBioBinOpen
+        {
+            get => _isBioBinOpen;
+            private set => SetProperty(ref _isBioBinOpen, value);
+        }
+
+        public bool IsHazardBinOpen
+        {
+            get => _isHazardBinOpen;
+            private set => SetProperty(ref _isHazardBinOpen, value);
+        }
+
+        public bool IsLandfillBinOpen
+        {
+            get => _isLandfillBinOpen;
+            private set => SetProperty(ref _isLandfillBinOpen, value);
+        }
+
+        public bool IsGameOver => _gameService.IsGameOver;
 
         public ICommand PauseGameCommand { get; }
         public ICommand UseFreezePowerCommand { get; }
@@ -103,6 +128,39 @@ namespace RubbishRumble.ViewModels
             SyncGameState();
         }
 
+        public TrashItem? GetRandomTrash() => _gameService.GetRandomTrash();
+
+        public double GetSpawnIntervalSeconds() => _gameService.SpawnInterval;
+
+        public double GetFallSpeedPixelsPerSecond()
+        {
+            double speedMultiplier = _gameService.CurrentSpeedMultiplier;
+
+            if (speedMultiplier <= 0)
+                return 0;
+
+            return _gameService.TrashSpeed * speedMultiplier * 80;
+        }
+
+        public bool IsTrashFrozen() => _gameService.CurrentSpeedMultiplier <= 0;
+
+        public void OnTrashSorted(TrashItem trash)
+        {
+            if (IsGameOver)
+                return;
+
+            _gameService.CollectTrash(trash);
+            _ = FlashBinAsync(trash.Category);
+        }
+
+        public void OnTrashMissed()
+        {
+            if (IsGameOver)
+                return;
+
+            _gameService.LoseLife();
+        }
+
         private void OnGameStateChanged()
         {
             MainThread.BeginInvokeOnMainThread(SyncGameState);
@@ -113,6 +171,7 @@ namespace RubbishRumble.ViewModels
             CurrentLevel = _gameService.DifficultyLevel;
             CurrentScore = _gameService.Score;
             CurrentLives = _gameService.Lives;
+            OnPropertyChanged(nameof(IsGameOver));
         }
 
         private async Task RefreshCoinsAsync()
@@ -147,6 +206,32 @@ namespace RubbishRumble.ViewModels
 
             await RefreshPowerUpCountsAsync();
             await _gameService.ActivatePowerUpAsync(powerUp);
+        }
+
+        private async Task FlashBinAsync(string category)
+        {
+            switch (category)
+            {
+                case "Recyclables":
+                    IsRecycleBinOpen = true;
+                    break;
+                case "Biodegradable":
+                    IsBioBinOpen = true;
+                    break;
+                case "Biohazard":
+                    IsHazardBinOpen = true;
+                    break;
+                case "Landfill":
+                    IsLandfillBinOpen = true;
+                    break;
+            }
+
+            await Task.Delay(250);
+
+            IsRecycleBinOpen = false;
+            IsBioBinOpen = false;
+            IsHazardBinOpen = false;
+            IsLandfillBinOpen = false;
         }
 
         private void OnPauseGameExecuted()
