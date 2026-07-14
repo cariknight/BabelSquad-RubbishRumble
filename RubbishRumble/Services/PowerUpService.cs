@@ -16,7 +16,13 @@ namespace RubbishRumble.Services
             using StreamReader reader = new(stream);
 
             string json = await reader.ReadToEndAsync();
-            PowerUps = JsonSerializer.Deserialize<List<PowerUp>>(json) ?? new List<PowerUp>();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            PowerUps = JsonSerializer.Deserialize<List<PowerUp>>(json, options) ?? new List<PowerUp>();
         }
 
         public bool IsActive(string effectType)
