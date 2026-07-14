@@ -8,13 +8,13 @@ namespace RubbishRumble.Services
         public void AddPowerUp(Player player, string powerUpId, int amount)
         {
             var item = player.Inventory
-                .FirstOrDefault(i => i.PowerUpId == powerUpId);
+                .FirstOrDefault(i => i.PowerUpName == powerUpId);
 
             if (item == null)
             {
-                player.Inventory.Add(new InventoryItem
+                player.Inventory.Add(new Inventory
                 {
-                    PowerUpId = powerUpId,
+                    PowerUpName = powerUpId,
                     Quantity = amount
                 });
             }
@@ -28,7 +28,7 @@ namespace RubbishRumble.Services
         public bool UsePowerUp(Player player, string powerUpId)
         {
             var item = player.Inventory
-                .FirstOrDefault(i => i.PowerUpId == powerUpId);
+                .FirstOrDefault(i => i.PowerUpName == powerUpId);
 
             if (item == null || item.Quantity <= 0)
                 return false;
@@ -41,7 +41,7 @@ namespace RubbishRumble.Services
         public int GetPowerUpCount(Player player, string powerUpId)
         {
             var item = player.Inventory
-                .FirstOrDefault(i => i.PowerUpId == powerUpId);
+                .FirstOrDefault(i => i.PowerUpName == powerUpId);
 
             return item?.Quantity ?? 0;
         }
