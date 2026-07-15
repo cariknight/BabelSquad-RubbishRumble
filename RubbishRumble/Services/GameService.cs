@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using RubbishRumble.Helper;
 using RubbishRumble.Models;
 using RubbishRumble.Helper;
 
@@ -206,8 +207,7 @@ namespace RubbishRumble.Services
 
         public int CalculateCoins()
         {
-            // you can edit here how much score is converted into coins (i.e., Score/2 120 score = 60 coins)
-            return Score;
+            return EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore: false);
         }
         public GameSession EndGame()
         {

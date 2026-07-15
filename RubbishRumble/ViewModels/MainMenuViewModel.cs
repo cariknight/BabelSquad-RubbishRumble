@@ -23,28 +23,33 @@ namespace RubbishRumble.ViewModels
             TutorialCommand = new Command(OnTutorialExecuted);
         }
 
+        private async Task NavigateAsync(string route)
+        {
+            if (Shell.Current == null)
+                return;
+
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+            await Shell.Current.GoToAsync(route);
+        }
+
         private async void OnPlayExecuted()
         {
-            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-            await Shell.Current.GoToAsync("GamePage");
+            await NavigateAsync("GamePage");
         }
 
         private async void OnSettingsExecuted()
         {
-            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-            await Shell.Current.GoToAsync("SettingsPage");
+            await NavigateAsync("SettingsPage");
         }
 
         private async void OnTutorialExecuted()
         {
-            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-            await Shell.Current.GoToAsync("TutorialPage");
+            await NavigateAsync("TutorialPage");
         }
 
         private async void OnStoreExecuted()
         {
-            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-            await Shell.Current.GoToAsync("StorePage");
+            await NavigateAsync("StorePage");
         }
     }
 }

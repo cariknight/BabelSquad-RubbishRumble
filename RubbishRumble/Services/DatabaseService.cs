@@ -118,5 +118,28 @@ namespace RubbishRumble.Services
                 await database.UpdateAsync(settings);
             }
         }
+
+        public async Task<int> AwardGameRewardsAsync(int finalScore, int coinsEarned)
+        {
+            await InitAsync();
+
+            Player player = await GetPlayerAsync();
+            player.Coins += coinsEarned;
+
+            if (finalScore > player.HighestScore)
+                player.HighestScore = finalScore;
+
+            player.TotalGamesPlayed++;
+            await SavePlayerAsync(player);
+
+            await SaveGameSessionAsync(new GameSession
+            {
+                FinalScore = finalScore,
+                CoinsEarned = coinsEarned,
+                PlayedAt = DateTime.Now
+            });
+
+            return player.HighestScore;
+        }
     }
 }

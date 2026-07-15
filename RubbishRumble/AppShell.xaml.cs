@@ -9,6 +9,7 @@
             Routing.RegisterRoute("TutorialPage", typeof(Views.TutorialPage));
             Routing.RegisterRoute("StorePage", typeof(Views.StorePage));
             Routing.RegisterRoute("SettingsPage", typeof(Views.SettingsPage));
+            Routing.RegisterRoute("GameOverPage", typeof(Views.GameOverPage));
         }
     }
 }

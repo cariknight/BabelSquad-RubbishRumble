@@ -6,64 +6,63 @@
              x:DataType="ViewModels:MainMenuViewModel"
              Shell.NavBarIsVisible="False">
     <Grid>
-        <Image Source="mainbg.png" 
+        <Image Source="mainbg.png"
                Aspect="AspectFill"
-               HorizontalOptions="FillAndExpand"
-               VerticalOptions="FillAndExpand"/>
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
 
-        <Grid RowDefinitions="*, Auto, *" Margin="0,90,0,0" Padding="30" VerticalOptions="FillAndExpand">
+        <VerticalStackLayout VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="20"
+                             Padding="30,20">
             <!-- Logo -->
-            <Image Grid.Row="0" 
-               Source="logo.png" 
-               HeightRequest="150" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Start"/>
+            <Image Source="logo.png"
+                   HeightRequest="120"
+                   MaximumHeightRequest="120"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
 
             <!-- Main Buttons -->
-            <VerticalStackLayout Grid.Row="1" Spacing="25" Margin="0,0,0,15" HorizontalOptions="Center">
-                <!-- PLay btn -->
+            <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
                 <ImageButton Source="play.png"
-                         Command="{Binding PlayCommand}"
-                         BackgroundColor="#9E4539"
-                         Aspect="AspectFit"
-                         Padding="6"
-                         HeightRequest="60"
-                         WidthRequest="270"
-                         BorderColor="#4C3E24"
-                         BorderWidth="3"/>
-                <!-- Settings btn -->
+                             Command="{Binding PlayCommand}"
+                             BackgroundColor="#9E4539"
+                             Aspect="AspectFit"
+                             Padding="6"
+                             HeightRequest="60"
+                             WidthRequest="270"
+                             BorderColor="#4C3E24"
+                             BorderWidth="3" />
+
                 <ImageButton Source="settings.png"
-                         Command="{Binding SettingsCommand}"
-                         BackgroundColor="#9E4539"
-                         Aspect="AspectFit"
-                         Padding="6"
-                         HeightRequest="60"
-                         WidthRequest="270"
-                         BorderColor="#4C3E24"
-                         BorderWidth="3"/>
-                <!-- Store btn -->
+                             Command="{Binding SettingsCommand}"
+                             BackgroundColor="#9E4539"
+                             Aspect="AspectFit"
+                             Padding="6"
+                             HeightRequest="60"
+                             WidthRequest="270"
+                             BorderColor="#4C3E24"
+                             BorderWidth="3" />
+
                 <ImageButton Source="store.png"
-                         Command="{Binding StoreCommand}"
-                         BackgroundColor="#9E4539"
-                         Aspect="AspectFit"
-                         Padding="6"
-                         BorderColor="#4C3E24"
-                         BorderWidth="3"
-                         HeightRequest="60"
-                         WidthRequest="270"/>
+                             Command="{Binding StoreCommand}"
+                             BackgroundColor="#9E4539"
+                             Aspect="AspectFit"
+                             Padding="6"
+                             BorderColor="#4C3E24"
+                             BorderWidth="3"
+                             HeightRequest="60"
+                             WidthRequest="270" />
             </VerticalStackLayout>
+
             <!-- Tutorial -->
-            <Grid Grid.Row="2" ColumnDefinitions="*,*" WidthRequest="200" HorizontalOptions="Center">
-                <!-- Tutorial btn -->
-                <ImageButton Source="tutorial.png"
-                             Grid.Column="0"
-                             Command="{Binding TutorialCommand}"
-                             BackgroundColor="Transparent"
-                             HorizontalOptions="Start"
-                             HeightRequest="85"
-                             WidthRequest="85"
-                             CornerRadius="40"/>
-            </Grid>
-        </Grid>
+            <ImageButton Source="tutorial.png"
+                         Command="{Binding TutorialCommand}"
+                         BackgroundColor="Transparent"
+                         HorizontalOptions="Center"
+                         HeightRequest="85"
+                         WidthRequest="85"
+                         CornerRadius="40" />
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

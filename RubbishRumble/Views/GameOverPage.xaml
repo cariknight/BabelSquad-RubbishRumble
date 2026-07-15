@@ -6,11 +6,16 @@
              x:DataType="ViewModels:GameOverViewModel"
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
-    
-    <Grid VerticalOptions="Center">
-        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="50" WidthRequest="300">
+
+    <Grid RowDefinitions="3*,*" Padding="20" RowSpacing="12">
+        <VerticalStackLayout Grid.Row="0"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             WidthRequest="300">
             <Image Source="gameover.png"
-                   HeightRequest="100"
+                   HeightRequest="80"
+                   MaximumHeightRequest="100"
                    Aspect="AspectFit"
                    HorizontalOptions="Center"/>
 
@@ -18,23 +23,37 @@
                     StrokeThickness="3"
                     StrokeShape="Rectangle"
                     BackgroundColor="#9E4539"
-                    Padding="20"
-                    Margin="0,10,0,10">
+                    Padding="16">
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout Spacing="10">
                     <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                         <Label Text="TOTAL SCORE:"
-                       FontSize="22"
-                       FontFamily="PixelifySans"
-                       FontAttributes="Bold"
-                       TextColor="#FDCBB0"
-                       HorizontalTextAlignment="Center"/>
+                               FontSize="22"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
                         <Label Text="{Binding TotalScore}"
-                       FontSize="30"
-                       FontFamily="PixelifySans"
-                       FontAttributes="Bold"
-                       TextColor="#FDCBB0"
-                       HorizontalTextAlignment="Center"/>
+                               FontSize="30"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                        <Label Text="{Binding HighScoreLabel}"
+                               FontSize="18"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding HighestScore}"
+                               FontSize="26"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
 
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
@@ -53,10 +72,19 @@
                                HorizontalTextAlignment="Start"/>
                     </HorizontalStackLayout>
 
+                    <Label Text="{Binding CoinBonusText}"
+                           IsVisible="{Binding ShowCoinBonus}"
+                           FontSize="14"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+
                 </VerticalStackLayout>
             </Border>
 
             <ImageButton Source="exit.png"
+                         Command="{Binding ExitCommand}"
                          BackgroundColor="#9E4539"
                          BorderColor="#4C3E24"
                          BorderWidth="3"
@@ -66,5 +94,41 @@
                          WidthRequest="160"
                          HorizontalOptions="Center"/>
         </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1"
+                    VerticalScrollBarVisibility="Default"
+                    HorizontalScrollBarVisibility="Never"
+                    VerticalOptions="Fill">
+            <Border Stroke="#4C3E24"
+                    StrokeThickness="2"
+                    StrokeShape="Rectangle"
+                    BackgroundColor="#9E4539"
+                    Padding="12">
+                <VerticalStackLayout Spacing="4"
+                                     VerticalOptions="Center">
+                    <Label Text="ECO TIP"
+                           FontSize="20"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="{Binding EcoTipTitle}"
+                           FontSize="17"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="1"/>
+                    <Label Text="{Binding EcoTipText}"
+                           FontSize="15"
+                           FontFamily="PixelifySans"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           MaxLines="3"/>
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
     </Grid>
 </ContentPage>
