@@ -4,47 +4,59 @@
              x:Class="RubbishRumble.Views.GamePage"
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="Auto, *, Auto" Padding="15" RowSpacing="10">
-
-        <Grid Grid.Row="0" RowDefinitions="Auto, Auto" RowSpacing="10">
-            <!-- TOP HUD area -->
-            <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center">
-                <HorizontalStackLayout HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
-                    <Label Text="{Binding CurrentCoins}" 
+    <Grid>
+        <Grid RowDefinitions="Auto, *, Auto" Padding="15" RowSpacing="10">
+            <Grid Grid.Row="0" RowDefinitions="Auto, Auto" RowSpacing="10">
+                <!-- TOP HUD area -->
+                <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center">
+                    <HorizontalStackLayout HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
+                        <Label Text="{Binding CurrentCoins}" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
                            FontAttributes="Bold" 
                            TextColor="#4C3E24"
                            VerticalTextAlignment="Center"/>
-                    <Image Source="coin.png" 
+                        <Image Source="coin.png" 
                            HeightRequest="40" 
                            WidthRequest="40"/>
-                </HorizontalStackLayout>
-                <!-- LOGO -->
-                <Image Grid.Column="1" 
+                    </HorizontalStackLayout>
+                    <!-- LOGO -->
+                    <Image Grid.Column="1" 
                        Source="logo.png" 
                        HeightRequest="65" 
                        HorizontalOptions="Center"/>
             </Grid>
+                    <!-- PAUSE button -->
+                    <Grid HorizontalOptions="End" WidthRequest="65" VerticalOptions="Center">
+                        <ImageButton Grid.Column="2" 
+                                 Source="pause.png"
+                                 HeightRequest="50" 
+                                 WidthRequest="50" 
+                                 CornerRadius="10" 
+                                 HorizontalOptions="Center"
+                                 Command="{Binding PauseGameCommand}"/>
+                        <!-- TODO: create the pause overlay -->
+                    </Grid>
+                </Grid>
 
-            <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
-                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center">
-                    <Label Text="LEVEL:" 
+                <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
+                    <VerticalStackLayout Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center">
+                        <Label Text="LEVEL:" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                    <Label Text="{Binding CurrentLevel}" 
+                        <Label Text="{Binding CurrentLevel}" 
                            FontFamily="PixelifySans" 
                            FontSize="22" 
                            FontAttributes="Bold" 
                            TextColor="#9E4539" 
                            HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
-                <!-- PLAYER HEARTS area -->
-                <HorizontalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
-                    <Image Source="fullheart.png" 
+                    </VerticalStackLayout>
+                    <!-- PLAYER HEARTS area -->
+                    <HorizontalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                        <Image Source="fullheart.png" 
                            HeightRequest="30" 
                            WidthRequest="30">
                         <Image.Triggers>
@@ -82,28 +94,28 @@
                     </Image>
                 </HorizontalStackLayout>
 
-                <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center">
-                    <Label Text="SCORE:" 
+                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center">
+                        <Label Text="SCORE:" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                    <Label Text="{Binding CurrentScore}" 
+                        <Label Text="{Binding CurrentScore}" 
                            FontFamily="PixelifySans" 
                            FontSize="22" 
                            FontAttributes="Bold" 
                            TextColor="#9E4539" 
                            HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
             </Grid>
-        </Grid>
-        <!-- SPAWNING area -->
-        <Grid Grid.Row="1">
-            <AbsoluteLayout x:Name="SpawningArena"
+            <!-- SPAWNING area -->
+            <Grid Grid.Row="1">
+                <AbsoluteLayout x:Name="SpawningArena"
                             BackgroundColor="Transparent" />
 
-            <Border IsVisible="{Binding IsPowerUpActive}"
+                <Border IsVisible="{Binding IsPowerUpActive}"
                     HorizontalOptions="Center"
                     VerticalOptions="Start"
                     Margin="0,8,0,0"
@@ -112,25 +124,25 @@
                     Stroke="#9E4539"
                     StrokeThickness="2"
                     StrokeShape="RoundRectangle 12">
-                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
-                    <Image Source="{Binding ActivePowerUpIcon}"
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                        <Image Source="{Binding ActivePowerUpIcon}"
                            HeightRequest="28"
                            WidthRequest="28"
                            Aspect="AspectFit" />
-                    <Label Text="{Binding ActivePowerUpDisplayText}"
+                        <Label Text="{Binding ActivePowerUpDisplayText}"
                            FontFamily="PixelifySans"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="#9E4539"
                            VerticalTextAlignment="Center" />
-                </HorizontalStackLayout>
-            </Border>
-        </Grid>
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
 
-        <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0" x:Name="BinsArea">
-            <!-- BINS area -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
-                <Image x:Name="RecycleBin"
+            <Grid Grid.Row="2" RowDefinitions="Auto, Auto" RowSpacing="0" x:Name="BinsArea">
+                <!-- BINS area -->
+                <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
+                    <Image x:Name="RecycleBin"
                        Grid.Column="0" 
                        Source="recyclebin01.png" 
                        HeightRequest="180" 
@@ -142,7 +154,7 @@
                     </Image.Triggers>
                 </Image>
 
-                <Image x:Name="BioBin"
+                    <Image x:Name="BioBin"
                        Grid.Column="1" 
                        Source="biodegradablebin01.png" 
                        HeightRequest="180" 
@@ -166,7 +178,7 @@
                     </Image.Triggers>
                 </Image>
 
-                <Image x:Name="LandfillBin"
+                    <Image x:Name="LandfillBin"
                        Grid.Column="3" 
                        Source="landfillbin01.png" 
                        HeightRequest="180" 
@@ -179,10 +191,10 @@
                 </Image>
             </Grid>
 
-            <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
-                <!-- POWER UP area -->
-                <VerticalStackLayout Grid.Column="0" Spacing="8" HorizontalOptions="Center">
-                    <ImageButton Source="freeze01.png" 
+                <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
+                    <!-- POWER UP area -->
+                    <VerticalStackLayout Grid.Column="0" Spacing="8" HorizontalOptions="Center">
+                        <ImageButton Source="freeze01.png" 
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
@@ -190,40 +202,40 @@
                                  IsEnabled="{Binding CanUseFreezePower}"
                                  Opacity="{Binding FreezeButtonOpacity}"
                                  Command="{Binding UseFreezePowerCommand}" >
-                        <ImageButton.Triggers>
-                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsFreezeActive}" Value="True">
-                                <Setter Property="Source" Value="freeze02.png" />
-                            </DataTrigger>
-                        </ImageButton.Triggers>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsFreezeActive}" Value="True">
+                                    <Setter Property="Source" Value="freeze02.png" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
 
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="freeze01.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="freeze01.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
 
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="freeze02.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                    </ImageButton>
-                    <Label Text="{Binding CurrentFreezePower}" 
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="freeze02.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                        </ImageButton>
+                        <Label Text="{Binding CurrentFreezePower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+                    </VerticalStackLayout>
 
-                <VerticalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center">
-                    <ImageButton Source="slow01.png" 
+                    <VerticalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center">
+                        <ImageButton Source="slow01.png" 
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
@@ -231,40 +243,40 @@
                                  IsEnabled="{Binding CanUseSlowPower}"
                                  Opacity="{Binding SlowButtonOpacity}"
                                  Command="{Binding UseSlowPowerCommand}" >
-                        <ImageButton.Triggers>
-                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsSlowActive}" Value="True">
-                                <Setter Property="Source" Value="slow02.png" />
-                            </DataTrigger>
-                        </ImageButton.Triggers>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsSlowActive}" Value="True">
+                                    <Setter Property="Source" Value="slow02.png" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
 
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="slow01.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="slow01.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
 
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="slow02.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                    </ImageButton>
-                    <Label Text="{Binding CurrentSlowPower}" 
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="slow02.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                        </ImageButton>
+                        <Label Text="{Binding CurrentSlowPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+                    </VerticalStackLayout>
 
-                <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="Center">
-                    <ImageButton Source="autosort01.png" 
+                    <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="Center">
+                        <ImageButton Source="autosort01.png" 
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
@@ -272,40 +284,40 @@
                                  IsEnabled="{Binding CanUseAutoSortPower}"
                                  Opacity="{Binding AutoSortButtonOpacity}"
                                  Command="{Binding UseAutoSortPowerCommand}" >
-                        <ImageButton.Triggers>
-                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsAutoSortActive}" Value="True">
-                                <Setter Property="Source" Value="autosort02.png" />
-                            </DataTrigger>
-                        </ImageButton.Triggers>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsAutoSortActive}" Value="True">
+                                    <Setter Property="Source" Value="autosort02.png" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
 
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="autosort01.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="autosort01.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
 
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="autosort02.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                    </ImageButton>
-                    <Label Text="{Binding CurrentAutoSortPower}" 
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="autosort02.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                        </ImageButton>
+                        <Label Text="{Binding CurrentAutoSortPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+                    </VerticalStackLayout>
 
-                <VerticalStackLayout Grid.Column="3" Spacing="8" HorizontalOptions="Center">
-                    <ImageButton Source="speed01.png" 
+                    <VerticalStackLayout Grid.Column="3" Spacing="8" HorizontalOptions="Center">
+                        <ImageButton Source="speed01.png" 
                                  HeightRequest="50" 
                                  WidthRequest="50" 
                                  BackgroundColor="Transparent" 
@@ -313,38 +325,68 @@
                                  IsEnabled="{Binding CanUseSpeedPower}"
                                  Opacity="{Binding SpeedButtonOpacity}"
                                  Command="{Binding UseSpeedPowerCommand}" >
-                        <ImageButton.Triggers>
-                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsSpeedActive}" Value="True">
-                                <Setter Property="Source" Value="speed02.png" />
-                            </DataTrigger>
-                        </ImageButton.Triggers>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroupList>
-                                <VisualStateGroup x:Name="CommonStates">
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsSpeedActive}" Value="True">
+                                    <Setter Property="Source" Value="speed02.png" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
 
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="speed01.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="speed01.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
 
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Property="Source" Value="speed02.png" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateGroupList>
-                        </VisualStateManager.VisualStateGroups>
-                    </ImageButton>
-                    <Label Text="{Binding CurrentSpeedPower}" 
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="speed02.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                        </ImageButton>
+                        <Label Text="{Binding CurrentSpeedPower}" 
                            FontFamily="PixelifySans" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
             </Grid>
         </Grid>
+        <!-- PAUSE Overlay  -->
+        <Grid BackgroundColor="#FDCBB0" IsVisible="{Binding IsPaused}" VerticalOptions="FillAndExpand">
+            <Border Stroke="#4C3E24"
+                    StrokeThickness="3"
+                    StrokeShape="Rectangle"
+                    BackgroundColor="#9E4539"
+                    Padding="30"
+                    WidthRequest="240"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+
+                <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+                    <ImageButton Source="resume.png"
+                                 Command="{Binding ResumeGameCommand}"
+                                 HeightRequest="50"
+                                 Aspect="AspectFit"
+                                 HorizontalOptions="Center"
+                                 BackgroundColor="Transparent"/>
+
+                    <ImageButton Source="quit.png"
+                                 Command="{Binding QuitGameCommand}"
+                                 HeightRequest="50"
+                                 Aspect="AspectFit"
+                                 HorizontalOptions="Center"
+                                 BackgroundColor="Transparent"/>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
     </Grid>
 </ContentPage>
