@@ -143,9 +143,11 @@ public partial class GamePage : ContentPage
 
     private void OnGameLoopTick(object? sender, EventArgs e)
     {
-        if (_viewModel.IsGameOver)
+        if (_viewModel.IsPaused || _viewModel.IsGameOver)
         {
-            StopGameLoop();
+            if (_viewModel.IsGameOver)
+                StopGameLoop();
+
             return;
         }
 
