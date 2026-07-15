@@ -36,7 +36,6 @@ public partial class GamePage : ContentPage
         InitializeComponent();
         _viewModel = new GameViewModel();
         BindingContext = _viewModel;
-        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
         Loaded += (_, _) =>
@@ -144,11 +143,9 @@ public partial class GamePage : ContentPage
 
     private void OnGameLoopTick(object? sender, EventArgs e)
     {
-        if (_viewModel.IsPaused || _viewModel.IsGameOver)
+        if (_viewModel.IsGameOver)
         {
-            if (_viewModel.IsGameOver)
-                StopGameLoop();
-
+            StopGameLoop();
             return;
         }
 
@@ -378,7 +375,7 @@ public partial class GamePage : ContentPage
 
     private void StartDragAt(Point point)
     {
-        if (!_isPageActive || _viewModel.IsPaused || _draggingTrash != null)
+        if (!_isPageActive || _draggingTrash != null)
             return;
 
         FallingTrash? trash = HitTestTrash(point);
@@ -594,22 +591,4 @@ public partial class GamePage : ContentPage
         public bool IsDragging { get; set; }
     }
 
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName != nameof(GameViewModel.IsPaused) || !_viewModel.IsPaused || _draggingTrash == null)
-            return;
-
-        FallingTrash trash = _draggingTrash;
-        _draggingTrash = null;
-        trash.IsDragging = false;
-
-        if (trash.View != null)
-        {
-            trash.View.TranslationX = 0;
-            trash.View.TranslationY = 0;
-            trash.View.ZIndex = 0;
-        }
-
-        SetBounds(trash);
-    }
 }

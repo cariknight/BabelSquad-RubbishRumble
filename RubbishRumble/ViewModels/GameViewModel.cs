@@ -23,7 +23,6 @@ namespace RubbishRumble.ViewModels
         private bool _isBioBinOpen;
         private bool _isHazardBinOpen;
         private bool _isLandfillBinOpen;
-        private bool _isPaused;
         private bool _gameOverHandled;
 
         public int CurrentCoins
@@ -98,12 +97,6 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _isLandfillBinOpen, value);
         }
 
-        public bool IsPaused
-        {
-            get => _isPaused;
-            private set => SetProperty(ref _isPaused, value);
-        }
-
         public bool IsGameOver => _gameService.IsGameOver;
 
         public bool IsPowerUpActive => _gameService.IsPowerUpActive;
@@ -139,9 +132,6 @@ namespace RubbishRumble.ViewModels
         public double AutoSortButtonOpacity => IsAutoSortActive || CanUseAutoSortPower ? 1.0 : 0.4;
         public double SpeedButtonOpacity => IsSpeedActive || CanUseSpeedPower ? 1.0 : 0.4;
 
-        public ICommand PauseGameCommand { get; }
-        public ICommand ResumeGameCommand { get; }
-        public ICommand ExitToMenuCommand { get; }
         public ICommand UseFreezePowerCommand { get; }
         public ICommand UseSlowPowerCommand { get; }
         public ICommand UseAutoSortPowerCommand { get; }
@@ -155,9 +145,6 @@ namespace RubbishRumble.ViewModels
             _gameService = new GameService(_databaseService, _inventoryService);
             _gameService.GameStateChanged += OnGameStateChanged;
 
-            PauseGameCommand = new Command(async () => await TogglePauseAsync());
-            ResumeGameCommand = new Command(() => IsPaused = false);
-            ExitToMenuCommand = new Command(async () => await ExitToMenuAsync());
             UseFreezePowerCommand = new Command(async () => await UsePowerUpAsync("Freeze"));
             UseSlowPowerCommand = new Command(async () => await UsePowerUpAsync("Slow"));
             UseAutoSortPowerCommand = new Command(async () => await UsePowerUpAsync("Auto Sort"));
@@ -167,7 +154,6 @@ namespace RubbishRumble.ViewModels
         public async Task InitializeAsync()
         {
             _gameOverHandled = false;
-            IsPaused = false;
             await _powerUpService.InitializeAsync();
             await _gameService.StartGameAsync();
             await RefreshCoinsAsync();
@@ -351,24 +337,6 @@ namespace RubbishRumble.ViewModels
             IsBioBinOpen = false;
             IsHazardBinOpen = false;
             IsLandfillBinOpen = false;
-        }
-
-        private async Task TogglePauseAsync()
-        {
-            if (_gameService.IsGameOver)
-                return;
-
-            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-            IsPaused = !IsPaused;
-        }
-
-        private static async Task ExitToMenuAsync()
-        {
-            if (Shell.Current == null)
-                return;
-
-            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-            await Shell.Current.GoToAsync("//MainMenuPage");
         }
     }
 }

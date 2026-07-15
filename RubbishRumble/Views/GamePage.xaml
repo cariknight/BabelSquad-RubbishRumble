@@ -4,7 +4,6 @@
              x:Class="RubbishRumble.Views.GamePage"
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
-    <Grid>
     <Grid RowDefinitions="Auto, *, Auto" Padding="15" RowSpacing="10">
 
         <Grid Grid.Row="0" RowDefinitions="Auto, Auto" RowSpacing="10">
@@ -26,16 +25,6 @@
                        Source="logo.png" 
                        HeightRequest="65" 
                        HorizontalOptions="Center"/>
-                <!-- PAUSE button -->
-                <Grid HorizontalOptions="End" WidthRequest="65" VerticalOptions="Center">
-                    <ImageButton Grid.Column="2" 
-                                 Source="pause.png"
-                                 HeightRequest="50" 
-                                 WidthRequest="50" 
-                                 CornerRadius="10" 
-                                 HorizontalOptions="Center"
-                                 Command="{Binding PauseGameCommand}"/>
-                </Grid>
             </Grid>
 
             <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
@@ -356,43 +345,6 @@
                            HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </Grid>
-        </Grid>
-    </Grid>
-
-        <Grid IsVisible="{Binding IsPaused}"
-              BackgroundColor="#99000000"
-              ZIndex="99">
-            <Border Padding="24"
-                    BackgroundColor="#FFF3D6"
-                    Stroke="#9E4539"
-                    StrokeThickness="3"
-                    StrokeShape="RoundRectangle 16"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    WidthRequest="280">
-                <VerticalStackLayout Spacing="16" HorizontalOptions="Center">
-                    <Label Text="PAUSED"
-                           FontFamily="PixelifySans"
-                           FontSize="32"
-                           FontAttributes="Bold"
-                           TextColor="#9E4539"
-                           HorizontalTextAlignment="Center" />
-                    <Button Text="Resume"
-                            FontFamily="PixelifySans"
-                            FontSize="20"
-                            FontAttributes="Bold"
-                            BackgroundColor="#9E4539"
-                            TextColor="#FDCBB0"
-                            Command="{Binding ResumeGameCommand}" />
-                    <Button Text="Exit to Menu"
-                            FontFamily="PixelifySans"
-                            FontSize="18"
-                            FontAttributes="Bold"
-                            BackgroundColor="#4C3E24"
-                            TextColor="#FDCBB0"
-                            Command="{Binding ExitToMenuCommand}" />
-                </VerticalStackLayout>
-            </Border>
         </Grid>
     </Grid>
 </ContentPage>
