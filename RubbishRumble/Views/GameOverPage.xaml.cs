@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls;
 using RubbishRumble.ViewModels;
 
 namespace RubbishRumble.Views;
@@ -10,6 +11,12 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
 	{
 		InitializeComponent();
         BindingContext = _viewModel;
+
+        Shell.SetBackButtonBehavior(this, new BackButtonBehavior
+        {
+            IsVisible = false,
+            IsEnabled = false
+        });
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -24,8 +31,23 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        RemoveGamePageFromStack();
         await _viewModel.SaveRewardsAsync();
         await _viewModel.LoadEcoTipAsync();
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        return true;
+    }
+
+    private void RemoveGamePageFromStack()
+    {
+        Page? gamePage = Navigation.NavigationStack
+            .FirstOrDefault(page => page is GamePage);
+
+        if (gamePage != null)
+            Navigation.RemovePage(gamePage);
     }
 
     private static int ParseInt(object value)
