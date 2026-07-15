@@ -8,8 +8,8 @@
         <Grid RowDefinitions="Auto, *, Auto" Padding="15" RowSpacing="10">
             <Grid Grid.Row="0" RowDefinitions="Auto, Auto" RowSpacing="10">
                 <!-- TOP HUD area -->
-                <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center">
-                    <HorizontalStackLayout HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
+                <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center" ColumnDefinitions="Auto, *, Auto">
+                    <HorizontalStackLayout Grid.Column="0" HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
                         <Label Text="{Binding CurrentCoins}" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
@@ -25,18 +25,16 @@
                        Source="logo.png" 
                        HeightRequest="65" 
                        HorizontalOptions="Center"/>
-            </Grid>
                     <!-- PAUSE button -->
-                    <Grid HorizontalOptions="End" WidthRequest="65" VerticalOptions="Center">
-                        <ImageButton Grid.Column="2" 
+                    <ImageButton Grid.Column="2"
                                  Source="pause.png"
-                                 HeightRequest="50" 
-                                 WidthRequest="50" 
-                                 CornerRadius="10" 
-                                 HorizontalOptions="Center"
+                                 HeightRequest="50"
+                                 WidthRequest="50"
+                                 CornerRadius="10"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="Center"
+                                 BackgroundColor="Transparent"
                                  Command="{Binding PauseGameCommand}"/>
-                        <!-- TODO: create the pause overlay -->
-                    </Grid>
                 </Grid>
 
                 <Grid Grid.Row="1" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">

@@ -24,6 +24,13 @@ namespace RubbishRumble.ViewModels
         private bool _isHazardBinOpen;
         private bool _isLandfillBinOpen;
         private bool _gameOverHandled;
+        private bool _isPaused;
+
+        public bool IsPaused
+        {
+            get => _isPaused;
+            private set => SetProperty(ref _isPaused, value);
+        }
 
         public int CurrentCoins
         {
@@ -136,6 +143,9 @@ namespace RubbishRumble.ViewModels
         public ICommand UseSlowPowerCommand { get; }
         public ICommand UseAutoSortPowerCommand { get; }
         public ICommand UseSpeedPowerCommand { get; }
+        public ICommand PauseGameCommand { get; }
+        public ICommand ResumeGameCommand { get; }
+        public ICommand QuitGameCommand { get; }
 
         public GameViewModel()
         {
@@ -149,11 +159,15 @@ namespace RubbishRumble.ViewModels
             UseSlowPowerCommand = new Command(async () => await UsePowerUpAsync("Slow"));
             UseAutoSortPowerCommand = new Command(async () => await UsePowerUpAsync("Auto Sort"));
             UseSpeedPowerCommand = new Command(async () => await UsePowerUpAsync("Speed"));
+            PauseGameCommand = new Command(() => IsPaused = true);
+            ResumeGameCommand = new Command(() => IsPaused = false);
+            QuitGameCommand = new Command(async () => await QuitGameAsync());
         }
 
         public async Task InitializeAsync()
         {
             _gameOverHandled = false;
+            IsPaused = false;
             await _powerUpService.InitializeAsync();
             await _gameService.StartGameAsync();
             await RefreshCoinsAsync();
@@ -311,6 +325,14 @@ namespace RubbishRumble.ViewModels
 
             await RefreshPowerUpCountsAsync();
             await _gameService.ActivatePowerUpAsync(powerUp);
+        }
+
+        private async Task QuitGameAsync()
+        {
+            if (Shell.Current == null)
+                return;
+
+            await Shell.Current.GoToAsync("//MainMenuPage");
         }
 
         private async Task FlashBinAsync(string category)
