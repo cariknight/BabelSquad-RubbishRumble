@@ -41,14 +41,19 @@ namespace RubbishRumble.Services
 
         public async Task AddPowerUpAsync(string powerUpName, int amount)
         {
-            List<Inventory> inventory = await _database.GetInventoryAsync();
-            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+            int? powerUpId = await _database.GetPowerUpIdByNameAsync(powerUpName);
+
+            if (powerUpId == null)
+                return;
+
+            Inventory? item = await _database.GetInventoryItemAsync(powerUpName);
 
             if (item == null)
             {
                 await _database.SaveInventoryAsync(new Inventory
                 {
-                    PowerUpName = powerUpName,
+                    PlayerId = DatabaseService.DefaultPlayerId,
+                    PowerUpId = powerUpId.Value,
                     Quantity = amount
                 });
             }
@@ -61,8 +66,7 @@ namespace RubbishRumble.Services
 
         public async Task<bool> UsePowerUpAsync(string powerUpName)
         {
-            List<Inventory> inventory = await _database.GetInventoryAsync();
-            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+            Inventory? item = await _database.GetInventoryItemAsync(powerUpName);
 
             if (item == null || item.Quantity <= 0)
                 return false;
@@ -74,8 +78,7 @@ namespace RubbishRumble.Services
 
         public async Task<int> GetPowerUpCountAsync(string powerUpName)
         {
-            List<Inventory> inventory = await _database.GetInventoryAsync();
-            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+            Inventory? item = await _database.GetInventoryItemAsync(powerUpName);
 
             return item?.Quantity ?? 0;
         }
