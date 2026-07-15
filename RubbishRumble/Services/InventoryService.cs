@@ -33,9 +33,7 @@ namespace RubbishRumble.Services
                 : DefaultPowerUpNames;
 
             foreach (string powerUpName in powerUpNames)
-            {
                 await AddPowerUpAsync(powerUpName, BeginnerPackQuantity);
-            }
 
             player.ReceivedBeginnerPack = true;
             await _database.SavePlayerAsync(player);
@@ -61,11 +59,6 @@ namespace RubbishRumble.Services
             }
         }
 
-        public Task<bool> UsePowerUpAsync(PowerUp powerUp)
-        {
-            return UsePowerUpAsync(powerUp.Name);
-        }
-
         public async Task<bool> UsePowerUpAsync(string powerUpName)
         {
             List<Inventory> inventory = await _database.GetInventoryAsync();
@@ -79,22 +72,12 @@ namespace RubbishRumble.Services
             return true;
         }
 
-        public Task<int> GetPowerUpCountAsync(PowerUp powerUp)
-        {
-            return GetPowerUpCountAsync(powerUp.Name);
-        }
-
         public async Task<int> GetPowerUpCountAsync(string powerUpName)
         {
             List<Inventory> inventory = await _database.GetInventoryAsync();
             Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
 
             return item?.Quantity ?? 0;
-        }
-
-        public Task<List<Inventory>> GetInventoryAsync()
-        {
-            return _database.GetInventoryAsync();
         }
     }
 }

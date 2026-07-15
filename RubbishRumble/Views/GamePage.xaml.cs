@@ -36,6 +36,7 @@ public partial class GamePage : ContentPage
         InitializeComponent();
         _viewModel = new GameViewModel();
         BindingContext = _viewModel;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         Appearing += OnAppearing;
         Disappearing += OnDisappearing;
         Loaded += (_, _) =>
@@ -143,9 +144,11 @@ public partial class GamePage : ContentPage
 
     private void OnGameLoopTick(object? sender, EventArgs e)
     {
-        if (_viewModel.IsGameOver)
+        if (_viewModel.IsPaused || _viewModel.IsGameOver)
         {
-            StopGameLoop();
+            if (_viewModel.IsGameOver)
+                StopGameLoop();
+
             return;
         }
 
@@ -349,7 +352,7 @@ public partial class GamePage : ContentPage
         if (density <= 0)
             density = 1;
 
-        // BOTH axes must be converted from raw pixels to DIPs ? this was the bug.
+        // Convert raw Android touch pixels to DIPs on both axes.
         var point = new Point(e.Event.GetX() / density, e.Event.GetY() / density);
         _lastTouchPoint = point;
 
@@ -375,7 +378,7 @@ public partial class GamePage : ContentPage
 
     private void StartDragAt(Point point)
     {
-        if (!_isPageActive || _draggingTrash != null)
+        if (!_isPageActive || _viewModel.IsPaused || _draggingTrash != null)
             return;
 
         FallingTrash? trash = HitTestTrash(point);
@@ -591,16 +594,22 @@ public partial class GamePage : ContentPage
         public bool IsDragging { get; set; }
     }
 
-    private async void OnPauseButtonClicked(object sender, EventArgs e)
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-    }
-
-    private async void OnExitButtonClicked(object sender, EventArgs e)
-    {
-        if (Shell.Current == null)
+        if (e.PropertyName != nameof(GameViewModel.IsPaused) || !_viewModel.IsPaused || _draggingTrash == null)
             return;
 
-        await Shell.Current.GoToAsync("..");
+        FallingTrash trash = _draggingTrash;
+        _draggingTrash = null;
+        trash.IsDragging = false;
+
+        if (trash.View != null)
+        {
+            trash.View.TranslationX = 0;
+            trash.View.TranslationY = 0;
+            trash.View.ZIndex = 0;
+        }
+
+        SetBounds(trash);
     }
 }

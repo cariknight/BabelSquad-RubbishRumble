@@ -17,8 +17,7 @@
         <CarouselView x:Name="TutorialCarousel"
                       Grid.Row="1"
                       HeightRequest="400"
-                      HorizontalScrollBarVisibility="Never"
-                      PositionChanged="OnCarouselPositionChanged">
+                      HorizontalScrollBarVisibility="Never">
             <CarouselView.ItemTemplate>
                 <DataTemplate>
                     <Border Stroke="#4C3E24"
