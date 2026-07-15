@@ -7,8 +7,12 @@
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
     
-    <Grid VerticalOptions="Center">
-        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="50" WidthRequest="300">
+    <Grid RowDefinitions="*,Auto" Padding="20">
+        <VerticalStackLayout Grid.Row="0"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="50"
+                             WidthRequest="300">
             <Image Source="gameover.png"
                    HeightRequest="100"
                    Aspect="AspectFit"
@@ -90,5 +94,34 @@
                          WidthRequest="160"
                          HorizontalOptions="Center"/>
         </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Stroke="#4C3E24"
+                StrokeThickness="2"
+                StrokeShape="Rectangle"
+                BackgroundColor="#9E4539"
+                Padding="14"
+                Margin="0,16,0,0">
+            <VerticalStackLayout Spacing="6">
+                <Label Text="ECO TIP"
+                       FontSize="16"
+                       FontFamily="PixelifySans"
+                       FontAttributes="Bold"
+                       TextColor="#FDCBB0"
+                       HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding EcoTipTitle}"
+                       FontSize="14"
+                       FontFamily="PixelifySans"
+                       FontAttributes="Bold"
+                       TextColor="#FDCBB0"
+                       HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding EcoTipText}"
+                       FontSize="12"
+                       FontFamily="PixelifySans"
+                       TextColor="#FDCBB0"
+                       HorizontalTextAlignment="Center"
+                       LineBreakMode="WordWrap"/>
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>

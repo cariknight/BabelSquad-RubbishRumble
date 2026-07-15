@@ -25,6 +25,7 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
     {
         base.OnAppearing();
         await _viewModel.SaveRewardsAsync();
+        await _viewModel.LoadEcoTipAsync();
     }
 
     private static int ParseInt(object value)

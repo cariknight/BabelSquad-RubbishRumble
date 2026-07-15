@@ -7,11 +7,14 @@ namespace RubbishRumble.ViewModels
     public class GameOverViewModel : BindableObject
     {
         private readonly DatabaseService _databaseService = new();
+        private readonly APIService _apiService = new();
         private int _totalScore;
         private int _earnedCoins;
         private int _highestScore;
         private bool _isNewHighScore;
         private bool _rewardsSaved;
+        private string _ecoTipTitle = string.Empty;
+        private string _ecoTipText = "Loading eco tip...";
 
         public int TotalScore
         {
@@ -64,6 +67,26 @@ namespace RubbishRumble.ViewModels
 
         public bool ShowCoinBonus => IsNewHighScore;
 
+        public string EcoTipTitle
+        {
+            get => _ecoTipTitle;
+            private set
+            {
+                _ecoTipTitle = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string EcoTipText
+        {
+            get => _ecoTipText;
+            private set
+            {
+                _ecoTipText = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand ExitCommand { get; }
 
         public GameOverViewModel()
@@ -93,6 +116,22 @@ namespace RubbishRumble.ViewModels
             {
                 _rewardsSaved = false;
                 System.Diagnostics.Debug.WriteLine($"Failed to save game rewards: {ex}");
+            }
+        }
+
+        public async Task LoadEcoTipAsync()
+        {
+            try
+            {
+                (string title, string text) = await _apiService.GetRandomEcoTipAsync();
+                EcoTipTitle = title;
+                EcoTipText = text;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load eco tip: {ex}");
+                EcoTipTitle = "Eco Tip";
+                EcoTipText = "Keep sorting trash into the right bins to help the planet!";
             }
         }
 
