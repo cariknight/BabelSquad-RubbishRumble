@@ -349,7 +349,7 @@ public partial class GamePage : ContentPage
         if (density <= 0)
             density = 1;
 
-        // BOTH axes must be converted from raw pixels to DIPs ? this was the bug.
+        // Convert raw Android touch pixels to DIPs on both axes.
         var point = new Point(e.Event.GetX() / density, e.Event.GetY() / density);
         _lastTouchPoint = point;
 
@@ -591,16 +591,4 @@ public partial class GamePage : ContentPage
         public bool IsDragging { get; set; }
     }
 
-    private async void OnPauseButtonClicked(object sender, EventArgs e)
-    {
-        await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-    }
-
-    private async void OnExitButtonClicked(object sender, EventArgs e)
-    {
-        if (Shell.Current == null)
-            return;
-
-        await Shell.Current.GoToAsync("..");
-    }
 }

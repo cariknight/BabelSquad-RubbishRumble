@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RubbishRumble.Models;
+﻿using RubbishRumble.Models;
 using SQLite;
+using System.Text.Json;
 
 namespace RubbishRumble.Services
 {
     public class DatabaseService
     {
-        private SQLiteAsyncConnection database;
+        public const int DefaultPlayerId = 1;
+
+        private SQLiteAsyncConnection? database;
 
         public async Task InitAsync()
         {
@@ -21,102 +19,90 @@ namespace RubbishRumble.Services
             database = new SQLiteAsyncConnection(path);
 
             await database.CreateTableAsync<Player>();
+            await database.CreateTableAsync<PowerUp>();
             await database.CreateTableAsync<GameSession>();
             await database.CreateTableAsync<Inventory>();
-            await database.CreateTableAsync<Settings>();
 
-            Player? player = await database.FindAsync<Player>(1);
+            await SeedPowerUpsAsync();
+            await MigrateLegacySchemaAsync();
+
+            Player? player = await database.FindAsync<Player>(DefaultPlayerId);
 
             if (player == null)
-            {
-                await database.InsertAsync(new Player());
-            }
+                await database.InsertAsync(new Player { Id = DefaultPlayerId });
         }
 
         public async Task<Player> GetPlayerAsync()
         {
             await InitAsync();
 
-            Player player = await database.FindAsync<Player>(1);
+            Player player = await database!.FindAsync<Player>(DefaultPlayerId);
 
             if (player == null)
             {
-                player = new Player();
+                player = new Player { Id = DefaultPlayerId };
                 await database.InsertAsync(player);
             }
+
             return player;
         }
 
         public async Task SavePlayerAsync(Player player)
         {
             await InitAsync();
+            SQLiteAsyncConnection db = database!;
+
             if (player.Id == 0)
-            {
-                await database.InsertAsync(player);
-            }
+                await db.InsertAsync(player);
             else
-            {
-                await database.UpdateAsync(player);
-            }
+                await db.UpdateAsync(player);
         }
+
         public async Task SaveGameSessionAsync(GameSession session)
         {
             await InitAsync();
-            await database.InsertAsync(session);
-        }
 
-        public async Task<List<GameSession>> GetGameSessionsAsync()
-        {
-            await InitAsync();
+            if (session.PlayerId == 0)
+                session.PlayerId = DefaultPlayerId;
 
-            return await database.Table<GameSession>().OrderByDescending(g=>g.PlayedAt).ToListAsync();
+            await database!.InsertAsync(session);
         }
 
         public async Task SaveInventoryAsync(Inventory inventory)
         {
             await InitAsync();
+            SQLiteAsyncConnection db = database!;
+
+            if (inventory.PlayerId == 0)
+                inventory.PlayerId = DefaultPlayerId;
+
             if (inventory.Id == 0)
-            {
-                await database.InsertAsync(inventory);
-            }
+                await db.InsertAsync(inventory);
             else
-            {
-                await database.UpdateAsync(inventory);
-            }
+                await db.UpdateAsync(inventory);
         }
-        public async Task<List<Inventory>> GetInventoryAsync()
+
+        public async Task<Inventory?> GetInventoryItemAsync(string powerUpName, int playerId = DefaultPlayerId)
         {
             await InitAsync();
 
-            return await database.Table<Inventory>().ToListAsync();
+            int? powerUpId = await GetPowerUpIdByNameAsync(powerUpName);
+
+            if (powerUpId == null)
+                return null;
+
+            return await database!.Table<Inventory>()
+                .FirstOrDefaultAsync(i => i.PlayerId == playerId && i.PowerUpId == powerUpId.Value);
         }
 
-        public async Task<Settings> GetSettingsAsync()
-        {
-            await InitAsync();
-            Settings settings = await database.Table<Settings>().FirstOrDefaultAsync();
-
-            if (settings == null)
-            {
-                settings = new Settings();
-
-                await database.InsertAsync(settings);
-            }
-            return settings;
-        }
-
-        public async Task SaveSettingsAsync(Settings settings)
+        public async Task<int?> GetPowerUpIdByNameAsync(string powerUpName)
         {
             await InitAsync();
 
-            if (settings.Id == 0)
-            {
-                await database.InsertAsync(settings);
-            }
-            else
-            {
-                await database.UpdateAsync(settings);
-            }
+            PowerUp? powerUp = await database!.Table<PowerUp>()
+                .FirstOrDefaultAsync(p => p.Name == powerUpName);
+
+            return powerUp?.Id;
         }
 
         public async Task<int> AwardGameRewardsAsync(int finalScore, int coinsEarned)
@@ -134,12 +120,128 @@ namespace RubbishRumble.Services
 
             await SaveGameSessionAsync(new GameSession
             {
+                PlayerId = DefaultPlayerId,
                 FinalScore = finalScore,
                 CoinsEarned = coinsEarned,
                 PlayedAt = DateTime.Now
             });
 
             return player.HighestScore;
+        }
+
+        private async Task SeedPowerUpsAsync()
+        {
+            List<PowerUp> catalog = await LoadPowerUpCatalogAsync();
+
+            foreach (PowerUp powerUp in catalog)
+            {
+                PowerUp? existing = await database!.Table<PowerUp>()
+                    .FirstOrDefaultAsync(p => p.Name == powerUp.Name);
+
+                if (existing == null)
+                    await database.InsertAsync(powerUp);
+            }
+        }
+
+        private static async Task<List<PowerUp>> LoadPowerUpCatalogAsync()
+        {
+            using Stream stream = await FileSystem.OpenAppPackageFileAsync("powerup.json");
+            using StreamReader reader = new(stream);
+            string json = await reader.ReadToEndAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<List<PowerUp>>(json, options) ?? new List<PowerUp>();
+        }
+
+        private async Task MigrateLegacySchemaAsync()
+        {
+            await MigrateInventoryAsync();
+            await MigrateGameSessionsAsync();
+        }
+
+        private async Task MigrateInventoryAsync()
+        {
+            HashSet<string> columns = await GetTableColumnsAsync("Inventory");
+
+            if (columns.Contains("PowerUpName") && !columns.Contains("PowerUpId"))
+            {
+                await database!.ExecuteAsync(
+                    "ALTER TABLE Inventory ADD COLUMN PlayerId INTEGER NOT NULL DEFAULT 1");
+                await database.ExecuteAsync(
+                    "ALTER TABLE Inventory ADD COLUMN PowerUpId INTEGER NOT NULL DEFAULT 0");
+
+                List<LegacyInventoryRow> legacyRows = await database.QueryAsync<LegacyInventoryRow>(
+                    "SELECT Id, PowerUpName, Quantity FROM Inventory");
+
+                await database.ExecuteAsync("DELETE FROM Inventory");
+
+                foreach (LegacyInventoryRow row in legacyRows)
+                {
+                    int? powerUpId = await GetPowerUpIdByNameAsync(row.PowerUpName);
+
+                    if (powerUpId == null)
+                        continue;
+
+                    await database.InsertAsync(new Inventory
+                    {
+                        PlayerId = DefaultPlayerId,
+                        PowerUpId = powerUpId.Value,
+                        Quantity = row.Quantity
+                    });
+                }
+
+                return;
+            }
+
+            if (columns.Contains("PowerUpId"))
+            {
+                await database!.ExecuteAsync(
+                    "UPDATE Inventory SET PlayerId = ? WHERE PlayerId = 0 OR PlayerId IS NULL",
+                    DefaultPlayerId);
+            }
+        }
+
+        private async Task MigrateGameSessionsAsync()
+        {
+            HashSet<string> columns = await GetTableColumnsAsync("GameSession");
+
+            if (!columns.Contains("PlayerId"))
+            {
+                await database!.ExecuteAsync(
+                    "ALTER TABLE GameSession ADD COLUMN PlayerId INTEGER NOT NULL DEFAULT 1");
+            }
+            else
+            {
+                await database!.ExecuteAsync(
+                    "UPDATE GameSession SET PlayerId = ? WHERE PlayerId = 0 OR PlayerId IS NULL",
+                    DefaultPlayerId);
+            }
+        }
+
+        private async Task<HashSet<string>> GetTableColumnsAsync(string tableName)
+        {
+            List<ColumnInfo> columns = await database!.QueryAsync<ColumnInfo>(
+                $"PRAGMA table_info({tableName})");
+
+            return columns
+                .Select(c => c.name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+
+        private class LegacyInventoryRow
+        {
+            public int Id { get; set; }
+            public string PowerUpName { get; set; } = string.Empty;
+            public int Quantity { get; set; }
+        }
+
+        private class ColumnInfo
+        {
+            public string name { get; set; } = string.Empty;
         }
     }
 }

@@ -8,9 +8,9 @@ namespace RubbishRumble.Views
     {
         public class TutorialSlide
         {
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public string ImageUrl { get; set; } 
+            public string Title { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string ImageUrl { get; set; } = string.Empty;
         }
 
         private List<TutorialSlide> _slides;
@@ -52,8 +52,8 @@ namespace RubbishRumble.Views
                     },
                     new TutorialSlide
                     {
-                        Title = "Youíre ready!",
-                        Description = "Letís keep the world clean together",
+                        Title = "Youùre ready!",
+                        Description = "Letùs keep the world clean together",
                         ImageUrl = "tutorial_slide6.png"
                     }
                 };
@@ -73,15 +73,9 @@ namespace RubbishRumble.Views
             }
             else
             {
-                // Going to main menu page
                 await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
                 await Shell.Current.GoToAsync("..");
             }
-        }
-
-        private void OnCarouselPositionChanged(object sender, PositionChangedEventArgs e)
-        {
-            // Intentionally left empty
         }
     }
 }

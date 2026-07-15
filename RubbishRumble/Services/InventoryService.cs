@@ -33,9 +33,7 @@ namespace RubbishRumble.Services
                 : DefaultPowerUpNames;
 
             foreach (string powerUpName in powerUpNames)
-            {
                 await AddPowerUpAsync(powerUpName, BeginnerPackQuantity);
-            }
 
             player.ReceivedBeginnerPack = true;
             await _database.SavePlayerAsync(player);
@@ -43,14 +41,19 @@ namespace RubbishRumble.Services
 
         public async Task AddPowerUpAsync(string powerUpName, int amount)
         {
-            List<Inventory> inventory = await _database.GetInventoryAsync();
-            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+            int? powerUpId = await _database.GetPowerUpIdByNameAsync(powerUpName);
+
+            if (powerUpId == null)
+                return;
+
+            Inventory? item = await _database.GetInventoryItemAsync(powerUpName);
 
             if (item == null)
             {
                 await _database.SaveInventoryAsync(new Inventory
                 {
-                    PowerUpName = powerUpName,
+                    PlayerId = DatabaseService.DefaultPlayerId,
+                    PowerUpId = powerUpId.Value,
                     Quantity = amount
                 });
             }
@@ -61,15 +64,9 @@ namespace RubbishRumble.Services
             }
         }
 
-        public Task<bool> UsePowerUpAsync(PowerUp powerUp)
-        {
-            return UsePowerUpAsync(powerUp.Name);
-        }
-
         public async Task<bool> UsePowerUpAsync(string powerUpName)
         {
-            List<Inventory> inventory = await _database.GetInventoryAsync();
-            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+            Inventory? item = await _database.GetInventoryItemAsync(powerUpName);
 
             if (item == null || item.Quantity <= 0)
                 return false;
@@ -79,22 +76,11 @@ namespace RubbishRumble.Services
             return true;
         }
 
-        public Task<int> GetPowerUpCountAsync(PowerUp powerUp)
-        {
-            return GetPowerUpCountAsync(powerUp.Name);
-        }
-
         public async Task<int> GetPowerUpCountAsync(string powerUpName)
         {
-            List<Inventory> inventory = await _database.GetInventoryAsync();
-            Inventory? item = inventory.FirstOrDefault(i => i.PowerUpName == powerUpName);
+            Inventory? item = await _database.GetInventoryItemAsync(powerUpName);
 
             return item?.Quantity ?? 0;
-        }
-
-        public Task<List<Inventory>> GetInventoryAsync()
-        {
-            return _database.GetInventoryAsync();
         }
     }
 }

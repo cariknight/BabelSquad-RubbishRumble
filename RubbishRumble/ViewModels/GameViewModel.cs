@@ -132,7 +132,6 @@ namespace RubbishRumble.ViewModels
         public double AutoSortButtonOpacity => IsAutoSortActive || CanUseAutoSortPower ? 1.0 : 0.4;
         public double SpeedButtonOpacity => IsSpeedActive || CanUseSpeedPower ? 1.0 : 0.4;
 
-        public ICommand PauseGameCommand { get; }
         public ICommand UseFreezePowerCommand { get; }
         public ICommand UseSlowPowerCommand { get; }
         public ICommand UseAutoSortPowerCommand { get; }
@@ -143,10 +142,9 @@ namespace RubbishRumble.ViewModels
             _databaseService = new DatabaseService();
             _powerUpService = new PowerUpService();
             _inventoryService = new InventoryService(_databaseService, _powerUpService);
-            _gameService = new GameService(_databaseService, _powerUpService, _inventoryService);
+            _gameService = new GameService(_databaseService, _inventoryService);
             _gameService.GameStateChanged += OnGameStateChanged;
 
-            PauseGameCommand = new Command(OnPauseGameExecuted);
             UseFreezePowerCommand = new Command(async () => await UsePowerUpAsync("Freeze"));
             UseSlowPowerCommand = new Command(async () => await UsePowerUpAsync("Slow"));
             UseAutoSortPowerCommand = new Command(async () => await UsePowerUpAsync("Auto Sort"));
@@ -339,10 +337,6 @@ namespace RubbishRumble.ViewModels
             IsBioBinOpen = false;
             IsHazardBinOpen = false;
             IsLandfillBinOpen = false;
-        }
-
-        private void OnPauseGameExecuted()
-        {
         }
     }
 }

@@ -6,9 +6,12 @@ namespace RubbishRumble.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string EffectType { get; set; }
-        public string Description { get; set; }
+
+        [Indexed(Name = "IX_PowerUp_Name", Unique = true)]
+        public string Name { get; set; } = string.Empty;
+
+        public string EffectType { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public int DurationSeconds { get; set; }
         public double ScoreMultiplier { get; set; }
         public double SpeedMultiplier { get; set; }

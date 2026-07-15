@@ -1,57 +1,32 @@
 ﻿using System.Text.Json;
 using RubbishRumble.Helper;
 using RubbishRumble.Models;
-using RubbishRumble.Helper;
 
 namespace RubbishRumble.Services
 {
     public class GameService
     {
-        //Start game - done
-        //End game -done
-        //Increase score -done
-        //Lose life - done
-        //Spawn trash - done
-        //Activate power-ups - done
-        //Increase difficulty - done
-
-        //1. Load trashitems.json. - done
-        //2. Load rarity.json. - done
-        //3. Pick a rarity using Chance. - done
-        //4. Find all trash items with that rarity.- done
-        //5. Randomly choose one of those items. - unsure
-        //6. Give the player the Points from that rarity. - done
-        //7. Calculate coins. - done
-        
-        //Services
         private readonly DatabaseService _dataService;
-        private readonly PowerUpService _powerUpService;
         private readonly InventoryService _inventoryService;
 
         public GameService(
             DatabaseService dataService,
-            PowerUpService powerUpService,
             InventoryService inventoryService)
         {
             _dataService = dataService;
-            _powerUpService = powerUpService;
             _inventoryService = inventoryService;
         }
+
         public int Score { get; private set; }
         public int Lives { get; private set; }
-        public int Coins { get; private set; }
-        // Basis of level increase
         public int DifficultyLevel { get; private set; }
         public int TrashCollected { get; private set; }
-
-        // Data to be changed every level increase
         public double SpawnInterval { get; private set; }
         public double TrashSpeed { get; private set; }
 
         private List<TrashItem> _trashItems = new();
         private List<Rarity> _rarities = new();
 
-        // For PowerUp
         public double CurrentScoreMultiplier { get; private set; } = 1.0;
         public double CurrentSpeedMultiplier { get; private set; } = 1.0;
         public bool IsAutoSortActive { get; private set; }
@@ -65,7 +40,6 @@ namespace RubbishRumble.Services
 
         private void NotifyGameStateChanged() => GameStateChanged?.Invoke();
 
-        // Load JSON files (DATA)
         public async Task LoadGameDataAsync()
         {
             await LoadTrashItemsAsync();
@@ -96,7 +70,6 @@ namespace RubbishRumble.Services
             _rarities = JsonSerializer.Deserialize<List<Rarity>>(json, JsonOptions) ?? new List<Rarity>();
         }
 
-        // After Loading trash data
         public TrashItem? GetRandomTrash()
         {
             if (_trashItems.Count == 0 || _rarities.Count == 0)
@@ -165,7 +138,6 @@ namespace RubbishRumble.Services
             };
         }
 
-        // Game basic mechanics
         public bool IsGameOver => Lives <= 0;
 
         public async Task StartGameAsync()
@@ -177,15 +149,10 @@ namespace RubbishRumble.Services
             await LoadGameDataAsync();
 
             Score = 0;
-
             Lives = Constants.STARTING_LIVES;
-
             TrashCollected = 0;
-
             DifficultyLevel = 1;
-
             SpawnInterval = Constants.STARTING_SPAWN_INTERVAL;
-
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
             ClearPowerUpState();
@@ -200,27 +167,19 @@ namespace RubbishRumble.Services
             NotifyGameStateChanged();
 
             if (Lives <= 0)
-            {
                 EndGame();
-            }
         }
 
-        public int CalculateCoins()
-        {
-            return EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore: false);
-        }
         public GameSession EndGame()
         {
             return new GameSession
             {
-                // Total coins not added yet
                 FinalScore = Score,
-                CoinsEarned = CalculateCoins(),
+                CoinsEarned = EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore: false),
                 PlayedAt = DateTime.Now
             };
         }
-        // Increase Difficulty
-        
+
         public void IncreaseDifficulty()
         {
             DifficultyLevel++;
@@ -249,9 +208,7 @@ namespace RubbishRumble.Services
             TrashCollected++;
 
             if (TrashCollected % 20 == 0)
-            {
                 IncreaseDifficulty();
-            }
 
             NotifyGameStateChanged();
         }
@@ -328,7 +285,6 @@ namespace RubbishRumble.Services
             return TrashSortOutcome.Incorrect;
         }
 
-        // POWER UPS
         public async Task ActivatePowerUpAsync(PowerUp? powerUp)
         {
             if (powerUp == null)
