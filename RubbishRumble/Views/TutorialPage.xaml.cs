@@ -52,8 +52,8 @@ namespace RubbishRumble.Views
                     },
                     new TutorialSlide
                     {
-                        Title = "Youùre ready!",
-                        Description = "Letùs keep the world clean together",
+                        Title = "Youù're ready!",
+                        Description = "Let'ùs keep the world clean together",
                         ImageUrl = "tutorial_slide6.png"
                     }
                 };

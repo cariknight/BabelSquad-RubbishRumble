@@ -6,18 +6,23 @@
              x:DataType="ViewModels:SettingsViewModel"
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="*, Auto, *" Padding="10" RowSpacing="50">
-
-        <Image Grid.Row="0" 
+    <Grid>
+        <Image Source="mainbg.png"
+               Aspect="AspectFill"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
+        
+        <Grid RowDefinitions="*, Auto, *" Padding="10" RowSpacing="50">
+            <!-- Settings title -->
+            <Image Grid.Row="0" 
                Source="settings.png"
                HeightRequest="65" 
                Aspect="AspectFit"
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
 
-        <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
-
-            <Border Stroke="#4C3E24"
+            <VerticalStackLayout Grid.Row="1" Spacing="20" VerticalOptions="Center">
+                <Border Stroke="#4C3E24"
                     StrokeThickness="3"
                     StrokeShape="Rectangle"
                     Background="#9E4539"
@@ -25,8 +30,8 @@
                     WidthRequest="300"
                     HorizontalOptions="Center">
 
-                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                    <Label Grid.Column="0"
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <Label Grid.Column="0"
                            Text="MUSIC" 
                            FontFamily="PixelifySans"
                            FontSize="22" 
@@ -34,7 +39,7 @@
                            TextColor="#FDCBB0" 
                            VerticalOptions="Center"/>
 
-                    <ImageButton Grid.Column="1"
+                        <ImageButton Grid.Column="1"
                                  Source="on.png"  
                                  BackgroundColor="Transparent"
                                  Aspect="AspectFit"
@@ -42,18 +47,18 @@
                                  HeightRequest="45"
                                  CornerRadius="50"
                                  Command="{Binding ToggleMusicCommand}">
-                        <ImageButton.Triggers>
-                            <DataTrigger TargetType="ImageButton" 
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" 
                                          Binding="{Binding IsMusicMuted}" 
                                          Value="True">
-                                <Setter Property="Source" Value="off.png" />
-                            </DataTrigger>
-                        </ImageButton.Triggers>
-                    </ImageButton>
-                </Grid>
-            </Border>
+                                    <Setter Property="Source" Value="off.png" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                        </ImageButton>
+                    </Grid>
+                </Border>
 
-            <Border Stroke="#4C3E24"
+                <Border Stroke="#4C3E24"
                     StrokeThickness="3"
                     StrokeShape="Rectangle"
                     Background="#9E4539"
@@ -61,8 +66,8 @@
                     WidthRequest="300"
                     HorizontalOptions="Center">
 
-                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                    <Label Grid.Column="0"
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <Label Grid.Column="0"
                            Text="SOUND FX" 
                            FontFamily="PixelifySans"
                            FontSize="22" 
@@ -70,26 +75,26 @@
                            TextColor="#FDCBB0" 
                            VerticalOptions="Center"/>
 
-                    <ImageButton Grid.Column="1"
+                        <ImageButton Grid.Column="1"
                                  Source="on.png"  
                                  Aspect="AspectFit"
                                  WidthRequest="80"
                                  HeightRequest="45"
                                  CornerRadius="50"
                                  Command="{Binding ToggleSfxCommand}">
-                        <ImageButton.Triggers>
-                            <DataTrigger TargetType="ImageButton" 
+                            <ImageButton.Triggers>
+                                <DataTrigger TargetType="ImageButton" 
                                          Binding="{Binding IsSfxMuted}" 
                                          Value="True">
-                                <Setter Property="Source" Value="off.png" />
-                            </DataTrigger>
-                        </ImageButton.Triggers>
-                    </ImageButton>
-                </Grid>
-            </Border>
-        </VerticalStackLayout>
-
-        <ImageButton Grid.Row="2"
+                                    <Setter Property="Source" Value="off.png" />
+                                </DataTrigger>
+                            </ImageButton.Triggers>
+                        </ImageButton>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+            <!-- Exit button -->
+            <ImageButton Grid.Row="2"
                      Source="exit.png"  
                      BackgroundColor="#9E4539"
                      BorderColor="#4C3E24"
@@ -100,5 +105,6 @@
                      HeightRequest="55"
                      HorizontalOptions="Center"
                      Clicked="OnExitButtonClicked"/>
+        </Grid>
     </Grid>
 </ContentPage>
