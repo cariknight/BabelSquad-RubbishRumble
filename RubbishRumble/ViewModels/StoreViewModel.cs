@@ -174,8 +174,10 @@ namespace RubbishRumble.ViewModels
         {
             bool success = await _storeService.BuyPowerUpAsync(powerUpName);
             if (!success)
+            {
+                await SettingsService.Instance.PlaySfxAsync("error.mp3");
                 return;
-
+            }
             await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
             await RefreshAsync();
         }
