@@ -65,6 +65,7 @@ namespace RubbishRumble.Views
         {
             int currentPosition = TutorialCarousel.Position;
             int lastPosition = _slides.Count - 1;
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
 
             if (currentPosition < lastPosition)
             {
@@ -73,7 +74,6 @@ namespace RubbishRumble.Views
             }
             else
             {
-                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
                 await Shell.Current.GoToAsync("..");
             }
         }
