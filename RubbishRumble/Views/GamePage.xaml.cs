@@ -31,6 +31,9 @@ public partial class GamePage : ContentPage
     private double _arenaHeight;
     private bool _isPageActive;
 
+    private const double PointsPopupWidth = 90;
+    private const double PointsPopupHeight = 40;
+
     public GamePage()
     {
         InitializeComponent();
@@ -91,6 +94,7 @@ public partial class GamePage : ContentPage
     private async void OnAppearing(object? sender, EventArgs e)
     {
         _isPageActive = true;
+        _viewModel.PointsEarned += OnPointsEarned;
         StopGameLoop();
         ClearActiveTrash();
 
@@ -105,6 +109,7 @@ public partial class GamePage : ContentPage
 
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();
+        SettingsService.Instance.AppBecameInactive += OnAppBecameInactive;
         StartGameLoop();
     }
 
@@ -112,8 +117,38 @@ public partial class GamePage : ContentPage
     {
         _isPageActive = false;
         _draggingTrash = null;
+        _viewModel.PointsEarned -= OnPointsEarned;
+        SettingsService.Instance.AppBecameInactive -= OnAppBecameInactive;
         StopGameLoop();
         ClearActiveTrash();
+    }
+
+    private void OnAppBecameInactive(object? sender, EventArgs e)
+    {
+        if (!_isPageActive)
+            return;
+
+        _viewModel.PauseForAppInactive();
+        CancelActiveDrag();
+    }
+
+    private void CancelActiveDrag()
+    {
+        if (_draggingTrash == null)
+            return;
+
+        FallingTrash trash = _draggingTrash;
+        _draggingTrash = null;
+        trash.IsDragging = false;
+
+        if (trash.View != null)
+        {
+            trash.View.TranslationX = 0;
+            trash.View.TranslationY = 0;
+            trash.View.ZIndex = 0;
+        }
+
+        SetBounds(trash);
     }
 
     private void StartGameLoop()
@@ -377,7 +412,7 @@ public partial class GamePage : ContentPage
 
     private void StartDragAt(Point point)
     {
-        if (!_isPageActive || _draggingTrash != null)
+        if (!_isPageActive || _viewModel.IsPaused || _draggingTrash != null)
             return;
 
         FallingTrash? trash = HitTestTrash(point);
@@ -572,6 +607,103 @@ public partial class GamePage : ContentPage
 
         foreach (FallingTrash fallingTrash in _activeTrash.ToList())
             RemoveTrash(fallingTrash);
+    }
+
+    private void OnPointsEarned(int points, string category)
+    {
+        if (!_isPageActive || points <= 0)
+            return;
+
+        MainThread.BeginInvokeOnMainThread(() => _ = ShowPointsEarnedPopupAsync(points, category));
+    }
+
+    private async Task ShowPointsEarnedPopupAsync(int points, string category)
+    {
+        if (SpawningArena == null || _arenaWidth <= 0 || _arenaHeight <= 0)
+            return;
+
+        int column = GetBinColumn(category);
+        if (column < 0)
+            return;
+
+        VisualElement popup = CreateOutlinedPointsLabel($"+{points}");
+        double x = ((column + 0.5) / 4.0) * _arenaWidth - (PointsPopupWidth / 2);
+        double y = _arenaHeight * 0.72;
+
+        AbsoluteLayout.SetLayoutFlags(popup, AbsoluteLayoutFlags.None);
+        AbsoluteLayout.SetLayoutBounds(popup, new Rect(x, y, PointsPopupWidth, PointsPopupHeight));
+        popup.ZIndex = 10;
+        popup.InputTransparent = true;
+
+        SpawningArena.Children.Add(popup);
+
+        try
+        {
+            await Task.WhenAll(
+                popup.FadeTo(0, 900, Easing.CubicOut),
+                popup.TranslateTo(0, -50, 900, Easing.CubicOut));
+        }
+        finally
+        {
+            if (popup.Parent is Layout parent)
+                parent.Children.Remove(popup);
+        }
+    }
+
+    private static int GetBinColumn(string category) => category switch
+    {
+        "Recyclables" => 0,
+        "Biodegradable" => 1,
+        "Biohazard" => 2,
+        "Landfill" => 3,
+        _ => -1
+    };
+
+    private static VisualElement CreateOutlinedPointsLabel(string text)
+    {
+        const string fontFamily = "PixelifySans";
+        const double fontSize = 28;
+
+        var grid = new Grid
+        {
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        foreach (int dx in new[] { -2, -1, 0, 1, 2 })
+        {
+            foreach (int dy in new[] { -2, -1, 0, 1, 2 })
+            {
+                if (dx == 0 && dy == 0)
+                    continue;
+
+                grid.Children.Add(new Label
+                {
+                    Text = text,
+                    FontFamily = fontFamily,
+                    FontSize = fontSize,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.Black,
+                    HorizontalTextAlignment = Microsoft.Maui.TextAlignment.Center,
+                    VerticalTextAlignment = Microsoft.Maui.TextAlignment.Center,
+                    TranslationX = dx,
+                    TranslationY = dy
+                });
+            }
+        }
+
+        grid.Children.Add(new Label
+        {
+            Text = text,
+            FontFamily = fontFamily,
+            FontSize = fontSize,
+            FontAttributes = FontAttributes.Bold,
+            TextColor = Colors.White,
+            HorizontalTextAlignment = Microsoft.Maui.TextAlignment.Center,
+            VerticalTextAlignment = Microsoft.Maui.TextAlignment.Center
+        });
+
+        return grid;
     }
 
     private sealed class FallingTrash

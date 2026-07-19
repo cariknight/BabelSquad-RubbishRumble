@@ -106,7 +106,7 @@
                     Padding="12">
                 <VerticalStackLayout Spacing="4"
                                      VerticalOptions="Center">
-                    <Label Text="ECO TIP"
+                    <Label Text="ECO FACT"
                            FontSize="20"
                            FontFamily="PixelifySans"
                            FontAttributes="Bold"

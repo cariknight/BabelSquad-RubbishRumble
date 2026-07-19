@@ -32,6 +32,14 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _isPaused, value);
         }
 
+        public void PauseForAppInactive()
+        {
+            if (IsPaused || IsGameOver)
+                return;
+
+            IsPaused = true;
+        }
+
         public int CurrentCoins
         {
             get => _currentCoins;
@@ -147,6 +155,8 @@ namespace RubbishRumble.ViewModels
         public ICommand ResumeGameCommand { get; }
         public ICommand QuitGameCommand { get; }
 
+        public event Action<int, string>? PointsEarned;
+
         public GameViewModel()
         {
             _databaseService = new DatabaseService();
@@ -193,11 +203,15 @@ namespace RubbishRumble.ViewModels
 
         public bool TryAutoSortTrash(TrashItem? trash, double trashBottomY, double arenaHeight)
         {
-            if (!_gameService.TryAutoSortTrash(trash, trashBottomY, arenaHeight))
+            int pointsEarned = _gameService.TryAutoSortTrash(trash, trashBottomY, arenaHeight);
+            if (pointsEarned <= 0)
                 return false;
 
             if (!string.IsNullOrWhiteSpace(trash?.Category))
+            {
+                PointsEarned?.Invoke(pointsEarned, trash.Category);
                 _ = FlashBinAsync(trash.Category);
+            }
 
             return true;
         }
@@ -209,7 +223,7 @@ namespace RubbishRumble.ViewModels
             double arenaWidth,
             double arenaHeight)
         {
-            TrashSortOutcome outcome = _gameService.TryManualSortTrash(
+            (TrashSortOutcome outcome, int pointsEarned) = _gameService.TryManualSortTrash(
                 trash,
                 trashCenterX,
                 trashBottomY,
@@ -219,6 +233,7 @@ namespace RubbishRumble.ViewModels
             if (outcome == TrashSortOutcome.Correct
                 && !string.IsNullOrWhiteSpace(trash?.Category))
             {
+                PointsEarned?.Invoke(pointsEarned, trash.Category);
                 _ = FlashBinAsync(trash.Category);
             }
 

@@ -9,9 +9,15 @@ namespace RubbishRumble.Services
 
         private IAudioPlayer? _musicPlayer;
         private bool _isMusicMuted;
+        private bool _isAppActive = true;
+        private bool _musicPausedForInactivity;
 
         public bool IsMusicMuted => _isMusicMuted;
         public bool IsSfxMuted { get; private set; }
+        public bool IsAppActive => _isAppActive;
+
+        public event EventHandler? AppBecameInactive;
+        public event EventHandler? AppBecameActive;
 
         private SettingsService() { }
 
@@ -27,7 +33,7 @@ namespace RubbishRumble.Services
                 _musicPlayer.Loop = true;
                 _musicPlayer.Volume = 0.6;
 
-                if (!_isMusicMuted)
+                if (!_isMusicMuted && _isAppActive)
                     _musicPlayer.Play();
             }
             catch (Exception ex)
@@ -45,8 +51,44 @@ namespace RubbishRumble.Services
 
             if (_isMusicMuted)
                 _musicPlayer.Pause();
-            else
+            else if (_isAppActive)
                 _musicPlayer.Play();
+        }
+
+        public void PauseForAppInactive()
+        {
+            if (!_isAppActive)
+                return;
+
+            _isAppActive = false;
+
+            if (_musicPlayer == null || _isMusicMuted)
+            {
+                AppBecameInactive?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            _musicPlayer.Pause();
+            _musicPausedForInactivity = true;
+            AppBecameInactive?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ResumeFromAppActive()
+        {
+            if (_isAppActive)
+                return;
+
+            _isAppActive = true;
+
+            if (_musicPlayer == null || _isMusicMuted || !_musicPausedForInactivity)
+            {
+                AppBecameActive?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            _musicPlayer.Play();
+            _musicPausedForInactivity = false;
+            AppBecameActive?.Invoke(this, EventArgs.Empty);
         }
 
         public void ToggleSfx()
@@ -56,7 +98,7 @@ namespace RubbishRumble.Services
 
         public async Task PlaySfxAsync(string fileName)
         {
-            if (IsSfxMuted)
+            if (IsSfxMuted || !_isAppActive)
                 return;
 
             try
