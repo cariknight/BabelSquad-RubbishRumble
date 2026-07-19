@@ -145,20 +145,19 @@ namespace RubbishRumble.Services
             if (!IsGameOver)
                 return false;
 
-            return await _inventoryService.GetPowerUpCountAsync(Constants.REVIVE_POWERUP_NAME) > 0;
+            return await _inventoryService.GetPowerUpCountAsync("Revive") > 0;
         }
 
-        public async Task<ReviveResult> TryReviveAsync()
+        public async Task<bool> TryReviveAsync()
         {
             if (!IsGameOver)
-                return ReviveResult.NotGameOver;
+                return false;
 
-            bool used = await _inventoryService.UsePowerUpAsync(Constants.REVIVE_POWERUP_NAME);
-            if (!used)
-                return ReviveResult.NoReviveAvailable;
+            if (!await _inventoryService.UsePowerUpAsync("Revive"))
+                return false;
 
             Revive();
-            return ReviveResult.Success;
+            return true;
         }
 
         public void Revive()
