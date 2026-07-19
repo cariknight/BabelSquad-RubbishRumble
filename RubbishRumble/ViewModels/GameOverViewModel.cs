@@ -130,7 +130,7 @@ namespace RubbishRumble.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Failed to load eco tip: {ex}");
-                EcoTipTitle = "Eco Tip";
+                EcoTipTitle = "Eco Fact";
                 EcoTipText = "Keep sorting trash into the right bins to help the planet!";
             }
         }

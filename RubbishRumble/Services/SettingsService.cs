@@ -9,6 +9,8 @@ namespace RubbishRumble.Services
 
         private IAudioPlayer? _musicPlayer;
         private bool _isMusicMuted;
+        private bool _isAppActive = true;
+        private bool _musicPausedForInactivity;
 
         public bool IsMusicMuted => _isMusicMuted;
         public bool IsSfxMuted { get; private set; }
@@ -27,7 +29,7 @@ namespace RubbishRumble.Services
                 _musicPlayer.Loop = true;
                 _musicPlayer.Volume = 0.6;
 
-                if (!_isMusicMuted)
+                if (!_isMusicMuted && _isAppActive)
                     _musicPlayer.Play();
             }
             catch (Exception ex)
@@ -45,8 +47,36 @@ namespace RubbishRumble.Services
 
             if (_isMusicMuted)
                 _musicPlayer.Pause();
-            else
+            else if (_isAppActive)
                 _musicPlayer.Play();
+        }
+
+        public void PauseForAppInactive()
+        {
+            if (!_isAppActive)
+                return;
+
+            _isAppActive = false;
+
+            if (_musicPlayer == null || _isMusicMuted)
+                return;
+
+            _musicPlayer.Pause();
+            _musicPausedForInactivity = true;
+        }
+
+        public void ResumeFromAppActive()
+        {
+            if (_isAppActive)
+                return;
+
+            _isAppActive = true;
+
+            if (_musicPlayer == null || _isMusicMuted || !_musicPausedForInactivity)
+                return;
+
+            _musicPlayer.Play();
+            _musicPausedForInactivity = false;
         }
 
         public void ToggleSfx()
@@ -56,7 +86,7 @@ namespace RubbishRumble.Services
 
         public async Task PlaySfxAsync(string fileName)
         {
-            if (IsSfxMuted)
+            if (IsSfxMuted || !_isAppActive)
                 return;
 
             try
