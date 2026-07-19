@@ -11,13 +11,10 @@
                HorizontalOptions="Fill"
                VerticalOptions="Fill" />
 
-        <VerticalStackLayout VerticalOptions="Center"
-                             HorizontalOptions="Center"
-                             Spacing="20"
-                             Padding="30,20">
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="50" Padding="30,20">
             <!-- Logo -->
             <Image Source="logo.png"
-                   HeightRequest="120"
+                   HeightRequest="140"
                    MaximumHeightRequest="120"
                    HorizontalOptions="Center"
                    VerticalOptions="Center" />

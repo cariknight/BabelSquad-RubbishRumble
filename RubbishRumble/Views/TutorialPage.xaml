@@ -4,61 +4,67 @@
              x:Class="RubbishRumble.Views.TutorialPage"
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="Auto,*,Auto,Auto,Auto" Padding="30" RowSpacing="20">
-        <!-- How to play title -->
-        <Image Grid.Row="0" 
+    <Grid>
+        <Image Source="mainbg.png"
+               Aspect="AspectFill"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
+        
+        <Grid RowDefinitions="Auto,*,Auto,Auto,Auto" Padding="30" RowSpacing="20">
+            <!-- How to play title -->
+            <Image Grid.Row="0" 
                Source="howtoplay.png" 
                HeightRequest="100" 
                WidthRequest="330"
                HorizontalOptions="Center" 
                VerticalOptions="Start"
                Margin="0,50,0,0"/>
-        <!-- Carousel Part -->
-        <CarouselView x:Name="TutorialCarousel"
+            <!-- Carousel Part -->
+            <CarouselView x:Name="TutorialCarousel"
                       Grid.Row="1"
                       HeightRequest="400"
                       HorizontalScrollBarVisibility="Never">
-            <CarouselView.ItemTemplate>
-                <DataTemplate>
-                    <Border Stroke="#4C3E24"
+                <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="#4C3E24"
                             StrokeThickness="3"
                             StrokeShape="Rectangle"
                             BackgroundColor="#9E4539"
                             Margin="10"
                             Padding="20">
 
-                        <VerticalStackLayout VerticalOptions="Center" Spacing="20">
-                            <Label Text="{Binding Title}" 
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="20">
+                                <Label Text="{Binding Title}" 
                                    FontFamily="PixelifySans"
                                    FontSize="22" 
                                    FontAttributes="Bold" 
                                    TextColor="#FDCBB0" 
                                    HorizontalTextAlignment="Center"/>
 
-                            <Image Source="{Binding ImageUrl}"  
+                                <Image Source="{Binding ImageUrl}"  
                                    HeightRequest="180" 
                                    HorizontalOptions="Center"/>
 
-                            <Label Text="{Binding Description}" 
+                                <Label Text="{Binding Description}" 
                                    FontFamily="PixelifySans"
                                    FontSize="22" 
                                    FontAttributes="Bold" 
                                    TextColor="#FDCBB0" 
                                    HorizontalTextAlignment="Center" 
                                    LineBreakMode="WordWrap"/>
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CarouselView.ItemTemplate>
-        </CarouselView>
-        
-        <VerticalStackLayout Grid.Row="2" Spacing="40" HorizontalOptions="Center">
-            <IndicatorView x:Name="TutorialIndicator"
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+
+            <VerticalStackLayout Grid.Row="2" Spacing="40" HorizontalOptions="Center">
+                <IndicatorView x:Name="TutorialIndicator"
                        IndicatorColor="#4C3E24"
                        SelectedIndicatorColor="#9E4539" 
                        HorizontalOptions="Center"/>
-            <!-- Next Button -->
-            <ImageButton x:Name="NextImageButton"
+                <!-- Next Button -->
+                <ImageButton x:Name="NextImageButton"
                          Source="next.png"  
                          BackgroundColor="#9E4539"
                          BorderColor="#4C3E24"
@@ -69,18 +75,19 @@
                          WidthRequest="200"
                          HorizontalOptions="Center"
                          Clicked="OnNextButtonClicked">
-                <!-- Change to Play button -->
-                <ImageButton.Triggers>
-                    <DataTrigger TargetType="ImageButton"
+                    <!-- Change to Play button -->
+                    <ImageButton.Triggers>
+                        <DataTrigger TargetType="ImageButton"
                          Binding="{Binding Source={x:Reference TutorialCarousel}, Path=Position}"
                          Value="5">
-                        <Setter Property="Source" Value="play.png" />
-                        <Setter Property="BackgroundColor" Value="#9E4539" />
-                        <Setter Property="BorderColor" Value="#4C3E24" />
-                    </DataTrigger>
-                </ImageButton.Triggers>
-                
-            </ImageButton>
-        </VerticalStackLayout>
+                            <Setter Property="Source" Value="play.png" />
+                            <Setter Property="BackgroundColor" Value="#9E4539" />
+                            <Setter Property="BorderColor" Value="#4C3E24" />
+                        </DataTrigger>
+                    </ImageButton.Triggers>
+
+                </ImageButton>
+            </VerticalStackLayout>
+        </Grid>
     </Grid>
 </ContentPage>

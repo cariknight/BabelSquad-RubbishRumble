@@ -52,8 +52,8 @@ namespace RubbishRumble.Views
                     },
                     new TutorialSlide
                     {
-                        Title = "Youùre ready!",
-                        Description = "Letùs keep the world clean together",
+                        Title = "Youù're ready!",
+                        Description = "Let'ùs keep the world clean together",
                         ImageUrl = "tutorial_slide6.png"
                     }
                 };
@@ -65,6 +65,7 @@ namespace RubbishRumble.Views
         {
             int currentPosition = TutorialCarousel.Position;
             int lastPosition = _slides.Count - 1;
+            await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
 
             if (currentPosition < lastPosition)
             {
@@ -73,7 +74,6 @@ namespace RubbishRumble.Views
             }
             else
             {
-                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
                 await Shell.Current.GoToAsync("..");
             }
         }
