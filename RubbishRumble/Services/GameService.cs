@@ -192,15 +192,15 @@ namespace RubbishRumble.Services
 
         private double GetDifficultyScoreMultiplier() => 1 + (DifficultyLevel - 1) * 0.1;
 
-        public void CollectTrash(TrashItem? trash)
+        public int CollectTrash(TrashItem? trash)
         {
             if (trash == null)
-                return;
+                return 0;
 
             Rarity? rarity = _rarities.FirstOrDefault(r => r != null && r.RarityName == trash.Rarity);
 
             if (rarity == null)
-                return;
+                return 0;
 
             int scoreEarned = (int)Math.Round(rarity.PointValue * CurrentScoreMultiplier * GetDifficultyScoreMultiplier());
             Score += scoreEarned;
@@ -211,6 +211,7 @@ namespace RubbishRumble.Services
                 IncreaseDifficulty();
 
             NotifyGameStateChanged();
+            return scoreEarned;
         }
 
         public bool IsTrashInBinZone(double trashBottomY, double arenaHeight)
@@ -242,19 +243,18 @@ namespace RubbishRumble.Services
             return "Landfill";
         }
 
-        public bool TryAutoSortTrash(TrashItem? trash, double trashBottomY, double arenaHeight)
+        public int TryAutoSortTrash(TrashItem? trash, double trashBottomY, double arenaHeight)
         {
             if (!IsAutoSortActive || IsGameOver || trash == null)
-                return false;
+                return 0;
 
             if (!IsTrashInBinZone(trashBottomY, arenaHeight))
-                return false;
+                return 0;
 
-            CollectTrash(trash);
-            return true;
+            return CollectTrash(trash);
         }
 
-        public TrashSortOutcome TryManualSortTrash(
+        public (TrashSortOutcome Outcome, int PointsEarned) TryManualSortTrash(
             TrashItem? trash,
             double trashCenterX,
             double trashBottomY,
@@ -262,7 +262,7 @@ namespace RubbishRumble.Services
             double arenaHeight)
         {
             if (IsGameOver || trash == null)
-                return TrashSortOutcome.NotInBinZone;
+                return (TrashSortOutcome.NotInBinZone, 0);
 
             string? droppedCategory = GetBinCategoryAtPosition(
                 trashCenterX,
@@ -271,18 +271,18 @@ namespace RubbishRumble.Services
                 arenaHeight);
 
             if (droppedCategory == null)
-                return TrashSortOutcome.NotInBinZone;
+                return (TrashSortOutcome.NotInBinZone, 0);
 
             string itemCategory = trash.Category ?? string.Empty;
 
             if (droppedCategory == itemCategory)
             {
-                CollectTrash(trash);
-                return TrashSortOutcome.Correct;
+                int pointsEarned = CollectTrash(trash);
+                return (TrashSortOutcome.Correct, pointsEarned);
             }
 
             LoseLife();
-            return TrashSortOutcome.Incorrect;
+            return (TrashSortOutcome.Incorrect, 0);
         }
 
         public async Task ActivatePowerUpAsync(PowerUp? powerUp)
