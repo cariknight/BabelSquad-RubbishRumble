@@ -3,7 +3,6 @@
     public class Constants
     {
         public const int STARTING_LIVES = 3;
-        public const string REVIVE_POWERUP_NAME = "Revive";
 
         // Spawn Settings
         public const double STARTING_SPAWN_INTERVAL = 3.0;

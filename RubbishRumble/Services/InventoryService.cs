@@ -13,7 +13,7 @@ namespace RubbishRumble.Services
             "Slow",
             "Auto Sort",
             "Speed",
-            Constants.REVIVE_POWERUP_NAME
+            "Revive"
         };
 
         private readonly DatabaseService _database;
