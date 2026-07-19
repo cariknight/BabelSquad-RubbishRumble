@@ -62,7 +62,7 @@ namespace RubbishRumble.Services
                 .GetProperty("definition")
                 .GetString() ?? string.Empty;
 
-            return ($"Word: {char.ToUpper(word[0])}{word[1..]}", Truncate(definition, 220));
+            return ($"Word: {char.ToUpper(word[0])}{word[1..]}", definition);
         }
 
         private async Task<(string Title, string Text)> GetRandomWikipediaSummaryAsync()
@@ -77,15 +77,8 @@ namespace RubbishRumble.Services
             string title = root.GetProperty("title").GetString() ?? topic.Replace('_', ' ');
             string extract = root.GetProperty("extract").GetString() ?? string.Empty;
 
-            return (title, Truncate(extract, 220));
+            return (title, extract);
         }
 
-        private static string Truncate(string text, int maxLength)
-        {
-            if (string.IsNullOrWhiteSpace(text) || text.Length <= maxLength)
-                return text;
-
-            return text[..(maxLength - 3)].TrimEnd() + "...";
-        }
     }
 }
