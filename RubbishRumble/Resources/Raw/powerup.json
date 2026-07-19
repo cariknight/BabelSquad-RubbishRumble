@@ -34,6 +34,15 @@
     "scoreMultiplier": 2.0,
     "speedMultiplier": 2.0,
     "price": 10
+  },
+  {
+    "name": "Revive",
+    "durationSeconds": 0,
+    "effectType": "Revive",
+    "description": "",
+    "scoreMultiplier": 1.0,
+    "speedMultiplier": 1.0,
+    "price": 100
   }
 
 ]

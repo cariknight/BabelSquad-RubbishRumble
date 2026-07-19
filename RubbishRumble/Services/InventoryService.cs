@@ -1,4 +1,5 @@
-﻿using RubbishRumble.Models;
+﻿using RubbishRumble.Helper;
+using RubbishRumble.Models;
 
 namespace RubbishRumble.Services
 {
@@ -11,7 +12,8 @@ namespace RubbishRumble.Services
             "Freeze",
             "Slow",
             "Auto Sort",
-            "Speed"
+            "Speed",
+            Constants.REVIVE_POWERUP_NAME
         };
 
         private readonly DatabaseService _database;
