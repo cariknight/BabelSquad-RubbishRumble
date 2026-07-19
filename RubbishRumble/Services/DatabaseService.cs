@@ -22,6 +22,7 @@ namespace RubbishRumble.Services
             await database.CreateTableAsync<PowerUp>();
             await database.CreateTableAsync<GameSession>();
             await database.CreateTableAsync<Inventory>();
+            await database.CreateTableAsync<LeaderboardEntry>();
 
             await SeedPowerUpsAsync();
             await MigrateLegacySchemaAsync();
@@ -110,10 +111,15 @@ namespace RubbishRumble.Services
             await InitAsync();
 
             Player player = await GetPlayerAsync();
+            int previousHighScore = player.HighestScore;
             player.Coins += coinsEarned;
 
             if (finalScore > player.HighestScore)
                 player.HighestScore = finalScore;
+
+            player.PendingLeaderboardScore = finalScore > previousHighScore
+                ? finalScore
+                : 0;
 
             player.TotalGamesPlayed++;
             await SavePlayerAsync(player);
@@ -127,6 +133,39 @@ namespace RubbishRumble.Services
             });
 
             return player.HighestScore;
+        }
+
+        public async Task<IReadOnlyList<LeaderboardEntry>> GetLeaderboardEntriesAsync(int limit)
+        {
+            await InitAsync();
+
+            List<LeaderboardEntry> entries = await database!.Table<LeaderboardEntry>()
+                .OrderByDescending(e => e.HighestScore)
+                .ThenByDescending(e => e.AchievedAt)
+                .Take(limit)
+                .ToListAsync();
+
+            return entries;
+        }
+
+        public async Task ClearPendingLeaderboardScoreAsync()
+        {
+            await InitAsync();
+
+            Player player = await GetPlayerAsync();
+            player.PendingLeaderboardScore = 0;
+            await SavePlayerAsync(player);
+        }
+
+        public async Task<LeaderboardEntry> SaveLeaderboardEntryAsync(LeaderboardEntry entry)
+        {
+            await InitAsync();
+
+            if (entry.PlayerId == 0)
+                entry.PlayerId = DefaultPlayerId;
+
+            await database!.InsertAsync(entry);
+            return entry;
         }
 
         private async Task SeedPowerUpsAsync()
@@ -161,6 +200,7 @@ namespace RubbishRumble.Services
         {
             await MigrateInventoryAsync();
             await MigrateGameSessionsAsync();
+            await MigrateLeaderboardPendingAsync();
         }
 
         private async Task MigrateInventoryAsync()
@@ -219,6 +259,17 @@ namespace RubbishRumble.Services
                 await database!.ExecuteAsync(
                     "UPDATE GameSession SET PlayerId = ? WHERE PlayerId = 0 OR PlayerId IS NULL",
                     DefaultPlayerId);
+            }
+        }
+
+        private async Task MigrateLeaderboardPendingAsync()
+        {
+            HashSet<string> columns = await GetTableColumnsAsync("Player");
+
+            if (!columns.Contains("PendingLeaderboardScore"))
+            {
+                await database!.ExecuteAsync(
+                    "ALTER TABLE Player ADD COLUMN PendingLeaderboardScore INTEGER NOT NULL DEFAULT 0");
             }
         }
 
