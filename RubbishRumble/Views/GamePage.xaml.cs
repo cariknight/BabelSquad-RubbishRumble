@@ -105,6 +105,7 @@ public partial class GamePage : ContentPage
 
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();
+        SettingsService.Instance.AppBecameInactive += OnAppBecameInactive;
         StartGameLoop();
     }
 
@@ -112,8 +113,37 @@ public partial class GamePage : ContentPage
     {
         _isPageActive = false;
         _draggingTrash = null;
+        SettingsService.Instance.AppBecameInactive -= OnAppBecameInactive;
         StopGameLoop();
         ClearActiveTrash();
+    }
+
+    private void OnAppBecameInactive(object? sender, EventArgs e)
+    {
+        if (!_isPageActive)
+            return;
+
+        _viewModel.PauseForAppInactive();
+        CancelActiveDrag();
+    }
+
+    private void CancelActiveDrag()
+    {
+        if (_draggingTrash == null)
+            return;
+
+        FallingTrash trash = _draggingTrash;
+        _draggingTrash = null;
+        trash.IsDragging = false;
+
+        if (trash.View != null)
+        {
+            trash.View.TranslationX = 0;
+            trash.View.TranslationY = 0;
+            trash.View.ZIndex = 0;
+        }
+
+        SetBounds(trash);
     }
 
     private void StartGameLoop()
@@ -377,7 +407,7 @@ public partial class GamePage : ContentPage
 
     private void StartDragAt(Point point)
     {
-        if (!_isPageActive || _draggingTrash != null)
+        if (!_isPageActive || _viewModel.IsPaused || _draggingTrash != null)
             return;
 
         FallingTrash? trash = HitTestTrash(point);

@@ -14,6 +14,10 @@ namespace RubbishRumble.Services
 
         public bool IsMusicMuted => _isMusicMuted;
         public bool IsSfxMuted { get; private set; }
+        public bool IsAppActive => _isAppActive;
+
+        public event EventHandler? AppBecameInactive;
+        public event EventHandler? AppBecameActive;
 
         private SettingsService() { }
 
@@ -59,10 +63,14 @@ namespace RubbishRumble.Services
             _isAppActive = false;
 
             if (_musicPlayer == null || _isMusicMuted)
+            {
+                AppBecameInactive?.Invoke(this, EventArgs.Empty);
                 return;
+            }
 
             _musicPlayer.Pause();
             _musicPausedForInactivity = true;
+            AppBecameInactive?.Invoke(this, EventArgs.Empty);
         }
 
         public void ResumeFromAppActive()
@@ -73,10 +81,14 @@ namespace RubbishRumble.Services
             _isAppActive = true;
 
             if (_musicPlayer == null || _isMusicMuted || !_musicPausedForInactivity)
+            {
+                AppBecameActive?.Invoke(this, EventArgs.Empty);
                 return;
+            }
 
             _musicPlayer.Play();
             _musicPausedForInactivity = false;
+            AppBecameActive?.Invoke(this, EventArgs.Empty);
         }
 
         public void ToggleSfx()

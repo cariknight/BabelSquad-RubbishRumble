@@ -32,6 +32,14 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _isPaused, value);
         }
 
+        public void PauseForAppInactive()
+        {
+            if (IsPaused || IsGameOver)
+                return;
+
+            IsPaused = true;
+        }
+
         public int CurrentCoins
         {
             get => _currentCoins;
