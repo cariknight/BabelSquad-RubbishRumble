@@ -118,15 +118,13 @@
                            FontAttributes="Bold"
                            TextColor="#FDCBB0"
                            HorizontalTextAlignment="Center"
-                           LineBreakMode="TailTruncation"
-                           MaxLines="1"/>
+                           LineBreakMode="WordWrap"/>
                     <Label Text="{Binding EcoTipText}"
                            FontSize="15"
                            FontFamily="PixelifySans"
                            TextColor="#FDCBB0"
                            HorizontalTextAlignment="Center"
-                           LineBreakMode="WordWrap"
-                           MaxLines="3"/>
+                           LineBreakMode="WordWrap"/>
                 </VerticalStackLayout>
             </Border>
         </ScrollView>

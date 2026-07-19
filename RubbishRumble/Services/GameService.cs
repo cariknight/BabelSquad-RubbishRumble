@@ -140,6 +140,35 @@ namespace RubbishRumble.Services
 
         public bool IsGameOver => Lives <= 0;
 
+        public async Task<bool> CanReviveAsync()
+        {
+            if (!IsGameOver)
+                return false;
+
+            return await _inventoryService.GetPowerUpCountAsync("Revive") > 0;
+        }
+
+        public async Task<bool> TryReviveAsync()
+        {
+            if (!IsGameOver)
+                return false;
+
+            if (!await _inventoryService.UsePowerUpAsync("Revive"))
+                return false;
+
+            Revive();
+            return true;
+        }
+
+        public void Revive()
+        {
+            if (!IsGameOver)
+                return;
+
+            Lives = Constants.STARTING_LIVES;
+            NotifyGameStateChanged();
+        }
+
         public async Task StartGameAsync()
         {
             Player player = await _dataService.GetPlayerAsync();
