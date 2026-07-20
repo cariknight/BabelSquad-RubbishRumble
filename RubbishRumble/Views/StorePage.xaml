@@ -35,168 +35,212 @@
                 </HorizontalStackLayout>
             </Grid>
 
-            <Grid Grid.Row="1" 
-                  RowDefinitions="*, *" 
-                  ColumnDefinitions="*, *" 
-                  RowSpacing="0" 
-                  ColumnSpacing="15">
-                <!-- FREEZE Power Up -->
-                <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="15" VerticalOptions="Center">
-                    <Border Stroke="#4C3E24"
-                        StrokeThickness="3"
-                        StrokeShape="Rectangle"
-                        Background="#9E4539"
-                        Padding="20">
-                        <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                            <Label Text="{Binding FreezeDisplayText}" 
-                                   FontFamily="PixelifySans"
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#FDCBB0" 
-                                   HorizontalTextAlignment="Center"/>
+            <!-- Scrollable power ups -->
+            <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+                <Grid RowDefinitions="Auto, Auto, Auto" 
+                      ColumnDefinitions="*, *" 
+                      RowSpacing="20" 
+                      ColumnSpacing="15">
 
-                            <Image Source="freeze01.png" 
-                               HeightRequest="60" 
-                               WidthRequest="60" 
-                               Aspect="AspectFit"/>
-                            <Label Text="{Binding FreezePriceText}" 
-                               FontFamily="PixelifySans" 
-                               FontSize="18" 
-                               FontAttributes="Bold"
-                               TextColor="#FDCBB0" 
-                               HorizontalTextAlignment="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
-                    <ImageButton Source="buy.png"  
-                             BackgroundColor="#9E4539"
-                             BorderColor="#4C3E24"
-                             BorderWidth="3"
-                             Aspect="AspectFit"
-                             Padding="5"
-                             WidthRequest="100"
-                             HeightRequest="45"
-                             HorizontalOptions="Center"
-                             Command="{Binding BuyFreezeCommand}"/>
-                </VerticalStackLayout>
-                <!-- SLOW Power Up -->
-                <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="15" VerticalOptions="Center">
-                    <Border Stroke="#4C3E24"
-                        StrokeThickness="3"
-                        StrokeShape="Rectangle"
-                        Background="#9E4539"
-                        Padding="20">
-                        <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                            <Label Text="{Binding SlowDisplayText}" 
-                                   FontFamily="PixelifySans"
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#FDCBB0" 
-                                   HorizontalTextAlignment="Center"/>
+                    <!-- FREEZE Power Up -->
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="15" VerticalOptions="Center">
+                        <Border Stroke="#4C3E24"
+                                StrokeThickness="3"
+                                StrokeShape="Rectangle"
+                                Background="#9E4539"
+                                Padding="20">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
+                                <Label Text="{Binding FreezeDisplayText}" 
+                                       FontFamily="PixelifySans"
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
 
-                            <Image Source="slow01.png" 
-                               HeightRequest="60" 
-                               WidthRequest="60" 
-                               Aspect="AspectFit"/>
+                                <Image Source="freeze01.png" 
+                                       HeightRequest="60" 
+                                       WidthRequest="60" 
+                                       Aspect="AspectFit"/>
 
-                            <Label Text="{Binding SlowPriceText}" 
-                               FontFamily="PixelifySans" 
-                               FontSize="18" 
-                               FontAttributes="Bold"
-                               TextColor="#FDCBB0" 
-                               HorizontalTextAlignment="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
-                    <ImageButton Source="buy.png"  
-                             BackgroundColor="#9E4539"
-                             BorderColor="#4C3E24"
-                             BorderWidth="3"
-                             Aspect="AspectFit"
-                             Padding="5"
-                             WidthRequest="100"
-                             HeightRequest="45"
-                             HorizontalOptions="Center"
-                             Command="{Binding BuySlowCommand}"/>
-                </VerticalStackLayout>
-                <!-- AUTO SORT Power Up -->
-                <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" VerticalOptions="Center">
-                    <Border Stroke="#4C3E24"
-                        StrokeThickness="3"
-                        StrokeShape="Rectangle"
-                        Background="#9E4539"
-                        Padding="20">
+                                <Label Text="{Binding FreezePriceText}" 
+                                       FontFamily="PixelifySans" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <ImageButton Source="buy.png"  
+                                     BackgroundColor="#9E4539"
+                                     BorderColor="#4C3E24"
+                                     BorderWidth="3"
+                                     Aspect="AspectFit"
+                                     Padding="5"
+                                     WidthRequest="100"
+                                     HeightRequest="45"
+                                     HorizontalOptions="Center"
+                                     Command="{Binding BuyFreezeCommand}"/>
+                    </VerticalStackLayout>
+                    <!-- SLOW Power Up -->
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="15" VerticalOptions="Center">
+                        <Border Stroke="#4C3E24"
+                                StrokeThickness="3"
+                                StrokeShape="Rectangle"
+                                Background="#9E4539"
+                                Padding="20">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
+                                <Label Text="{Binding SlowDisplayText}" 
+                                       FontFamily="PixelifySans"
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
 
-                        <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                            <Label Text="{Binding AutoSortDisplayText}" 
-                               FontFamily="PixelifySans"
-                               FontSize="18" 
-                               FontAttributes="Bold" 
-                               TextColor="#FDCBB0" 
-                               HorizontalTextAlignment="Center"/>
+                                <Image Source="slow01.png" 
+                                       HeightRequest="60" 
+                                       WidthRequest="60" 
+                                       Aspect="AspectFit"/>
 
-                            <Image Source="autosort01.png" 
-                               HeightRequest="60" 
-                               WidthRequest="60" 
-                               Aspect="AspectFit"/>
+                                <Label Text="{Binding SlowPriceText}" 
+                                       FontFamily="PixelifySans" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <ImageButton Source="buy.png"  
+                                     BackgroundColor="#9E4539"
+                                     BorderColor="#4C3E24"
+                                     BorderWidth="3"
+                                     Aspect="AspectFit"
+                                     Padding="5"
+                                     WidthRequest="100"
+                                     HeightRequest="45"
+                                     HorizontalOptions="Center"
+                                     Command="{Binding BuySlowCommand}"/>
+                    </VerticalStackLayout>
+                    <!-- AUTOSORT Power Up -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" VerticalOptions="Center">
+                        <Border Stroke="#4C3E24"
+                                StrokeThickness="3"
+                                StrokeShape="Rectangle"
+                                Background="#9E4539"
+                                Padding="20">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
+                                <Label Text="{Binding AutoSortDisplayText}" 
+                                       FontFamily="PixelifySans"
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
 
-                            <Label Text="{Binding AutoSortPriceText}" 
-                               FontFamily="PixelifySans" 
-                               FontSize="18" 
-                               FontAttributes="Bold"
-                               TextColor="#FDCBB0" 
-                               HorizontalTextAlignment="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
-                    <ImageButton Source="buy.png"  
-                             BackgroundColor="#9E4539"
-                             BorderColor="#4C3E24"
-                             BorderWidth="3"
-                             Aspect="AspectFit"
-                             Padding="5"
-                             WidthRequest="100"
-                             HeightRequest="45"
-                             HorizontalOptions="Center"
-                             Command="{Binding BuyAutoSortCommand}"/>
-                </VerticalStackLayout>
-                <!-- SPEED Power Up -->
-                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="15" VerticalOptions="Center">
-                    <Border Stroke="#4C3E24"
-                        StrokeThickness="3"
-                        StrokeShape="Rectangle"
-                        Background="#9E4539"
-                        Padding="20">
-                        <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                            <Label Text="{Binding SpeedDisplayText}" 
-                                   FontFamily="PixelifySans"
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="#FDCBB0" 
-                                   HorizontalTextAlignment="Center"/>
+                                <Image Source="autosort01.png" 
+                                       HeightRequest="60" 
+                                       WidthRequest="60" 
+                                       Aspect="AspectFit"/>
 
-                            <Image Source="speed01.png" 
-                               HeightRequest="60" 
-                               WidthRequest="60" 
-                               Aspect="AspectFit"/>
+                                <Label Text="{Binding AutoSortPriceText}" 
+                                       FontFamily="PixelifySans" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <ImageButton Source="buy.png"  
+                                     BackgroundColor="#9E4539"
+                                     BorderColor="#4C3E24"
+                                     BorderWidth="3"
+                                     Aspect="AspectFit"
+                                     Padding="5"
+                                     WidthRequest="100"
+                                     HeightRequest="45"
+                                     HorizontalOptions="Center"
+                                     Command="{Binding BuyAutoSortCommand}"/>
+                    </VerticalStackLayout>
+                    <!-- SPEED Power Up -->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="15" VerticalOptions="Center">
+                        <Border Stroke="#4C3E24"
+                                StrokeThickness="3"
+                                StrokeShape="Rectangle"
+                                Background="#9E4539"
+                                Padding="20">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
+                                <Label Text="{Binding SpeedDisplayText}" 
+                                       FontFamily="PixelifySans"
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
 
-                            <Label Text="{Binding SpeedPriceText}" 
-                               FontFamily="PixelifySans" 
-                               FontSize="18" 
-                               FontAttributes="Bold"
-                               TextColor="#FDCBB0" 
-                               HorizontalTextAlignment="Center"/>
-                        </VerticalStackLayout>
-                    </Border>
-                    <ImageButton Source="buy.png"  
-                             BackgroundColor="#9E4539"
-                             BorderColor="#4C3E24"
-                             BorderWidth="3"
-                             Aspect="AspectFit"
-                             Padding="5"
-                             WidthRequest="100"
-                             HeightRequest="45"
-                             HorizontalOptions="Center"
-                             Command="{Binding BuySpeedCommand}"/>
-                </VerticalStackLayout>
-            </Grid>
+                                <Image Source="speed01.png" 
+                                       HeightRequest="60" 
+                                       WidthRequest="60" 
+                                       Aspect="AspectFit"/>
+
+                                <Label Text="{Binding SpeedPriceText}" 
+                                       FontFamily="PixelifySans" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <ImageButton Source="buy.png"  
+                                     BackgroundColor="#9E4539"
+                                     BorderColor="#4C3E24"
+                                     BorderWidth="3"
+                                     Aspect="AspectFit"
+                                     Padding="5"
+                                     WidthRequest="100"
+                                     HeightRequest="45"
+                                     HorizontalOptions="Center"
+                                     Command="{Binding BuySpeedCommand}"/>
+                    </VerticalStackLayout>
+                    <!-- REVIVE Power Up -->
+                    <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="15" VerticalOptions="Center">
+                        <Border Stroke="#4C3E24"
+                                StrokeThickness="3"
+                                StrokeShape="Rectangle"
+                                Background="#9E4539"
+                                Padding="20"
+                                WidthRequest="180">
+                            <!-- TOFIX: Correct revive logic -->
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
+                                <Label Text="{Binding SpeedDisplayText}" 
+                                       FontFamily="PixelifySans"
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
+
+                                <Image Source="revive.png" 
+                                       HeightRequest="60" 
+                                       WidthRequest="60" 
+                                       Aspect="AspectFit"/>
+
+                                <Label Text="{Binding SpeedPriceText}" 
+                                       FontFamily="PixelifySans" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <ImageButton Source="buy.png"  
+                                     BackgroundColor="#9E4539"
+                                     BorderColor="#4C3E24"
+                                     BorderWidth="3"
+                                     Aspect="AspectFit"
+                                     Padding="5"
+                                     WidthRequest="100"
+                                     HeightRequest="45"
+                                     HorizontalOptions="Center"
+                                     Command="{Binding BuyReviveCommand}"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </ScrollView>
             <!-- Exit button -->
             <ImageButton Grid.Row="2"
                      Source="exit.png"  
