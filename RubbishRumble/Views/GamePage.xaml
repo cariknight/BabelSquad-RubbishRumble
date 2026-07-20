@@ -358,33 +358,43 @@
             </Grid>
         </Grid>
         <!-- PAUSE Overlay  -->
-        <Grid BackgroundColor="#FDCBB0" IsVisible="{Binding IsPaused}" VerticalOptions="FillAndExpand">
-            <Border Stroke="#4C3E24"
-                    StrokeThickness="3"
-                    StrokeShape="Rectangle"
-                    BackgroundColor="#9E4539"
-                    Padding="30"
-                    WidthRequest="240"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center">
+        <Grid BackgroundColor="#FDCBB0" IsVisible="{Binding IsPaused}">
+            <Grid RowDefinitions="*, Auto, *" Padding="50">
+                <Image Grid.Row="0" 
+                       Source="pausetext.png"
+                       HeightRequest="65" 
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
 
-                <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
-                    <ImageButton Source="resume.png"
-                                 Command="{Binding ResumeGameCommand}"
-                                 HeightRequest="50"
-                                 Aspect="AspectFit"
-                                 HorizontalOptions="Center"
-                                 BackgroundColor="Transparent"/>
+                <Border Grid.Row="1"
+                        Stroke="#4C3E24"
+                        StrokeThickness="3"
+                        StrokeShape="Rectangle"
+                        BackgroundColor="#9E4539"
+                        Padding="30"
+                        WidthRequest="240"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
 
-                    <ImageButton Source="quit.png"
-                                 Command="{Binding QuitGameCommand}"
-                                 HeightRequest="50"
-                                 Aspect="AspectFit"
-                                 HorizontalOptions="Center"
-                                 BackgroundColor="Transparent"/>
-                </VerticalStackLayout>
-            </Border>
+                    <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+                        <ImageButton Source="resume.png"
+                             Command="{Binding ResumeGameCommand}"
+                             HeightRequest="50"
+                             Aspect="AspectFit"
+                             HorizontalOptions="Center"
+                             BackgroundColor="Transparent"/>
+
+                        <ImageButton Source="quit.png"
+                             Command="{Binding QuitGameCommand}"
+                             HeightRequest="50"
+                             Aspect="AspectFit"
+                             HorizontalOptions="Center"
+                             BackgroundColor="Transparent"/>
+                    </VerticalStackLayout>
+                </Border>
+                <Grid Grid.Row="2" />
+            </Grid>
         </Grid>
-
     </Grid>
 </ContentPage>
