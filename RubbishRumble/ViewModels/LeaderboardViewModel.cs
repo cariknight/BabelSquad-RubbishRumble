@@ -37,7 +37,6 @@ namespace RubbishRumble.ViewModels
         {
             AddProfileCommand = new Command(OnAddProfile);
             DeleteProfileCommand = new Command<UserProfileModel>(OnDeleteProfile);
-
             LoadAvatarOptions();
             LoadMockProfiles();
         }

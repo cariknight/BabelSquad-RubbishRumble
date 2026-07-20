@@ -4,6 +4,7 @@
              xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
              xmlns:Models="clr-namespace:RubbishRumble.ViewModels"
              x:Class="RubbishRumble.Views.LeaderboardPage"
+             x:Name="LeaderboardPageRef"
              x:DataType="ViewModels:LeaderboardViewModel"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#FDCBB0">
@@ -144,10 +145,10 @@
                                                    FontSize="14" 
                                                    FontAttributes="Bold" 
                                                    VerticalOptions="Center"/>
-                                            <!-- TOFIX: Make delete command work & add delete asset -->
+                                            <!-- TOFIX: Add delete asset -->
                                             <ImageButton Grid.Column="3" 
                                                          Source="pause.png"
-                                                         Command="{Binding BindingContext.DeleteProfileCommand, Source={RelativeSource AncestorType={x:Type ViewModels:LeaderboardViewModel}}}"
+                                                         Command="{Binding BindingContext.DeleteProfileCommand, Source={x:Reference LeaderboardPageRef}}"
                                                          CommandParameter="{Binding .}"
                                                          HeightRequest="28"
                                                          WidthRequest="28"
