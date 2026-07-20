@@ -79,7 +79,7 @@
                     <ImageButton.Triggers>
                         <DataTrigger TargetType="ImageButton"
                          Binding="{Binding Source={x:Reference TutorialCarousel}, Path=Position}"
-                         Value="5">
+                         Value="9">
                             <Setter Property="Source" Value="play.png" />
                             <Setter Property="BackgroundColor" Value="#9E4539" />
                             <Setter Property="BorderColor" Value="#4C3E24" />

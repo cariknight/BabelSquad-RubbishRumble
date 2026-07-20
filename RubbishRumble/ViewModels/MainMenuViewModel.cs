@@ -14,13 +14,14 @@ namespace RubbishRumble.ViewModels
         public ICommand SettingsCommand { get; }
         public ICommand StoreCommand { get; }
         public ICommand TutorialCommand { get; }
-
+        public ICommand LeaderboardCommand { get; }
         public MainMenuViewModel()
         {
             PlayCommand = new Command(OnPlayExecuted);
             SettingsCommand = new Command(OnSettingsExecuted);
             StoreCommand = new Command(OnStoreExecuted);
             TutorialCommand = new Command(OnTutorialExecuted);
+            LeaderboardCommand = new Command(OnLeaderboardExecuted);
         }
 
         private async Task NavigateAsync(string route)
@@ -50,6 +51,10 @@ namespace RubbishRumble.ViewModels
         private async void OnStoreExecuted()
         {
             await NavigateAsync("StorePage");
+        }
+        private async void OnLeaderboardExecuted()
+        {
+            await NavigateAsync("LeaderboardPage");
         }
     }
 }

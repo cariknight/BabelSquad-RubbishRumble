@@ -1,4 +1,6 @@
-﻿namespace RubbishRumble
+﻿using RubbishRumble.Views;
+
+namespace RubbishRumble
 {
     public partial class AppShell : Shell
     {
@@ -10,6 +12,7 @@
             Routing.RegisterRoute("StorePage", typeof(Views.StorePage));
             Routing.RegisterRoute("SettingsPage", typeof(Views.SettingsPage));
             Routing.RegisterRoute("GameOverPage", typeof(Views.GameOverPage));
+            Routing.RegisterRoute("LeaderboardPage", typeof(LeaderboardPage));
         }
     }
 }
