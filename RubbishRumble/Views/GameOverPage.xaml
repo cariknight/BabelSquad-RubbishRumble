@@ -95,17 +95,13 @@
                          HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
-        <ScrollView Grid.Row="1"
-                    VerticalScrollBarVisibility="Default"
-                    HorizontalScrollBarVisibility="Never"
-                    VerticalOptions="Fill">
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Default" HorizontalScrollBarVisibility="Never" VerticalOptions="Fill">
             <Border Stroke="#4C3E24"
                     StrokeThickness="2"
                     StrokeShape="Rectangle"
                     BackgroundColor="#9E4539"
                     Padding="12">
-                <VerticalStackLayout Spacing="4"
-                                     VerticalOptions="Center">
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
                     <Label Text="ECO FACT"
                            FontSize="20"
                            FontFamily="PixelifySans"
