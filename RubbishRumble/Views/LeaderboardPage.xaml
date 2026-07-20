@@ -98,8 +98,8 @@
                                  BorderWidth="3"
                                  Aspect="AspectFit"
                                  Padding="5"
-                                 HeightRequest="40"
-                                 WidthRequest="140"
+                                 HeightRequest="50"
+                                 WidthRequest="160"
                                  HorizontalOptions="Center"/>
 
                 <Border Stroke="#4C3E24"
