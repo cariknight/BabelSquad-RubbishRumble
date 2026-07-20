@@ -51,15 +51,23 @@
                              HeightRequest="60"
                              WidthRequest="270" />
             </VerticalStackLayout>
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                <!-- Tutorial -->
+                <ImageButton Source="tutorial.png"
+                             Command="{Binding TutorialCommand}"
+                             BackgroundColor="Transparent"
+                             HeightRequest="75"
+                             WidthRequest="75"
+                             CornerRadius="40" />
 
-            <!-- Tutorial -->
-            <ImageButton Source="tutorial.png"
-                         Command="{Binding TutorialCommand}"
-                         BackgroundColor="Transparent"
-                         HorizontalOptions="Center"
-                         HeightRequest="85"
-                         WidthRequest="85"
-                         CornerRadius="40" />
+                <!-- Leaderboard -->
+                <ImageButton Source="leaderboard.png"
+                             BackgroundColor="Transparent"
+                             Command="{Binding LeaderboardCommand}"
+                             HeightRequest="75"
+                             WidthRequest="75"
+                             CornerRadius="40" />
+            </HorizontalStackLayout>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
