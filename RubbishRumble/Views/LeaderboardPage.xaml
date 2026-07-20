@@ -91,8 +91,7 @@
                         </CollectionView>
                     </VerticalStackLayout>
                 </Border>
-                <!-- TOFIX: Change into Add text asset -->
-                <ImageButton Source="exit.png"
+                <ImageButton Source="add.png"
                                  Command="{Binding AddProfileCommand}"
                                  BackgroundColor="#9E4539"
                                  BorderColor="#4C3E24"
@@ -145,9 +144,8 @@
                                                    FontSize="14" 
                                                    FontAttributes="Bold" 
                                                    VerticalOptions="Center"/>
-                                            <!-- TOFIX: Add delete asset -->
                                             <ImageButton Grid.Column="3" 
-                                                         Source="pause.png"
+                                                         Source="delete.png"
                                                          Command="{Binding BindingContext.DeleteProfileCommand, Source={x:Reference LeaderboardPageRef}}"
                                                          CommandParameter="{Binding .}"
                                                          HeightRequest="28"
