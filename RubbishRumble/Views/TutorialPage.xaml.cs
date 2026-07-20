@@ -47,13 +47,37 @@ namespace RubbishRumble.Views
                     new TutorialSlide
                     {
                         Title = "Earn coins per item",
-                        Description = "Epic trash gives\r\nmore points",
+                        Description = "Points depend on\r\ntrash rarity",
                         ImageUrl = "tutorial_slide5.png"
                     },
                     new TutorialSlide
                     {
-                        Title = "Youù're ready!",
-                        Description = "Let'ùs keep the world clean together",
+                        Title = "Common Trash =\r\nBasic Points",
+                        Description = "Worth 5 coins\r\nFound most often",
+                        ImageUrl = "tutorial_common.png"
+                    },
+                    new TutorialSlide
+                    {
+                        Title = "Uncommon Trash = Better Points",
+                        Description = "Worth 10 coins\r\nAppears sometimes",
+                        ImageUrl = "tutorial_uncommon.png"
+                    },
+                    new TutorialSlide
+                    {
+                        Title = "Rare Trash = Big Points",
+                        Description = "Worth 20 coins\r\nHard to find",
+                        ImageUrl = "tutorial_rare.png"
+                    },
+                    new TutorialSlide
+                    {
+                        Title = "Epic Trash = Jackpot!",
+                        Description = "Worth 50 coins\r\nExtremely rare",
+                        ImageUrl = "tutorial_epic.png"
+                    },
+                    new TutorialSlide
+                    {
+                        Title = "You're ready!",
+                        Description = "Let's keep the world clean together",
                         ImageUrl = "tutorial_slide6.png"
                     }
                 };
