@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
 using RubbishRumble.ViewModels;
+using RubbishRumble.Services;
 
 namespace RubbishRumble.Views;
 
@@ -31,6 +32,7 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await SettingsService.Instance.PlaySfxAsync("gameover.mp3");
         RemoveGamePageFromStack();
         await _viewModel.SaveRewardsAsync();
         await _viewModel.LoadEcoTipAsync();

@@ -93,7 +93,7 @@
                 <ImageButton Source="exit.png"
                              Command="{Binding ExitCommand}"
                              BackgroundColor="Transparent"
-                             Padding="5"
+                             Padding="3"
                              Aspect="AspectFit"/>
             </Border>
         </VerticalStackLayout>

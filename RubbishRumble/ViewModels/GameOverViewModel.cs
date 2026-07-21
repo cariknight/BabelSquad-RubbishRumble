@@ -92,7 +92,6 @@ namespace RubbishRumble.ViewModels
         public GameOverViewModel()
         {
             ExitCommand = new Command(async () => await OnExitExecutedAsync());
-            _ = SettingsService.Instance.PlaySfxAsync("gameover.mp3");
         }
 
         public async Task SaveRewardsAsync()

@@ -106,7 +106,7 @@ public partial class GamePage : ContentPage
         {
             System.Diagnostics.Debug.WriteLine($"Game init failed: {ex}");
         }
-
+        await SettingsService.Instance.PlayMusicAsync("gamemusic.mp3");
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();
         SettingsService.Instance.AppBecameInactive += OnAppBecameInactive;
@@ -121,6 +121,7 @@ public partial class GamePage : ContentPage
         SettingsService.Instance.AppBecameInactive -= OnAppBecameInactive;
         StopGameLoop();
         ClearActiveTrash();
+
     }
 
     private void OnAppBecameInactive(object? sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using Plugin.Maui.Audio;
+﻿using Microsoft.Maui.Storage;
+using Plugin.Maui.Audio;
 
 namespace RubbishRumble.Services
 {
@@ -8,6 +9,7 @@ namespace RubbishRumble.Services
         public static SettingsService Instance => _instance ??= new SettingsService();
 
         private IAudioPlayer? _musicPlayer;
+        private string _currentMusicFile = string.Empty;
         private bool _isMusicMuted;
         private bool _isAppActive = true;
         private bool _musicPausedForInactivity;
@@ -21,25 +23,53 @@ namespace RubbishRumble.Services
 
         private SettingsService() { }
 
-        public async Task InitializeMusicAsync()
+        public async Task PlayMusicAsync(string fileName)
         {
-            if (_musicPlayer != null)
+            if (_currentMusicFile == fileName && _musicPlayer != null)
                 return;
-
             try
             {
-                var audioStream = await FileSystem.OpenAppPackageFileAsync("bgmusic.mp3");
+                if (_musicPlayer != null)
+                {
+                    if (_musicPlayer.IsPlaying)
+                    {
+                        _musicPlayer.Pause();
+                        _musicPlayer.Stop();
+                    }
+                    _musicPlayer.Dispose();
+                    _musicPlayer = null;
+                }
+
+                _currentMusicFile = fileName;
+
+                var audioStream = await FileSystem.OpenAppPackageFileAsync(fileName);
                 _musicPlayer = AudioManager.Current.CreatePlayer(audioStream);
                 _musicPlayer.Loop = true;
                 _musicPlayer.Volume = 0.6;
 
                 if (!_isMusicMuted && _isAppActive)
+                {
                     _musicPlayer.Play();
+                }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to initialize music: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Failed to load music ({fileName}): {ex.Message}");
             }
+        }
+        public void StopMusic()
+        {
+            if (_musicPlayer != null)
+            {
+                _musicPlayer.Stop();
+                _musicPlayer.Dispose();
+                _musicPlayer = null;
+            }
+            _currentMusicFile = string.Empty;
+        }
+        public async Task InitializeMusicAsync()
+        {
+            await PlayMusicAsync("bgmusic.mp3"); // default game music
         }
 
         public void ToggleMusic()
