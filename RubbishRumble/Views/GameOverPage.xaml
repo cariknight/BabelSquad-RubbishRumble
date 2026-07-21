@@ -83,17 +83,20 @@
             </Border>
 
             <!-- Exit button -->
-            <ImageButton Source="exit.png"
-                         Command="{Binding ExitCommand}"
-                         BackgroundColor="#9E4539"
-                         BorderColor="#4C3E24"
-                         BorderWidth="3"
-                         Padding="5"
-                         Aspect="AspectFit"
-                         HeightRequest="50"
-                         WidthRequest="160"/>
+            <Border Stroke="#4C3E24"
+                    StrokeThickness="3"
+                    StrokeShape="Rectangle"
+                    BackgroundColor="#9E4539"
+                    HeightRequest="50"
+                    WidthRequest="160"
+                    HorizontalOptions="Center">
+                <ImageButton Source="exit.png"
+                             Command="{Binding ExitCommand}"
+                             BackgroundColor="Transparent"
+                             Padding="5"
+                             Aspect="AspectFit"/>
+            </Border>
         </VerticalStackLayout>
-
         <!-- Eco facts area -->
         <Border Grid.Row="1"
             Stroke="#4C3E24"
