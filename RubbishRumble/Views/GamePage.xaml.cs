@@ -626,6 +626,7 @@ public partial class GamePage : ContentPage
         if (column < 0)
             return;
 
+        await SettingsService.Instance.PlaySfxAsync("addcoin.mp3");
         VisualElement popup = CreateOutlinedPointsLabel($"+{points}");
         double x = ((column + 0.5) / 4.0) * _arenaWidth - (PointsPopupWidth / 2);
         double y = _arenaHeight * 0.72;
