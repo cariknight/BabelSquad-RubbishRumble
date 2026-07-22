@@ -427,7 +427,7 @@
                              BackgroundColor="Transparent"/>
 
                         <ImageButton Source="quit.png"
-                             Command="{Binding QuitGameCommand}"
+                             Clicked="OnQuitButtonClicked"
                              HeightRequest="50"
                              Aspect="AspectFit"
                              HorizontalOptions="Center"

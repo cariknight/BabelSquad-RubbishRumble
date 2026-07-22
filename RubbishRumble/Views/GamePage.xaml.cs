@@ -133,6 +133,26 @@ public partial class GamePage : ContentPage
         CancelActiveDrag();
     }
 
+    private async void OnQuitButtonClicked(object sender, EventArgs e)
+    {
+        if (!_isPageActive || Shell.Current == null)
+            return;
+
+        _viewModel.PrepareToQuit();
+        StopGameLoop();
+        ClearActiveTrash();
+        CancelActiveDrag();
+
+        try
+        {
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Quit game failed: {ex}");
+        }
+    }
+
     private void CancelActiveDrag()
     {
         if (_draggingTrash == null)

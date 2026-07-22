@@ -31,12 +31,10 @@ namespace RubbishRumble.ViewModels
         public ObservableCollection<UserProfileModel> SavedProfiles { get; } = new();
 
         public ICommand AddProfileCommand { get; }
-        public ICommand DeleteProfileCommand { get; }
 
         public LeaderboardViewModel()
         {
             AddProfileCommand = new Command(OnAddProfile);
-            DeleteProfileCommand = new Command<UserProfileModel>(OnDeleteProfile);
             LoadAvatarOptions();
             LoadMockProfiles();
         }
@@ -66,14 +64,6 @@ namespace RubbishRumble.ViewModels
 
             SavedProfiles.Add(newProfile);
             PlayerNameText = string.Empty;
-        }
-
-        private void OnDeleteProfile(UserProfileModel profile)
-        {
-            if (profile != null && SavedProfiles.Contains(profile))
-            {
-                SavedProfiles.Remove(profile);
-            }
         }
 
         // Placeholder for high scores

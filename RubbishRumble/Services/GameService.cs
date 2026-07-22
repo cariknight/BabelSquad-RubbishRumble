@@ -358,6 +358,11 @@ namespace RubbishRumble.Services
             IsAutoSortActive = powerUp.EffectType == "AutoSort";
         }
 
+        public void ResetForExit()
+        {
+            ClearPowerUpState();
+        }
+
         private void ClearPowerUpState()
         {
             _powerUpCts?.Cancel();

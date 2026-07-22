@@ -4,7 +4,6 @@
              xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
              xmlns:Models="clr-namespace:RubbishRumble.ViewModels"
              x:Class="RubbishRumble.Views.LeaderboardPage"
-             x:Name="LeaderboardPageRef"
              x:DataType="ViewModels:LeaderboardViewModel"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#FDCBB0">
@@ -122,7 +121,7 @@
                             <CollectionView ItemsSource="{Binding SavedProfiles}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="Models:UserProfileModel">
-                                        <Grid ColumnDefinitions="Auto, *, Auto, Auto" ColumnSpacing="20" Padding="5" VerticalOptions="Center">
+                                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="20" Padding="5" VerticalOptions="Center">
 
                                             <Image Grid.Column="0" 
                                                    Source="{Binding AvatarImage}" 
@@ -144,14 +143,6 @@
                                                    FontSize="14" 
                                                    FontAttributes="Bold" 
                                                    VerticalOptions="Center"/>
-                                            <ImageButton Grid.Column="3" 
-                                                         Source="delete.png"
-                                                         Command="{Binding BindingContext.DeleteProfileCommand, Source={x:Reference LeaderboardPageRef}}"
-                                                         CommandParameter="{Binding .}"
-                                                         HeightRequest="28"
-                                                         WidthRequest="28"
-                                                         BackgroundColor="Transparent"
-                                                         VerticalOptions="Center"/>
                                         </Grid>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>

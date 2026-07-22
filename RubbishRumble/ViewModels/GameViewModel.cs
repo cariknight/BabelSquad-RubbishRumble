@@ -25,6 +25,7 @@ namespace RubbishRumble.ViewModels
         private bool _isLandfillBinOpen;
         private bool _gameOverHandled;
         private bool _isPaused;
+        private bool _isExiting;
 
         public bool IsPaused
         {
@@ -153,7 +154,6 @@ namespace RubbishRumble.ViewModels
         public ICommand UseSpeedPowerCommand { get; }
         public ICommand PauseGameCommand { get; }
         public ICommand ResumeGameCommand { get; }
-        public ICommand QuitGameCommand { get; }
 
         public event Action<int, string>? PointsEarned;
 
@@ -171,11 +171,22 @@ namespace RubbishRumble.ViewModels
             UseSpeedPowerCommand = new Command(async () => await UsePowerUpAsync("Speed"));
             PauseGameCommand = new Command(() => IsPaused = true);
             ResumeGameCommand = new Command(() => IsPaused = false);
-            QuitGameCommand = new Command(async () => await QuitGameAsync());
+        }
+
+        public void PrepareToQuit()
+        {
+            if (_isExiting)
+                return;
+
+            _isExiting = true;
+            _gameOverHandled = true;
+            IsPaused = false;
+            _gameService.ResetForExit();
         }
 
         public async Task InitializeAsync()
         {
+            _isExiting = false;
             _gameOverHandled = false;
             IsPaused = false;
             await _powerUpService.InitializeAsync();
@@ -263,6 +274,9 @@ namespace RubbishRumble.ViewModels
 
         private void SyncGameState()
         {
+            if (_isExiting)
+                return;
+
             CurrentLevel = _gameService.DifficultyLevel;
             CurrentScore = _gameService.Score;
             CurrentLives = _gameService.Lives;
@@ -347,16 +361,11 @@ namespace RubbishRumble.ViewModels
             await _gameService.ActivatePowerUpAsync(powerUp);
         }
 
-        private async Task QuitGameAsync()
-        {
-            if (Shell.Current == null)
-                return;
-
-            await Shell.Current.GoToAsync("//MainMenuPage");
-        }
-
         private async Task FlashBinAsync(string category)
         {
+            if (_isExiting)
+                return;
+
             switch (category)
             {
                 case "Recyclables":
@@ -374,6 +383,9 @@ namespace RubbishRumble.ViewModels
             }
 
             await Task.Delay(250);
+
+            if (_isExiting)
+                return;
 
             IsRecycleBinOpen = false;
             IsBioBinOpen = false;
