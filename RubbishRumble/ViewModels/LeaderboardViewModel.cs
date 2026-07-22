@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using RubbishRumble.Models;
 using RubbishRumble.Services;
 
@@ -13,73 +6,33 @@ namespace RubbishRumble.ViewModels
 {
     public class LeaderboardViewModel : BaseViewModel
     {
-        private string _playerNameText = string.Empty;
-        public string PlayerNameText
-        {
-            get => _playerNameText;
-            set => SetProperty(ref _playerNameText, value);
-        }
+        private readonly LeaderboardService _leaderboardService = new();
 
-        private string _selectedAvatarImage = "biodegradable_01.png";
-        public string SelectedAvatarImage
-        {
-            get => _selectedAvatarImage;
-            set => SetProperty(ref _selectedAvatarImage, value);
-        }
-
-        public ObservableCollection<string> TrashAvatars { get; } = new();
         public ObservableCollection<UserProfileModel> SavedProfiles { get; } = new();
 
-        public ICommand AddProfileCommand { get; }
-        public ICommand DeleteProfileCommand { get; }
-
-        public LeaderboardViewModel()
+        public async Task InitializeAsync()
         {
-            AddProfileCommand = new Command(OnAddProfile);
-            DeleteProfileCommand = new Command<UserProfileModel>(OnDeleteProfile);
-            LoadAvatarOptions();
-            LoadMockProfiles();
+            await LoadLeaderboardAsync();
         }
 
-        private void LoadAvatarOptions()
+        private async Task LoadLeaderboardAsync()
         {
-            TrashAvatars.Add("biodegradable_01.png");
-            TrashAvatars.Add("recyclables_08.png");
-            TrashAvatars.Add("biohazard_09.png");
-            TrashAvatars.Add("landfall_06.png");
+            IReadOnlyList<LeaderboardEntry> entries = await _leaderboardService.GetLeaderboardAsync();
 
-            // Default profile
-            SelectedAvatarImage = TrashAvatars.FirstOrDefault() ?? "biodegradable_01.png";
-        }
+            SavedProfiles.Clear();
 
-        private void OnAddProfile()
-        {
-            if (string.IsNullOrWhiteSpace(PlayerNameText))
-                return;
-
-            var newProfile = new UserProfileModel
+            foreach (LeaderboardEntry entry in entries)
             {
-                Name = PlayerNameText.Trim(),
-                AvatarImage = SelectedAvatarImage,
-                HighScore = 0
-            };
-
-            SavedProfiles.Add(newProfile);
-            PlayerNameText = string.Empty;
-        }
-
-        private void OnDeleteProfile(UserProfileModel profile)
-        {
-            if (profile != null && SavedProfiles.Contains(profile))
-            {
-                SavedProfiles.Remove(profile);
+                SavedProfiles.Add(new UserProfileModel
+                {
+                    Name = entry.PlayerName,
+                    AvatarImage = _leaderboardService.GetAvatarImagePath(entry.AvatarId),
+                    HighScore = entry.HighestScore,
+                    PlayedDate = entry.AchievedAt == default
+                        ? string.Empty
+                        : entry.AchievedAt.ToString("MMM d, yyyy")
+                });
             }
-        }
-
-        // Placeholder for high scores
-        private void LoadMockProfiles()
-        {
-            SavedProfiles.Add(new UserProfileModel { Name = "Rubbish Rumble", AvatarImage = "biodegradable_01.png", HighScore = 1250 });
         }
     }
 
@@ -88,5 +41,6 @@ namespace RubbishRumble.ViewModels
         public string Name { get; set; } = string.Empty;
         public string AvatarImage { get; set; } = string.Empty;
         public int HighScore { get; set; }
+        public string PlayedDate { get; set; } = string.Empty;
     }
 }

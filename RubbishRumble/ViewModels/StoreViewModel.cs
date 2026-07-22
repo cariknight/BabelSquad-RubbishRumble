@@ -14,10 +14,12 @@ namespace RubbishRumble.ViewModels
         private int _ownedSlow;
         private int _ownedAutoSort;
         private int _ownedSpeed;
+        private int _ownedRevive;
         private int _freezePrice;
         private int _slowPrice;
         private int _autoSortPrice;
         private int _speedPrice;
+        private int _revivePrice;
 
         public int Coins
         {
@@ -49,6 +51,16 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _ownedSpeed, value);
         }
 
+        public int OwnedRevive
+        {
+            get => _ownedRevive;
+            private set
+            {
+                if (SetProperty(ref _ownedRevive, value))
+                    OnPropertyChanged(nameof(ReviveDisplayText));
+            }
+        }
+
         public int FreezePrice
         {
             get => _freezePrice;
@@ -73,10 +85,32 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _speedPrice, value);
         }
 
+        public int RevivePrice
+        {
+            get => _revivePrice;
+            private set
+            {
+                if (SetProperty(ref _revivePrice, value))
+                    OnPropertyChanged(nameof(RevivePriceText));
+            }
+        }
+
+        public string FreezeDisplayText => $"Freeze\nOwned: {OwnedFreeze}";
+        public string SlowDisplayText => $"Slow\nOwned: {OwnedSlow}";
+        public string AutoSortDisplayText => $"Auto Sort\nOwned: {OwnedAutoSort}";
+        public string SpeedDisplayText => $"Speed\nOwned: {OwnedSpeed}";
+        public string ReviveDisplayText => $"Revive\nOwned: {OwnedRevive}";
+        public string FreezePriceText => $"Coins: {FreezePrice}";
+        public string SlowPriceText => $"Coins: {SlowPrice}";
+        public string AutoSortPriceText => $"Coins: {AutoSortPrice}";
+        public string SpeedPriceText => $"Coins: {SpeedPrice}";
+        public string RevivePriceText => $"Coins: {RevivePrice}";
+
         public ICommand BuyFreezeCommand { get; }
         public ICommand BuySlowCommand { get; }
         public ICommand BuyAutoSortCommand { get; }
         public ICommand BuySpeedCommand { get; }
+        public ICommand BuyReviveCommand { get; }
 
         public StoreViewModel()
         {
@@ -89,6 +123,7 @@ namespace RubbishRumble.ViewModels
             BuySlowCommand = new Command(async () => await BuyPowerUpAsync("Slow"));
             BuyAutoSortCommand = new Command(async () => await BuyPowerUpAsync("Auto Sort"));
             BuySpeedCommand = new Command(async () => await BuyPowerUpAsync("Speed"));
+            BuyReviveCommand = new Command(async () => await BuyPowerUpAsync("Revive"));
         }
 
         public async Task InitializeAsync()
@@ -116,6 +151,9 @@ namespace RubbishRumble.ViewModels
                     case "Speed":
                         SpeedPrice = powerUp.Price;
                         break;
+                    case "Revive":
+                        RevivePrice = powerUp.Price;
+                        break;
                 }
             }
         }
@@ -127,6 +165,7 @@ namespace RubbishRumble.ViewModels
             OwnedSlow = await _inventoryService.GetPowerUpCountAsync("Slow");
             OwnedAutoSort = await _inventoryService.GetPowerUpCountAsync("Auto Sort");
             OwnedSpeed = await _inventoryService.GetPowerUpCountAsync("Speed");
+            OwnedRevive = await _inventoryService.GetPowerUpCountAsync("Revive");
         }
 
         private async Task BuyPowerUpAsync(string powerUpName)

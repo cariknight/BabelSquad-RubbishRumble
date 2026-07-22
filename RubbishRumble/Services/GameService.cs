@@ -174,6 +174,7 @@ namespace RubbishRumble.Services
             Player player = await _dataService.GetPlayerAsync();
 
             await _inventoryService.ApplyBeginnerPackAsync(player);
+            await _inventoryService.EnsureBeginnerRevivesAsync(player);
 
             await LoadGameDataAsync();
 
@@ -356,6 +357,11 @@ namespace RubbishRumble.Services
             CurrentScoreMultiplier = powerUp.ScoreMultiplier;
             CurrentSpeedMultiplier = powerUp.SpeedMultiplier;
             IsAutoSortActive = powerUp.EffectType == "AutoSort";
+        }
+
+        public void ResetForExit()
+        {
+            ClearPowerUpState();
         }
 
         private void ClearPowerUpState()

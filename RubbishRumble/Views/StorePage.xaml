@@ -292,30 +292,14 @@
                                 Background="#9E4539"
                                 Padding="20"
                                 WidthRequest="180">
-                            <!-- TOFIX: Correct revive logic -->
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                                <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
-                                    <Label Text="Revive" 
-                                           FontFamily="PixelifySans"
-                                           FontSize="18" 
-                                           FontAttributes="Bold" 
-                                           TextColor="#FDCBB0" 
-                                           HorizontalTextAlignment="Center"/>
+                                <Label Text="{Binding ReviveDisplayText}" 
+                                       FontFamily="PixelifySans"
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#FDCBB0" 
+                                       HorizontalTextAlignment="Center"/>
 
-                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
-                                        <Label Text="Owned:" 
-                                               FontFamily="PixelifySans"
-                                               FontSize="18" 
-                                               FontAttributes="Bold" 
-                                               TextColor="#FDCBB0"/>
-
-                                        <Label Text="{Binding OwnedSlow}" 
-                                               FontFamily="VcrMono"
-                                               FontSize="18" 
-                                               FontAttributes="Bold" 
-                                               TextColor="#FDCBB0"/>
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
                                 <Image Source="revive01.png" 
                                        HeightRequest="60" 
                                        WidthRequest="60" 
@@ -327,11 +311,12 @@
                                            FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
-                                    <Label Text="{Binding SlowPrice}" 
-                                           FontFamily="VcrMono" 
+                                    <Label Text="{Binding RevivePriceText}" 
+                                           FontFamily="PixelifySans" 
                                            FontSize="18" 
                                            FontAttributes="Bold"
-                                           TextColor="#FDCBB0"/>
+                                           TextColor="#FDCBB0" 
+                                           HorizontalTextAlignment="Center"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>

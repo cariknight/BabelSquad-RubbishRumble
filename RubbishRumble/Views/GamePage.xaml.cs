@@ -100,12 +100,20 @@ public partial class GamePage : ContentPage
 
         try
         {
-            await _viewModel.InitializeAsync();
+            if (_viewModel.ShouldResumeAfterRevive)
+            {
+                _viewModel.ClearResumeAfterRevive();
+            }
+            else
+            {
+                await _viewModel.InitializeAsync();
+            }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Game init failed: {ex}");
         }
+
         await SettingsService.Instance.PlayMusicAsync("gamemusic.mp3");
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();
@@ -131,6 +139,26 @@ public partial class GamePage : ContentPage
 
         _viewModel.PauseForAppInactive();
         CancelActiveDrag();
+    }
+
+    private async void OnQuitButtonClicked(object sender, EventArgs e)
+    {
+        if (!_isPageActive || Shell.Current == null)
+            return;
+
+        _viewModel.PrepareToQuit();
+        StopGameLoop();
+        ClearActiveTrash();
+        CancelActiveDrag();
+
+        try
+        {
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Quit game failed: {ex}");
+        }
     }
 
     private void CancelActiveDrag()

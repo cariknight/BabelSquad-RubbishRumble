@@ -6,6 +6,8 @@ namespace RubbishRumble.ViewModels
 {
     public class GameViewModel : BaseViewModel
     {
+        public static GameViewModel? ActiveInstance { get; private set; }
+
         private readonly GameService _gameService;
         private readonly DatabaseService _databaseService;
         private readonly InventoryService _inventoryService;
@@ -25,6 +27,8 @@ namespace RubbishRumble.ViewModels
         private bool _isLandfillBinOpen;
         private bool _gameOverHandled;
         private bool _isPaused;
+        private bool _isExiting;
+        private bool _resumeAfterRevive;
 
         public bool IsPaused
         {
@@ -153,7 +157,6 @@ namespace RubbishRumble.ViewModels
         public ICommand UseSpeedPowerCommand { get; }
         public ICommand PauseGameCommand { get; }
         public ICommand ResumeGameCommand { get; }
-        public ICommand QuitGameCommand { get; }
 
         public event Action<int, string>? PointsEarned;
 
@@ -171,18 +174,51 @@ namespace RubbishRumble.ViewModels
             UseSpeedPowerCommand = new Command(async () => await UsePowerUpAsync("Speed"));
             PauseGameCommand = new Command(() => IsPaused = true);
             ResumeGameCommand = new Command(() => IsPaused = false);
-            QuitGameCommand = new Command(async () => await QuitGameAsync());
+        }
+
+        public bool ShouldResumeAfterRevive => _resumeAfterRevive;
+
+        public void ClearResumeAfterRevive() => _resumeAfterRevive = false;
+
+        public void PrepareToQuit()
+        {
+            if (_isExiting)
+                return;
+
+            _isExiting = true;
+            _gameOverHandled = true;
+            IsPaused = false;
+            _gameService.ResetForExit();
+
+            if (ActiveInstance == this)
+                ActiveInstance = null;
         }
 
         public async Task InitializeAsync()
         {
+            _isExiting = false;
             _gameOverHandled = false;
+            _resumeAfterRevive = false;
             IsPaused = false;
+            ActiveInstance = this;
             await _powerUpService.InitializeAsync();
             await _gameService.StartGameAsync();
             await RefreshCoinsAsync();
             await RefreshPowerUpCountsAsync();
             SyncGameState();
+        }
+
+        public async Task<bool> TryReviveAndResumeAsync()
+        {
+            if (!await _gameService.TryReviveAsync())
+                return false;
+
+            _gameOverHandled = false;
+            _resumeAfterRevive = true;
+            IsPaused = false;
+            await RefreshPowerUpCountsAsync();
+            SyncGameState();
+            return true;
         }
 
         public TrashItem? GetRandomTrash() => _gameService.GetRandomTrash();
@@ -263,6 +299,9 @@ namespace RubbishRumble.ViewModels
 
         private void SyncGameState()
         {
+            if (_isExiting)
+                return;
+
             CurrentLevel = _gameService.DifficultyLevel;
             CurrentScore = _gameService.Score;
             CurrentLives = _gameService.Lives;
@@ -347,16 +386,11 @@ namespace RubbishRumble.ViewModels
             await _gameService.ActivatePowerUpAsync(powerUp);
         }
 
-        private async Task QuitGameAsync()
-        {
-            if (Shell.Current == null)
-                return;
-
-            await Shell.Current.GoToAsync("//MainMenuPage");
-        }
-
         private async Task FlashBinAsync(string category)
         {
+            if (_isExiting)
+                return;
+
             switch (category)
             {
                 case "Recyclables":
@@ -374,6 +408,9 @@ namespace RubbishRumble.ViewModels
             }
 
             await Task.Delay(250);
+
+            if (_isExiting)
+                return;
 
             IsRecycleBinOpen = false;
             IsBioBinOpen = false;

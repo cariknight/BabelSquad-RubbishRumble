@@ -41,6 +41,18 @@ namespace RubbishRumble.Services
             await _database.SavePlayerAsync(player);
         }
 
+        public async Task EnsureBeginnerRevivesAsync(Player player)
+        {
+            if (!player.ReceivedBeginnerPack)
+                return;
+
+            Inventory? reviveItem = await _database.GetInventoryItemAsync("Revive");
+            if (reviveItem != null)
+                return;
+
+            await AddPowerUpAsync("Revive", BeginnerPackQuantity);
+        }
+
         public async Task AddPowerUpAsync(string powerUpName, int amount)
         {
             int? powerUpId = await _database.GetPowerUpIdByNameAsync(powerUpName);

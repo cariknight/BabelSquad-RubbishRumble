@@ -4,7 +4,6 @@
              xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
              xmlns:Models="clr-namespace:RubbishRumble.ViewModels"
              x:Class="RubbishRumble.Views.LeaderboardPage"
-             x:Name="LeaderboardPageRef"
              x:DataType="ViewModels:LeaderboardViewModel"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#FDCBB0">
@@ -25,90 +24,11 @@
             </Grid>
 
             <VerticalStackLayout Grid.Row="1" Spacing="15" HorizontalOptions="Center" MaximumWidthRequest="340">
-
-                <!-- Create Profile Area -->
                 <Border Stroke="#4C3E24"
                         StrokeThickness="3"
                         StrokeShape="Rectangle"
                         Background="#9E4539"
                         Padding="12">
-
-                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
-
-                        <!-- Profile Preview & Name Input Row -->
-                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12" VerticalOptions="Center">
-
-                            <Border Grid.Column="0"
-                                    Stroke="#4C3E24"
-                                    StrokeThickness="2"
-                                    BackgroundColor="#FDCBB0"
-                                    HeightRequest="50"
-                                    WidthRequest="50"
-                                    Padding="4"
-                                    VerticalOptions="Center">
-                                <Image Source="{Binding SelectedAvatarImage}"
-                                       Aspect="AspectFit"/>
-                            </Border>
-
-                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
-
-                                <Entry Text="{Binding PlayerNameText}"
-                                       Placeholder="Enter Player Name...."
-                                       PlaceholderColor="#A08875"
-                                       BackgroundColor="#FDCBB0"
-                                       TextColor="#4C3E24"
-                                       FontFamily="PixelifySans"
-                                       HeightRequest="36"
-                                       FontSize="13"/>
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <Label Text="Choose your Profile:"
-                               FontSize="15"
-                               FontFamily="PixelifySans"
-                               FontAttributes="Bold"
-                               TextColor="#FDCBB0"
-                               HorizontalTextAlignment="Center"/>
-
-                        <!-- 4 profile icons -->
-                        <CollectionView ItemsSource="{Binding TrashAvatars}" SelectedItem="{Binding SelectedAvatarImage}" SelectionMode="Single" HeightRequest="55">
-                            <CollectionView.ItemsLayout>
-                                <GridItemsLayout Orientation="Vertical" Span="4" HorizontalItemSpacing="8"/>
-                            </CollectionView.ItemsLayout>
-
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Stroke="#4C3E24"
-                                            StrokeThickness="2"
-                                            BackgroundColor="#FDCBB0"
-                                            Padding="4"
-                                            HeightRequest="50"
-                                            WidthRequest="50">
-                                        <Image Source="{Binding .}" Aspect="AspectFit"/>
-                                    </Border>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </VerticalStackLayout>
-                </Border>
-                <ImageButton Source="add.png"
-                                 Command="{Binding AddProfileCommand}"
-                                 BackgroundColor="#9E4539"
-                                 BorderColor="#4C3E24"
-                                 BorderWidth="3"
-                                 Aspect="AspectFit"
-                                 Padding="5"
-                                 HeightRequest="50"
-                                 WidthRequest="160"
-                                 HorizontalOptions="Center"/>
-
-                <Border Stroke="#4C3E24"
-                        StrokeThickness="3"
-                        StrokeShape="Rectangle"
-                        Background="#9E4539"
-                        Padding="12">
-                    
-
                     <VerticalStackLayout Spacing="8">
                         <Label Text="HIGH SCORES"
                                FontSize="16"
@@ -117,25 +37,30 @@
                                TextColor="#FDCBB0"
                                HorizontalTextAlignment="Center"/>
 
-                        <!-- High Scores Area -->
-                        <ScrollView HeightRequest="150" VerticalScrollBarVisibility="Always">
+                        <ScrollView HeightRequest="280" VerticalScrollBarVisibility="Always">
                             <CollectionView ItemsSource="{Binding SavedProfiles}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="Models:UserProfileModel">
-                                        <Grid ColumnDefinitions="Auto, *, Auto, Auto" ColumnSpacing="20" Padding="5" VerticalOptions="Center">
-
+                                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12" Padding="5,8" VerticalOptions="Center">
                                             <Image Grid.Column="0" 
                                                    Source="{Binding AvatarImage}" 
                                                    HeightRequest="30" 
                                                    WidthRequest="30"
                                                    VerticalOptions="Center"/>
 
-                                            <Label Grid.Column="1" 
-                                                   Text="{Binding Name}" 
-                                                   TextColor="#FDCBB0" 
-                                                   FontFamily="PixelifySans" 
-                                                   FontSize="14" 
-                                                   VerticalOptions="Center"/>
+                                            <VerticalStackLayout Grid.Column="1"
+                                                                 Spacing="2"
+                                                                 VerticalOptions="Center">
+                                                <Label Text="{Binding Name}" 
+                                                       TextColor="#FDCBB0" 
+                                                       FontFamily="PixelifySans" 
+                                                       FontSize="14" 
+                                                       LineBreakMode="TailTruncation"/>
+                                                <Label Text="{Binding PlayedDate}" 
+                                                       TextColor="#E8B8A8" 
+                                                       FontFamily="PixelifySans" 
+                                                       FontSize="11"/>
+                                            </VerticalStackLayout>
 
                                             <Label Grid.Column="2" 
                                                    Text="{Binding HighScore}" 
@@ -144,14 +69,6 @@
                                                    FontSize="14" 
                                                    FontAttributes="Bold" 
                                                    VerticalOptions="Center"/>
-                                            <ImageButton Grid.Column="3" 
-                                                         Source="delete.png"
-                                                         Command="{Binding BindingContext.DeleteProfileCommand, Source={x:Reference LeaderboardPageRef}}"
-                                                         CommandParameter="{Binding .}"
-                                                         HeightRequest="28"
-                                                         WidthRequest="28"
-                                                         BackgroundColor="Transparent"
-                                                         VerticalOptions="Center"/>
                                         </Grid>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
@@ -161,7 +78,6 @@
                 </Border>
             </VerticalStackLayout>
 
-            <!-- Exit Button -->
             <ImageButton Grid.Row="2"
                          Source="exit.png"  
                          BackgroundColor="#9E4539"

@@ -189,7 +189,7 @@
                     </Image>
                 </Grid>
 
-                <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *, *" ColumnSpacing="0">
+                <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *" ColumnSpacing="0">
                     <!-- POWER UP area -->
                     <VerticalStackLayout Grid.Column="0" Spacing="8" HorizontalOptions="Center">
                         <ImageButton Source="freeze01.png" 
@@ -354,47 +354,6 @@
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
-
-                    <!-- REVIVE power up -->
-                    <!-- TOFIX: Revive logic -->
-                    <VerticalStackLayout Grid.Column="4" Spacing="8" HorizontalOptions="Center">
-                        <ImageButton Source="revive01.png" 
-                                     HeightRequest="50" 
-                                     WidthRequest="50" 
-                                     BackgroundColor="Transparent" 
-                                     CornerRadius="20"
-                                     IsEnabled="{Binding CanUseSpeedPower}"
-                                     Opacity="{Binding SpeedButtonOpacity}"
-                                     Command="{Binding UseSpeedPowerCommand}" >
-                            <ImageButton.Triggers>
-                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsSpeedActive}" Value="True">
-                                    <Setter Property="Source" Value="revive02.png" />
-                                </DataTrigger>
-                            </ImageButton.Triggers>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroupList>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Property="Source" Value="revive01.png" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Property="Source" Value="revive02.png" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateGroupList>
-                            </VisualStateManager.VisualStateGroups>
-                        </ImageButton>
-                        <Label Text="{Binding CurrentSpeedPower}" 
-                               FontFamily="VcrMono" 
-                               FontSize="20"  
-                               FontAttributes="Bold" 
-                               TextColor="#4C3E24" 
-                               HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
                 </Grid>
             </Grid>
         </Grid>
@@ -427,7 +386,7 @@
                              BackgroundColor="Transparent"/>
 
                         <ImageButton Source="quit.png"
-                             Command="{Binding QuitGameCommand}"
+                             Clicked="OnQuitButtonClicked"
                              HeightRequest="50"
                              Aspect="AspectFit"
                              HorizontalOptions="Center"
