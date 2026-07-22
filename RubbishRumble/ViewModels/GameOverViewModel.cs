@@ -163,7 +163,6 @@ namespace RubbishRumble.ViewModels
         public ICommand ExitCommand { get; }
         public ICommand UseReviveCommand { get; }
         public ICommand SubmitLeaderboardCommand { get; }
-        public ICommand SkipLeaderboardCommand { get; }
 
         public GameOverViewModel()
         {
@@ -171,7 +170,6 @@ namespace RubbishRumble.ViewModels
             ExitCommand = new Command(async () => await OnExitExecutedAsync());
             UseReviveCommand = new Command(async () => await OnReviveExecutedAsync());
             SubmitLeaderboardCommand = new Command(async () => await OnSubmitLeaderboardAsync());
-            SkipLeaderboardCommand = new Command(OnSkipLeaderboard);
         }
 
         public async Task LoadReviveCountAsync()
@@ -276,11 +274,6 @@ namespace RubbishRumble.ViewModels
             _leaderboardSubmitted = true;
             IsLeaderboardPopupVisible = false;
             await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
-        }
-
-        private void OnSkipLeaderboard()
-        {
-            IsLeaderboardPopupVisible = false;
         }
 
         private async Task OnReviveExecutedAsync()

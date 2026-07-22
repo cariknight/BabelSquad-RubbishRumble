@@ -265,17 +265,6 @@
                                      Padding="5"
                                      HeightRequest="44"
                                      WidthRequest="120"/>
-
-                        <Button Text="Skip"
-                                Command="{Binding SkipLeaderboardCommand}"
-                                FontFamily="PixelifySans"
-                                FontSize="14"
-                                TextColor="#4C3E24"
-                                BackgroundColor="#FDCBB0"
-                                BorderColor="#4C3E24"
-                                BorderWidth="2"
-                                HeightRequest="44"
-                                WidthRequest="80"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Border>
