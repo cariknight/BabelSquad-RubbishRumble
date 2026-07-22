@@ -11,7 +11,7 @@
                 <Grid Grid.Row="0" HeightRequest="65" VerticalOptions="Center" ColumnDefinitions="Auto, *, Auto">
                     <HorizontalStackLayout Grid.Column="0" HorizontalOptions="Start" Spacing="10" VerticalOptions="Center">
                         <Label Text="{Binding CurrentCoins}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="20" 
                            FontAttributes="Bold" 
                            TextColor="#4C3E24"
@@ -46,7 +46,7 @@
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                         <Label Text="{Binding CurrentLevel}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="22" 
                            FontAttributes="Bold" 
                            TextColor="#9E4539" 
@@ -100,7 +100,7 @@
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                         <Label Text="{Binding CurrentScore}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="22" 
                            FontAttributes="Bold" 
                            TextColor="#9E4539" 
@@ -225,7 +225,7 @@
                             </VisualStateManager.VisualStateGroups>
                         </ImageButton>
                         <Label Text="{Binding CurrentFreezePower}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
@@ -266,7 +266,7 @@
                             </VisualStateManager.VisualStateGroups>
                         </ImageButton>
                         <Label Text="{Binding CurrentSlowPower}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
@@ -307,7 +307,7 @@
                             </VisualStateManager.VisualStateGroups>
                         </ImageButton>
                         <Label Text="{Binding CurrentAutoSortPower}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 
@@ -348,7 +348,7 @@
                             </VisualStateManager.VisualStateGroups>
                         </ImageButton>
                         <Label Text="{Binding CurrentSpeedPower}" 
-                           FontFamily="PixelifySans" 
+                           FontFamily="VcrMono" 
                            FontSize="20"  
                            FontAttributes="Bold" 
                            TextColor="#4C3E24" 

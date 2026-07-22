@@ -7,8 +7,12 @@ namespace RubbishRumble.Views
         public class TutorialSlide
         {
             public string Title { get; set; } = string.Empty;
-            public string Description { get; set; } = string.Empty;
             public string ImageUrl { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string DescPrefix { get; set; } = string.Empty;
+            public string CoinAmount { get; set; } = string.Empty;
+            public string DescSuffix { get; set; } = string.Empty;
+            public bool HasNumberFormatting => !string.IsNullOrEmpty(CoinAmount);
         }
 
         private readonly List<TutorialSlide> _slides;

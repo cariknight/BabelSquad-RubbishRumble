@@ -15,6 +15,7 @@ namespace RubbishRumble
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("PixelifySans-VariableFont_wght.ttf", "PixelifySans");
+                    fonts.AddFont("VCR_OSD_MONO.ttf", "VcrMono");
                 })
             .AddAudio();
 

@@ -691,13 +691,14 @@ public partial class GamePage : ContentPage
 
     private static VisualElement CreateOutlinedPointsLabel(string text)
     {
-        const string fontFamily = "PixelifySans";
+        const string fontFamily = "VcrMono";
         const double fontSize = 28;
 
         var grid = new Grid
         {
             HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
+            VerticalOptions = LayoutOptions.Center,
+            Padding = new Thickness(6, 2, 6, 2)
         };
 
         foreach (int dx in new[] { -2, -1, 0, 1, 2 })
