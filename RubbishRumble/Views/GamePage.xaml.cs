@@ -294,6 +294,9 @@ public partial class GamePage : ContentPage
 
         foreach (FallingTrash fallingTrash in _activeTrash.ToList())
         {
+            if (fallingTrash == null)
+                continue;
+
             if (fallingTrash.IsDragging)
                 continue;
 
@@ -316,9 +319,9 @@ public partial class GamePage : ContentPage
         }
     }
 
-    private void SetBounds(FallingTrash fallingTrash)
+    private void SetBounds(FallingTrash? fallingTrash)
     {
-        if (SpawningArena == null || fallingTrash.View == null)
+        if (fallingTrash == null || SpawningArena == null || fallingTrash.View == null)
             return;
 
         if (fallingTrash.View.Parent != SpawningArena)
@@ -376,11 +379,12 @@ public partial class GamePage : ContentPage
                 {
                     if (_lastTouchPoint.HasValue)
                         StartDragAt(_lastTouchPoint.Value);
-                    else
+
+                    if (_draggingTrash == null)
                         return;
                 }
 
-                ApplyDragTranslation(_draggingTrash!, e.TotalX, e.TotalY);
+                ApplyDragTranslation(_draggingTrash, e.TotalX, e.TotalY);
                 break;
 
             case GestureStatus.Completed:
@@ -467,9 +471,9 @@ public partial class GamePage : ContentPage
         SetDragTarget(_draggingTrash, point.X - _grabOffsetX, point.Y - _grabOffsetY);
     }
 
-    private void ApplyDragTranslation(FallingTrash fallingTrash, double totalX, double totalY)
+    private void ApplyDragTranslation(FallingTrash? fallingTrash, double totalX, double totalY)
     {
-        if (fallingTrash.View == null)
+        if (fallingTrash == null || fallingTrash.View == null)
             return;
 
         double maxX = Math.Max(0, _arenaWidth - TrashSize);
@@ -499,7 +503,8 @@ public partial class GamePage : ContentPage
 
     private void EndDragAt(Point? point)
     {
-        if (_draggingTrash == null)
+        FallingTrash? trash = _draggingTrash;
+        if (trash == null)
             return;
 
         try
@@ -507,9 +512,8 @@ public partial class GamePage : ContentPage
             if (point.HasValue)
                 ContinueDragAt(point.Value);
 
-            CommitDrag(_draggingTrash);
+            CommitDrag(trash);
 
-            FallingTrash trash = _draggingTrash;
             _draggingTrash = null;
             trash.IsDragging = false;
 
@@ -519,25 +523,24 @@ public partial class GamePage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Drag error: {ex}");
-            if (_draggingTrash != null)
-            {
-                _draggingTrash.IsDragging = false;
-                if (_draggingTrash.View != null)
-                {
-                    _draggingTrash.View.TranslationX = 0;
-                    _draggingTrash.View.TranslationY = 0;
-                    _draggingTrash.View.ZIndex = 0;
-                }
+            _draggingTrash = null;
+            trash.IsDragging = false;
 
-                SetBounds(_draggingTrash);
-                _draggingTrash = null;
+            if (trash.View != null)
+            {
+                trash.View.TranslationX = 0;
+                trash.View.TranslationY = 0;
+                trash.View.ZIndex = 0;
             }
+
+            SetBounds(trash);
         }
     }
 
-    private void CommitDrag(FallingTrash fallingTrash)
+    private void CommitDrag(FallingTrash? fallingTrash)
     {
-        if (fallingTrash.View == null || SpawningArena == null || fallingTrash.View.Parent != SpawningArena)
+        if (fallingTrash == null || fallingTrash.View == null || SpawningArena == null
+            || fallingTrash.View.Parent != SpawningArena)
             return;
 
         double maxX = Math.Max(0, _arenaWidth - TrashSize);
@@ -617,8 +620,11 @@ public partial class GamePage : ContentPage
         return true;
     }
 
-    private void RemoveTrash(FallingTrash fallingTrash)
+    private void RemoveTrash(FallingTrash? fallingTrash)
     {
+        if (fallingTrash == null)
+            return;
+
         if (_draggingTrash == fallingTrash)
             _draggingTrash = null;
 

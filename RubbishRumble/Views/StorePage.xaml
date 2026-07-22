@@ -311,12 +311,11 @@
                                            FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
-                                    <Label Text="{Binding RevivePriceText}" 
-                                           FontFamily="PixelifySans" 
+                                    <Label Text="{Binding RevivePrice}" 
+                                           FontFamily="VcrMono" 
                                            FontSize="18" 
                                            FontAttributes="Bold"
-                                           TextColor="#FDCBB0" 
-                                           HorizontalTextAlignment="Center"/>
+                                           TextColor="#FDCBB0"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>
