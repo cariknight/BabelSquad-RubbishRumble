@@ -84,7 +84,7 @@
 
             <!-- Action buttons -->
             <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
-                <VerticalStackLayout Spacing="6"
+                <VerticalStackLayout Spacing="8"
                                      HorizontalOptions="Center"
                                      Opacity="{Binding ReviveButtonOpacity}">
                     <Border Stroke="#4C3E24"
@@ -92,27 +92,35 @@
                             StrokeShape="Rectangle"
                             BackgroundColor="#9E4539"
                             HeightRequest="50"
-                            WidthRequest="120"
+                            WidthRequest="50"
                             HorizontalOptions="Center">
-                        <Button Text="REVIVE"
-                                ImageSource="revive01.png"
-                                ContentLayout="Left, 8"
-                                Command="{Binding UseReviveCommand}"
-                                IsEnabled="{Binding CanUseRevive}"
-                                FontFamily="PixelifySans"
-                                FontSize="16"
-                                FontAttributes="Bold"
-                                TextColor="#FDCBB0"
-                                BackgroundColor="Transparent"
-                                BorderWidth="0"
-                                HeightRequest="50"
-                                WidthRequest="120"
-                                Padding="8,0"
-                                CornerRadius="0"/>
+                        <ImageButton Source="revive01.png"
+                                     Command="{Binding UseReviveCommand}"
+                                     IsEnabled="{Binding CanUseRevive}"
+                                     BackgroundColor="Transparent"
+                                     Padding="3"
+                                     Aspect="AspectFit">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="revive01.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Source" Value="revive02.png" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
+                        </ImageButton>
                     </Border>
-                    <Label Text="{Binding CurrentRevivePower, StringFormat='x{0}'}"
+                    <Label Text="{Binding CurrentRevivePower}"
                            FontFamily="PixelifySans"
-                           FontSize="18"
+                           FontSize="20"
                            FontAttributes="Bold"
                            TextColor="#4C3E24"
                            HorizontalTextAlignment="Center"/>
