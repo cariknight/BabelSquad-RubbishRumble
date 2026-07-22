@@ -41,19 +41,26 @@
                             <CollectionView ItemsSource="{Binding SavedProfiles}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="Models:UserProfileModel">
-                                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="20" Padding="5" VerticalOptions="Center">
+                                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12" Padding="5,8" VerticalOptions="Center">
                                             <Image Grid.Column="0" 
                                                    Source="{Binding AvatarImage}" 
                                                    HeightRequest="30" 
                                                    WidthRequest="30"
                                                    VerticalOptions="Center"/>
 
-                                            <Label Grid.Column="1" 
-                                                   Text="{Binding Name}" 
-                                                   TextColor="#FDCBB0" 
-                                                   FontFamily="PixelifySans" 
-                                                   FontSize="14" 
-                                                   VerticalOptions="Center"/>
+                                            <VerticalStackLayout Grid.Column="1"
+                                                                 Spacing="2"
+                                                                 VerticalOptions="Center">
+                                                <Label Text="{Binding Name}" 
+                                                       TextColor="#FDCBB0" 
+                                                       FontFamily="PixelifySans" 
+                                                       FontSize="14" 
+                                                       LineBreakMode="TailTruncation"/>
+                                                <Label Text="{Binding PlayedDate}" 
+                                                       TextColor="#E8B8A8" 
+                                                       FontFamily="PixelifySans" 
+                                                       FontSize="11"/>
+                                            </VerticalStackLayout>
 
                                             <Label Grid.Column="2" 
                                                    Text="{Binding HighScore}" 

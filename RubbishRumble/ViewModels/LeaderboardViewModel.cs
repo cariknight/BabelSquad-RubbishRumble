@@ -27,7 +27,10 @@ namespace RubbishRumble.ViewModels
                 {
                     Name = entry.PlayerName,
                     AvatarImage = _leaderboardService.GetAvatarImagePath(entry.AvatarId),
-                    HighScore = entry.HighestScore
+                    HighScore = entry.HighestScore,
+                    PlayedDate = entry.AchievedAt == default
+                        ? string.Empty
+                        : entry.AchievedAt.ToString("MMM d, yyyy")
                 });
             }
         }
@@ -38,5 +41,6 @@ namespace RubbishRumble.ViewModels
         public string Name { get; set; } = string.Empty;
         public string AvatarImage { get; set; } = string.Empty;
         public int HighScore { get; set; }
+        public string PlayedDate { get; set; } = string.Empty;
     }
 }
