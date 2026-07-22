@@ -34,6 +34,7 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
         base.OnAppearing();
         await SettingsService.Instance.PlaySfxAsync("gameover.mp3");
         await _viewModel.LoadRewardsPreviewAsync();
+        _viewModel.InitializeLeaderboardPopup();
         await _viewModel.LoadReviveCountAsync();
         await _viewModel.LoadEcoTipAsync();
     }

@@ -2,177 +2,283 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
+             xmlns:Domain="clr-namespace:RubbishRumble.Models"
              x:Class="RubbishRumble.Views.GameOverPage"
              x:DataType="ViewModels:GameOverViewModel"
              BackgroundColor="#FDCBB0"
              Shell.NavBarIsVisible="False">
-    
-    <Grid RowDefinitions="Auto, Auto" Padding="15" RowSpacing="16" VerticalOptions="Center">
-        <VerticalStackLayout Grid.Row="0"
-                             HorizontalOptions="Center"
-                             Spacing="30"
-                             WidthRequest="300">
-            <!-- Title -->
-            <Image Source="gameover.png"
-                   HeightRequest="75"
-                   Aspect="AspectFit"
-                   HorizontalOptions="Center"/>
 
-            <!-- Score area -->
-            <Border Stroke="#4C3E24"
-                    StrokeThickness="3"
-                    StrokeShape="Rectangle"
-                    BackgroundColor="#9E4539"
-                    Padding="16">
-
-                <VerticalStackLayout Spacing="10">
-                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                        <Label Text="TOTAL SCORE:"
-                           FontSize="20"
-                           FontFamily="PixelifySans"
-                           FontAttributes="Bold"
-                           TextColor="#FDCBB0"
-                           HorizontalTextAlignment="Center"/>
-                        <Label Text="{Binding TotalScore}"
-                           FontSize="28"
-                           FontFamily="PixelifySans"
-                           FontAttributes="Bold"
-                           TextColor="#FDCBB0"
-                           HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                        <Label Text="{Binding HighScoreLabel}"
-                           FontSize="18"
-                           FontFamily="PixelifySans"
-                           FontAttributes="Bold"
-                           TextColor="#FDCBB0"
-                           HorizontalTextAlignment="Center"/>
-                        <Label Text="{Binding HighestScore}"
-                           FontSize="24"
-                           FontFamily="PixelifySans"
-                           FontAttributes="Bold"
-                           TextColor="#FDCBB0"
-                           HorizontalTextAlignment="Center"/>
-                    </VerticalStackLayout>
-
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="coin.png"
-                           HeightRequest="28"
-                           WidthRequest="28"
-                           Aspect="AspectFit"
-                           VerticalOptions="Center"/>
-
-                        <Label Text="{Binding EarnedCoins}"
-                           FontSize="28"
-                           FontFamily="PixelifySans"
-                           FontAttributes="Bold"
-                           TextColor="#FDCBB0"
-                           VerticalOptions="Center"
-                           HorizontalTextAlignment="Start"/>
-                    </HorizontalStackLayout>
-
-                    <Label Text="{Binding CoinBonusText}"
-                       IsVisible="{Binding ShowCoinBonus}"
-                       FontSize="13"
-                       FontFamily="PixelifySans"
-                       FontAttributes="Bold"
-                       TextColor="#FDCBB0"
-                       HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- Action buttons -->
-            <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
-                <VerticalStackLayout Spacing="8"
-                                     HorizontalOptions="Center"
-                                     Opacity="{Binding ReviveButtonOpacity}">
-                    <Border Stroke="#4C3E24"
-                            StrokeThickness="3"
-                            StrokeShape="Rectangle"
-                            BackgroundColor="#9E4539"
-                            HeightRequest="50"
-                            WidthRequest="50"
-                            HorizontalOptions="Center">
-                        <ImageButton Source="revive01.png"
-                                     Command="{Binding UseReviveCommand}"
-                                     IsEnabled="{Binding CanUseRevive}"
-                                     BackgroundColor="Transparent"
-                                     Padding="3"
-                                     Aspect="AspectFit">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroupList>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <VisualState.Setters>
-                                                <Setter Property="Source" Value="revive01.png" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Property="Source" Value="revive02.png" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateGroupList>
-                            </VisualStateManager.VisualStateGroups>
-                        </ImageButton>
-                    </Border>
-                    <Label Text="{Binding CurrentRevivePower}"
-                           FontFamily="PixelifySans"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="#4C3E24"
-                           HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+    <Grid>
+        <Grid RowDefinitions="Auto, Auto" Padding="15" RowSpacing="16" VerticalOptions="Center">
+            <VerticalStackLayout Grid.Row="0"
+                                 HorizontalOptions="Center"
+                                 Spacing="30"
+                                 WidthRequest="300">
+                <Image Source="gameover.png"
+                       HeightRequest="75"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"/>
 
                 <Border Stroke="#4C3E24"
                         StrokeThickness="3"
                         StrokeShape="Rectangle"
                         BackgroundColor="#9E4539"
-                        HeightRequest="50"
-                        WidthRequest="120"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Start">
-                    <ImageButton Source="exit.png"
-                                 Command="{Binding ExitCommand}"
-                                 BackgroundColor="Transparent"
-                                 Padding="3"
-                                 Aspect="AspectFit"/>
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="TOTAL SCORE:"
+                                   FontSize="20"
+                                   FontFamily="PixelifySans"
+                                   FontAttributes="Bold"
+                                   TextColor="#FDCBB0"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding TotalScore}"
+                                   FontSize="28"
+                                   FontFamily="PixelifySans"
+                                   FontAttributes="Bold"
+                                   TextColor="#FDCBB0"
+                                   HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="{Binding HighScoreLabel}"
+                                   FontSize="18"
+                                   FontFamily="PixelifySans"
+                                   FontAttributes="Bold"
+                                   TextColor="#FDCBB0"
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Text="{Binding HighestScore}"
+                                   FontSize="24"
+                                   FontFamily="PixelifySans"
+                                   FontAttributes="Bold"
+                                   TextColor="#FDCBB0"
+                                   HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+
+                        <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="coin.png"
+                                   HeightRequest="28"
+                                   WidthRequest="28"
+                                   Aspect="AspectFit"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding EarnedCoins}"
+                                   FontSize="28"
+                                   FontFamily="PixelifySans"
+                                   FontAttributes="Bold"
+                                   TextColor="#FDCBB0"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Start"/>
+                        </HorizontalStackLayout>
+
+                        <Label Text="{Binding CoinBonusText}"
+                               IsVisible="{Binding ShowCoinBonus}"
+                               FontSize="13"
+                               FontFamily="PixelifySans"
+                               FontAttributes="Bold"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
                 </Border>
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
-        <!-- Eco facts area -->
-        <Border Grid.Row="1"
-            Stroke="#4C3E24"
-            StrokeThickness="3"
-            StrokeShape="Rectangle"
-            BackgroundColor="#9E4539"
-            Padding="14"
-            WidthRequest="300"
-            HorizontalOptions="Center">
 
-            <VerticalStackLayout Spacing="10" VerticalOptions="Center">
-                <Image Source="ecofacts.png"
-                   HeightRequest="30"
-                   Aspect="AspectFit"
-                   HorizontalOptions="Center"/>
+                <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
+                    <VerticalStackLayout Spacing="8"
+                                         HorizontalOptions="Center"
+                                         Opacity="{Binding ReviveButtonOpacity}">
+                        <Border Stroke="#4C3E24"
+                                StrokeThickness="3"
+                                StrokeShape="Rectangle"
+                                BackgroundColor="#9E4539"
+                                HeightRequest="50"
+                                WidthRequest="50"
+                                HorizontalOptions="Center">
+                            <ImageButton Source="revive01.png"
+                                         Command="{Binding UseReviveCommand}"
+                                         IsEnabled="{Binding CanUseRevive}"
+                                         BackgroundColor="Transparent"
+                                         Padding="3"
+                                         Aspect="AspectFit">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroupList>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualState x:Name="Normal">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Source" Value="revive01.png" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Pressed">
+                                                <VisualState.Setters>
+                                                    <Setter Property="Source" Value="revive02.png" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateGroupList>
+                                </VisualStateManager.VisualStateGroups>
+                            </ImageButton>
+                        </Border>
+                        <Label Text="{Binding CurrentRevivePower}"
+                               FontFamily="PixelifySans"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#4C3E24"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
 
-                <Label Text="{Binding EcoTipTitle}"
-                   FontSize="18"
-                   FontFamily="PixelifySans"
-                   FontAttributes="Bold"
-                   TextColor="#FDCBB0"
-                   HorizontalTextAlignment="Center"
-                   LineBreakMode="WordWrap"/>
-
-                <Label Text="{Binding EcoTipText}"
-                   FontSize="13"
-                   FontFamily="PixelifySans"
-                   TextColor="#FDCBB0"
-                   HorizontalTextAlignment="Center"
-                   LineBreakMode="WordWrap"/>
+                    <Border Stroke="#4C3E24"
+                            StrokeThickness="3"
+                            StrokeShape="Rectangle"
+                            BackgroundColor="#9E4539"
+                            HeightRequest="50"
+                            WidthRequest="120"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start">
+                        <ImageButton Source="exit.png"
+                                     Command="{Binding ExitCommand}"
+                                     BackgroundColor="Transparent"
+                                     Padding="3"
+                                     Aspect="AspectFit"/>
+                    </Border>
+                </HorizontalStackLayout>
             </VerticalStackLayout>
-        </Border>
+
+            <Border Grid.Row="1"
+                    Stroke="#4C3E24"
+                    StrokeThickness="3"
+                    StrokeShape="Rectangle"
+                    BackgroundColor="#9E4539"
+                    Padding="14"
+                    WidthRequest="300"
+                    HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Image Source="ecofacts.png"
+                           HeightRequest="30"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding EcoTipTitle}"
+                           FontSize="18"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+                    <Label Text="{Binding EcoTipText}"
+                           FontSize="13"
+                           FontFamily="PixelifySans"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- Leaderboard name entry popup -->
+        <Grid IsVisible="{Binding IsLeaderboardPopupVisible}"
+              BackgroundColor="#99000000"
+              Padding="20">
+            <Border Stroke="#4C3E24"
+                    StrokeThickness="3"
+                    StrokeShape="Rectangle"
+                    BackgroundColor="#9E4539"
+                    Padding="16"
+                    MaximumWidthRequest="340"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="NEW HIGH SCORE!"
+                           FontSize="20"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label Text="Enter your name for the leaderboard:"
+                           FontSize="14"
+                           FontFamily="PixelifySans"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12" VerticalOptions="Center">
+                        <Border Grid.Column="0"
+                                Stroke="#4C3E24"
+                                StrokeThickness="2"
+                                BackgroundColor="#FDCBB0"
+                                HeightRequest="50"
+                                WidthRequest="50"
+                                Padding="4"
+                                VerticalOptions="Center">
+                            <Image Source="{Binding SelectedAvatarImage}"
+                                   Aspect="AspectFit"/>
+                        </Border>
+
+                        <Entry Grid.Column="1"
+                               Text="{Binding PlayerNameText}"
+                               Placeholder="Enter Player Name...."
+                               PlaceholderColor="#A08875"
+                               BackgroundColor="#FDCBB0"
+                               TextColor="#4C3E24"
+                               FontFamily="PixelifySans"
+                               HeightRequest="36"
+                               FontSize="13"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <Label Text="Choose your Profile:"
+                           FontSize="15"
+                           FontFamily="PixelifySans"
+                           FontAttributes="Bold"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+
+                    <CollectionView ItemsSource="{Binding Avatars}"
+                                    SelectedItem="{Binding SelectedAvatar}"
+                                    SelectionMode="Single"
+                                    HeightRequest="110">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="4" HorizontalItemSpacing="8" VerticalItemSpacing="8"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="Domain:AvatarOption">
+                                <Border Stroke="#4C3E24"
+                                        StrokeThickness="2"
+                                        BackgroundColor="#FDCBB0"
+                                        Padding="4"
+                                        HeightRequest="50"
+                                        WidthRequest="50">
+                                    <Image Source="{Binding ImagePath}" Aspect="AspectFit"/>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <Label Text="{Binding SubmitErrorMessage}"
+                           FontSize="12"
+                           FontFamily="PixelifySans"
+                           TextColor="#FDCBB0"
+                           HorizontalTextAlignment="Center"/>
+
+                    <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
+                        <ImageButton Source="add.png"
+                                     Command="{Binding SubmitLeaderboardCommand}"
+                                     BackgroundColor="#FDCBB0"
+                                     BorderColor="#4C3E24"
+                                     BorderWidth="3"
+                                     Aspect="AspectFit"
+                                     Padding="5"
+                                     HeightRequest="44"
+                                     WidthRequest="120"/>
+
+                        <Button Text="Skip"
+                                Command="{Binding SkipLeaderboardCommand}"
+                                FontFamily="PixelifySans"
+                                FontSize="14"
+                                TextColor="#4C3E24"
+                                BackgroundColor="#FDCBB0"
+                                BorderColor="#4C3E24"
+                                BorderWidth="2"
+                                HeightRequest="44"
+                                WidthRequest="80"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>
