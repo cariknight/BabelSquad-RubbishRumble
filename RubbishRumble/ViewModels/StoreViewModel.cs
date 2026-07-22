@@ -28,91 +28,50 @@ namespace RubbishRumble.ViewModels
         public int OwnedFreeze
         {
             get => _ownedFreeze;
-            private set
-            {
-                if (SetProperty(ref _ownedFreeze, value))
-                    OnPropertyChanged(nameof(FreezeDisplayText));
-            }
+            private set => SetProperty(ref _ownedFreeze, value);
         }
 
         public int OwnedSlow
         {
             get => _ownedSlow;
-            private set
-            {
-                if (SetProperty(ref _ownedSlow, value))
-                    OnPropertyChanged(nameof(SlowDisplayText));
-            }
+            private set => SetProperty(ref _ownedSlow, value);
         }
 
         public int OwnedAutoSort
         {
             get => _ownedAutoSort;
-            private set
-            {
-                if (SetProperty(ref _ownedAutoSort, value))
-                    OnPropertyChanged(nameof(AutoSortDisplayText));
-            }
+            private set => SetProperty(ref _ownedAutoSort, value);
         }
 
         public int OwnedSpeed
         {
             get => _ownedSpeed;
-            private set
-            {
-                if (SetProperty(ref _ownedSpeed, value))
-                    OnPropertyChanged(nameof(SpeedDisplayText));
-            }
+            private set => SetProperty(ref _ownedSpeed, value);
         }
 
         public int FreezePrice
         {
             get => _freezePrice;
-            private set
-            {
-                if (SetProperty(ref _freezePrice, value))
-                    OnPropertyChanged(nameof(FreezePriceText));
-            }
+            private set => SetProperty(ref _freezePrice, value);
         }
 
         public int SlowPrice
         {
             get => _slowPrice;
-            private set
-            {
-                if (SetProperty(ref _slowPrice, value))
-                    OnPropertyChanged(nameof(SlowPriceText));
-            }
+            private set => SetProperty(ref _slowPrice, value);
         }
 
         public int AutoSortPrice
         {
             get => _autoSortPrice;
-            private set
-            {
-                if (SetProperty(ref _autoSortPrice, value))
-                    OnPropertyChanged(nameof(AutoSortPriceText));
-            }
+            private set => SetProperty(ref _autoSortPrice, value);
         }
 
         public int SpeedPrice
         {
             get => _speedPrice;
-            private set
-            {
-                if (SetProperty(ref _speedPrice, value))
-                    OnPropertyChanged(nameof(SpeedPriceText));
-            }
+            private set => SetProperty(ref _speedPrice, value);
         }
-
-        public string FreezeDisplayText => $"Freeze\nOwned: {OwnedFreeze}";
-        public string SlowDisplayText => $"Slow\nOwned: {OwnedSlow}";
-        public string AutoSortDisplayText => $"Auto Sort\nOwned: {OwnedAutoSort}";
-        public string SpeedDisplayText => $"Speed\nOwned: {OwnedSpeed}";
-        public string FreezePriceText => $"Coins: {FreezePrice}";
-        public string SlowPriceText => $"Coins: {SlowPrice}";
-        public string AutoSortPriceText => $"Coins: {AutoSortPrice}";
-        public string SpeedPriceText => $"Coins: {SpeedPrice}";
 
         public ICommand BuyFreezeCommand { get; }
         public ICommand BuySlowCommand { get; }

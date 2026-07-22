@@ -51,7 +51,21 @@
                                    FontAttributes="Bold" 
                                    TextColor="#FDCBB0" 
                                    HorizontalTextAlignment="Center" 
-                                   LineBreakMode="WordWrap"/>
+                                   LineBreakMode="WordWrap">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding HasNumberFormatting}" Value="True">
+                                            <Setter Property="FormattedText">
+                                                <Setter.Value>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding DescPrefix}" FontFamily="PixelifySans" TextColor="#FDCBB0" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding CoinAmount}" FontFamily="VcrMono" TextColor="#FDCBB0" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding DescSuffix}" FontFamily="PixelifySans" TextColor="#FDCBB0" FontAttributes="Bold"/>
+                                                    </FormattedString>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

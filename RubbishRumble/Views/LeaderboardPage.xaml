@@ -140,7 +140,7 @@
                                             <Label Grid.Column="2" 
                                                    Text="{Binding HighScore}" 
                                                    TextColor="#FDCBB0" 
-                                                   FontFamily="PixelifySans" 
+                                                   FontFamily="VcrMono" 
                                                    FontSize="14" 
                                                    FontAttributes="Bold" 
                                                    VerticalOptions="Center"/>
