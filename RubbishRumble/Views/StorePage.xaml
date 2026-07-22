@@ -206,21 +206,20 @@
                                 Background="#9E4539"
                                 Padding="20"
                                 WidthRequest="180">
-                            <!-- TOFIX: Correct revive logic -->
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                                <Label Text="{Binding SpeedDisplayText}" 
+                                <Label Text="{Binding ReviveDisplayText}" 
                                        FontFamily="PixelifySans"
                                        FontSize="18" 
                                        FontAttributes="Bold" 
                                        TextColor="#FDCBB0" 
                                        HorizontalTextAlignment="Center"/>
 
-                                <Image Source="revive.png" 
+                                <Image Source="revive01.png" 
                                        HeightRequest="60" 
                                        WidthRequest="60" 
                                        Aspect="AspectFit"/>
 
-                                <Label Text="{Binding SpeedPriceText}" 
+                                <Label Text="{Binding RevivePriceText}" 
                                        FontFamily="PixelifySans" 
                                        FontSize="18" 
                                        FontAttributes="Bold"
