@@ -9,6 +9,10 @@ public partial class MainMenuPage : ContentPage
     {
         InitializeComponent();
         BindingContext = new MainMenuViewModel();
-        _ = SettingsService.Instance.InitializeMusicAsync();
+    }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await SettingsService.Instance.PlayMusicAsync("bgmusic.mp3");
     }
 }

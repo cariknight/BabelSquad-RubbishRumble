@@ -106,7 +106,7 @@ public partial class GamePage : ContentPage
         {
             System.Diagnostics.Debug.WriteLine($"Game init failed: {ex}");
         }
-
+        await SettingsService.Instance.PlayMusicAsync("gamemusic.mp3");
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();
         SettingsService.Instance.AppBecameInactive += OnAppBecameInactive;
@@ -121,6 +121,7 @@ public partial class GamePage : ContentPage
         SettingsService.Instance.AppBecameInactive -= OnAppBecameInactive;
         StopGameLoop();
         ClearActiveTrash();
+
     }
 
     private void OnAppBecameInactive(object? sender, EventArgs e)
@@ -626,6 +627,7 @@ public partial class GamePage : ContentPage
         if (column < 0)
             return;
 
+        await SettingsService.Instance.PlaySfxAsync("addcoin.mp3");
         VisualElement popup = CreateOutlinedPointsLabel($"+{points}");
         double x = ((column + 0.5) / 4.0) * _arenaWidth - (PointsPopupWidth / 2);
         double y = _arenaHeight * 0.72;

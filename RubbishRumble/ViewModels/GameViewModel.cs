@@ -237,7 +237,12 @@ namespace RubbishRumble.ViewModels
                 _ = FlashBinAsync(trash.Category);
             }
 
-            return outcome != TrashSortOutcome.NotInBinZone;
+            else if (outcome == TrashSortOutcome.Incorrect) 
+            {
+                _ = SettingsService.Instance.PlaySfxAsync("wrongbin.mp3");
+            }
+
+                return outcome != TrashSortOutcome.NotInBinZone;
         }
 
         public void OnTrashMissed()

@@ -14,7 +14,7 @@ namespace RubbishRumble.ViewModels
         private bool _isNewHighScore;
         private bool _rewardsSaved;
         private string _ecoTipTitle = string.Empty;
-        private string _ecoTipText = "Loading eco tip...";
+        private string _ecoTipText = "Loading eco fact...";
 
         public int TotalScore
         {
@@ -92,7 +92,6 @@ namespace RubbishRumble.ViewModels
         public GameOverViewModel()
         {
             ExitCommand = new Command(async () => await OnExitExecutedAsync());
-            _ = SettingsService.Instance.PlaySfxAsync("gameover.mp3");
         }
 
         public async Task SaveRewardsAsync()
