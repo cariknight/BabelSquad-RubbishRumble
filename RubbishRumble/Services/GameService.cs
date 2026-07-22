@@ -26,6 +26,7 @@ namespace RubbishRumble.Services
 
         private List<TrashItem> _trashItems = new();
         private List<Rarity> _rarities = new();
+        private int _trashSinceLastDifficultyIncrease;
 
         public double CurrentScoreMultiplier { get; private set; } = 1.0;
         public double CurrentSpeedMultiplier { get; private set; } = 1.0;
@@ -181,6 +182,7 @@ namespace RubbishRumble.Services
             Score = 0;
             Lives = Constants.STARTING_LIVES;
             TrashCollected = 0;
+            _trashSinceLastDifficultyIncrease = 0;
             DifficultyLevel = 1;
             SpawnInterval = Constants.STARTING_SPAWN_INTERVAL;
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
@@ -214,10 +216,26 @@ namespace RubbishRumble.Services
         {
             DifficultyLevel++;
 
-            SpawnInterval = Math.Max(Constants.MIN_SPAWN_INTERVAL, SpawnInterval - 0.1);
+            SpawnInterval = Math.Max(
+                Constants.MIN_SPAWN_INTERVAL,
+                SpawnInterval - Constants.SPAWN_INTERVAL_DECREASE);
             TrashSpeed = Math.Min(Constants.MAX_TRASH_SPEED, TrashSpeed + Constants.TRASH_SPEED_INCREASE);
 
             NotifyGameStateChanged();
+        }
+
+        private int GetTrashRequiredForNextLevel()
+            => DifficultyLevel * Constants.DIFFICULTY_TRASH_BASE;
+
+        private void TryIncreaseDifficulty()
+        {
+            int required = GetTrashRequiredForNextLevel();
+            while (_trashSinceLastDifficultyIncrease >= required)
+            {
+                _trashSinceLastDifficultyIncrease -= required;
+                IncreaseDifficulty();
+                required = GetTrashRequiredForNextLevel();
+            }
         }
 
         private double GetDifficultyScoreMultiplier() => 1 + (DifficultyLevel - 1) * 0.1;
@@ -236,9 +254,8 @@ namespace RubbishRumble.Services
             Score += scoreEarned;
 
             TrashCollected++;
-
-            if (TrashCollected % 20 == 0)
-                IncreaseDifficulty();
+            _trashSinceLastDifficultyIncrease++;
+            TryIncreaseDifficulty();
 
             NotifyGameStateChanged();
             return scoreEarned;

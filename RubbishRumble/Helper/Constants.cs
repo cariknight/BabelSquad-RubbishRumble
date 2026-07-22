@@ -12,8 +12,8 @@
         public const double STARTING_TRASH_SPEED = 1.0;
         public const double MAX_TRASH_SPEED = 5.0;
 
-        // Difficulty settings
-        public const int DIFFICULTY_INCREASE_EVERY = 20;
+        // Difficulty settings — level N requires N * DIFFICULTY_TRASH_BASE collected since last level-up
+        public const int DIFFICULTY_TRASH_BASE = 5;
 
         public const double SPAWN_INTERVAL_DECREASE = 0.1;
         public const double TRASH_SPEED_INCREASE = 0.15;
