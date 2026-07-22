@@ -9,8 +9,12 @@ namespace RubbishRumble.Views
         public class TutorialSlide
         {
             public string Title { get; set; } = string.Empty;
-            public string Description { get; set; } = string.Empty;
             public string ImageUrl { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string DescPrefix { get; set; } = string.Empty;
+            public string CoinAmount { get; set; } = string.Empty;
+            public string DescSuffix { get; set; } = string.Empty;
+            public bool HasNumberFormatting => !string.IsNullOrEmpty(CoinAmount);
         }
 
         private List<TutorialSlide> _slides;
@@ -53,25 +57,33 @@ namespace RubbishRumble.Views
                     new TutorialSlide
                     {
                         Title = "Common Trash =\r\nBasic Points",
-                        Description = "Worth 5 coins\r\nFound most often",
+                        DescPrefix = "Worth ",
+                        CoinAmount = "5",
+                        DescSuffix = " coins\r\nFound most often",
                         ImageUrl = "tutorial_common.png"
                     },
                     new TutorialSlide
                     {
                         Title = "Uncommon Trash = Better Points",
-                        Description = "Worth 10 coins\r\nAppears sometimes",
+                        DescPrefix = "Worth ",
+                        CoinAmount = "10",
+                        DescSuffix = " coins\r\nAppears sometimes",
                         ImageUrl = "tutorial_uncommon.png"
                     },
                     new TutorialSlide
                     {
                         Title = "Rare Trash = Big Points",
-                        Description = "Worth 20 coins\r\nHard to find",
+                        DescPrefix = "Worth ",
+                        CoinAmount = "20",
+                        DescSuffix = " coins\r\nHard to find",
                         ImageUrl = "tutorial_rare.png"
                     },
                     new TutorialSlide
                     {
                         Title = "Epic Trash = Jackpot!",
-                        Description = "Worth 50 coins\r\nExtremely rare",
+                        DescPrefix = "Worth ",
+                        CoinAmount = "50",
+                        DescSuffix = " coins\r\nExtremely rare",
                         ImageUrl = "tutorial_epic.png"
                     },
                     new TutorialSlide
