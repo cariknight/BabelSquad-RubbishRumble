@@ -7,6 +7,8 @@
         // Spawn Settings
         public const double STARTING_SPAWN_INTERVAL = 3.0;
         public const double MIN_SPAWN_INTERVAL = 0.8;
+        public const double MAX_SPAWN_RATE = 1.0 / MIN_SPAWN_INTERVAL;
+        public const double SPAWN_INTERVAL_DECREASE = 0.1;
 
         // Trash Speed settings
         public const double STARTING_TRASH_SPEED = 1.0;
@@ -15,7 +17,6 @@
         // Difficulty settings — level N requires N * DIFFICULTY_TRASH_BASE collected since last level-up
         public const int DIFFICULTY_TRASH_BASE = 5;
 
-        public const double SPAWN_INTERVAL_DECREASE = 0.1;
         public const double TRASH_SPEED_INCREASE = 0.15;
 
         // Sorting

@@ -184,7 +184,7 @@ namespace RubbishRumble.Services
             TrashCollected = 0;
             _trashSinceLastDifficultyIncrease = 0;
             DifficultyLevel = 1;
-            SpawnInterval = Constants.STARTING_SPAWN_INTERVAL;
+            ApplySpawnRateForCurrentLevel();
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
             ClearPowerUpState();
@@ -216,12 +216,18 @@ namespace RubbishRumble.Services
         {
             DifficultyLevel++;
 
-            SpawnInterval = Math.Max(
-                Constants.MIN_SPAWN_INTERVAL,
-                SpawnInterval - Constants.SPAWN_INTERVAL_DECREASE);
+            ApplySpawnRateForCurrentLevel();
             TrashSpeed = Math.Min(Constants.MAX_TRASH_SPEED, TrashSpeed + Constants.TRASH_SPEED_INCREASE);
 
             NotifyGameStateChanged();
+        }
+
+        private void ApplySpawnRateForCurrentLevel()
+        {
+            double interval = Constants.STARTING_SPAWN_INTERVAL
+                - (DifficultyLevel - 1) * Constants.SPAWN_INTERVAL_DECREASE;
+
+            SpawnInterval = Math.Max(Constants.MIN_SPAWN_INTERVAL, interval);
         }
 
         private int GetTrashRequiredForNextLevel()
