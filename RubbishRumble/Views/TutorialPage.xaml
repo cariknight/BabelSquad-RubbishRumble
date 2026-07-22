@@ -23,6 +23,7 @@
             <CarouselView x:Name="TutorialCarousel"
                       Grid.Row="1"
                       HeightRequest="400"
+                      Loop="False"
                       HorizontalScrollBarVisibility="Never">
                 <CarouselView.ItemTemplate>
                     <DataTemplate>
@@ -74,19 +75,7 @@
                          HeightRequest="60"
                          WidthRequest="200"
                          HorizontalOptions="Center"
-                         Clicked="OnNextButtonClicked">
-                    <!-- Change to Play button -->
-                    <ImageButton.Triggers>
-                        <DataTrigger TargetType="ImageButton"
-                         Binding="{Binding Source={x:Reference TutorialCarousel}, Path=Position}"
-                         Value="9">
-                            <Setter Property="Source" Value="play.png" />
-                            <Setter Property="BackgroundColor" Value="#9E4539" />
-                            <Setter Property="BorderColor" Value="#4C3E24" />
-                        </DataTrigger>
-                    </ImageButton.Triggers>
-
-                </ImageButton>
+                         Clicked="OnNextButtonClicked" />
             </VerticalStackLayout>
         </Grid>
     </Grid>
