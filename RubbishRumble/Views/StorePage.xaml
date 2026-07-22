@@ -25,7 +25,6 @@
                     <Label Text="{Binding Coins}" 
                        FontFamily="VcrMono" 
                        FontSize="22" 
-                       FontAttributes="Bold" 
                        TextColor="#4C3E24"
                        VerticalOptions="Center"/>
                     <Image Source="coin.png" 
@@ -54,7 +53,6 @@
                                     <Label Text="Freeze" 
                                            FontFamily="PixelifySans"
                                            FontSize="18" 
-                                           FontAttributes="Bold" 
                                            TextColor="#FDCBB0" 
                                            HorizontalTextAlignment="Center"/>
 
@@ -62,13 +60,11 @@
                                         <Label Text="Owned:" 
                                                FontFamily="PixelifySans"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
 
                                         <Label Text="{Binding OwnedFreeze}" 
                                                FontFamily="VcrMono"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
@@ -82,13 +78,11 @@
                                     <Label Text="Coins:" 
                                            FontFamily="PixelifySans" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
                                     <Label Text="{Binding FreezePrice}" 
                                            FontFamily="VcrMono" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
@@ -116,7 +110,6 @@
                                     <Label Text="Slow" 
                                            FontFamily="PixelifySans"
                                            FontSize="18" 
-                                           FontAttributes="Bold" 
                                            TextColor="#FDCBB0" 
                                            HorizontalTextAlignment="Center"/>
 
@@ -124,13 +117,11 @@
                                         <Label Text="Owned:" 
                                                FontFamily="PixelifySans"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
 
                                         <Label Text="{Binding OwnedSlow}" 
                                                FontFamily="VcrMono"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
@@ -142,13 +133,11 @@
                                     <Label Text="Coins:" 
                                            FontFamily="PixelifySans" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
                                     <Label Text="{Binding SlowPrice}" 
                                            FontFamily="VcrMono" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
@@ -176,7 +165,6 @@
                                     <Label Text="Auto Sort" 
                                            FontFamily="PixelifySans"
                                            FontSize="18" 
-                                           FontAttributes="Bold" 
                                            TextColor="#FDCBB0" 
                                            HorizontalTextAlignment="Center"/>
 
@@ -184,13 +172,11 @@
                                         <Label Text="Owned:" 
                                                FontFamily="PixelifySans"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
 
                                         <Label Text="{Binding OwnedAutoSort}" 
                                                FontFamily="VcrMono"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
@@ -202,13 +188,11 @@
                                     <Label Text="Coins:" 
                                            FontFamily="PixelifySans" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
                                     <Label Text="{Binding AutoSortPrice}" 
                                            FontFamily="VcrMono" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
@@ -236,7 +220,6 @@
                                     <Label Text="Speed" 
                                            FontFamily="PixelifySans"
                                            FontSize="18" 
-                                           FontAttributes="Bold" 
                                            TextColor="#FDCBB0" 
                                            HorizontalTextAlignment="Center"/>
 
@@ -244,13 +227,11 @@
                                         <Label Text="Owned:" 
                                                FontFamily="PixelifySans"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
 
                                         <Label Text="{Binding OwnedSpeed}" 
                                                FontFamily="VcrMono"
                                                FontSize="18" 
-                                               FontAttributes="Bold" 
                                                TextColor="#FDCBB0"/>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
@@ -262,13 +243,11 @@
                                     <Label Text="Coins:" 
                                            FontFamily="PixelifySans" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
                                     <Label Text="{Binding SpeedPrice}" 
                                            FontFamily="VcrMono" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
@@ -296,7 +275,6 @@
                                 <Label Text="{Binding ReviveDisplayText}" 
                                        FontFamily="PixelifySans"
                                        FontSize="18" 
-                                       FontAttributes="Bold" 
                                        TextColor="#FDCBB0" 
                                        HorizontalTextAlignment="Center"/>
 
@@ -308,13 +286,11 @@
                                     <Label Text="Coins:" 
                                            FontFamily="PixelifySans" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
 
                                     <Label Text="{Binding RevivePrice}" 
                                            FontFamily="VcrMono" 
                                            FontSize="18" 
-                                           FontAttributes="Bold"
                                            TextColor="#FDCBB0"/>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>

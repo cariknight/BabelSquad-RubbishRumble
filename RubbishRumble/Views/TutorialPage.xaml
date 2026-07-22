@@ -38,7 +38,6 @@
                                 <Label Text="{Binding Title}" 
                                    FontFamily="PixelifySans"
                                    FontSize="22" 
-                                   FontAttributes="Bold" 
                                    TextColor="#FDCBB0" 
                                    HorizontalTextAlignment="Center"/>
 
@@ -49,7 +48,6 @@
                                 <Label Text="{Binding Description}" 
                                    FontFamily="PixelifySans"
                                    FontSize="22" 
-                                   FontAttributes="Bold" 
                                    TextColor="#FDCBB0" 
                                    HorizontalTextAlignment="Center" 
                                    LineBreakMode="WordWrap">
@@ -58,9 +56,9 @@
                                             <Setter Property="FormattedText">
                                                 <Setter.Value>
                                                     <FormattedString>
-                                                        <Span Text="{Binding DescPrefix}" FontFamily="PixelifySans" TextColor="#FDCBB0" FontAttributes="Bold"/>
-                                                        <Span Text="{Binding CoinAmount}" FontFamily="VcrMono" TextColor="#FDCBB0" FontAttributes="Bold"/>
-                                                        <Span Text="{Binding DescSuffix}" FontFamily="PixelifySans" TextColor="#FDCBB0" FontAttributes="Bold"/>
+                                                        <Span Text="{Binding DescPrefix}" FontFamily="PixelifySans" TextColor="#FDCBB0"/>
+                                                        <Span Text="{Binding CoinAmount}" FontFamily="VcrMono" TextColor="#FDCBB0"/>
+                                                        <Span Text="{Binding DescSuffix}" FontFamily="PixelifySans" TextColor="#FDCBB0"/>
                                                     </FormattedString>
                                                 </Setter.Value>
                                             </Setter>

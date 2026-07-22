@@ -52,7 +52,7 @@
 		<MauiImage Include="Resources\Images\Trash\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<MauiFont Include="Resources\Fonts\*" Exclude="Resources\Fonts\PixelifySans-Regular.ttf;Resources\Fonts\PixelifySans-Bold.ttf" />
 		
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
