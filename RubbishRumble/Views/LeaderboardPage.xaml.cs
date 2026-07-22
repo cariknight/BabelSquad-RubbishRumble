@@ -5,11 +5,18 @@ namespace RubbishRumble.Views;
 
 public partial class LeaderboardPage : ContentPage
 {
+    private readonly LeaderboardViewModel _viewModel = new();
+
 	public LeaderboardPage()
 	{
 		InitializeComponent();
+        BindingContext = _viewModel;
+    }
 
-        BindingContext = new LeaderboardViewModel();
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.InitializeAsync();
     }
 
     private async void OnExitButtonClicked(object sender, EventArgs e)

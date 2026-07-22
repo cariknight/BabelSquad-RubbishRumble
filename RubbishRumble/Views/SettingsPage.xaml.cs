@@ -9,6 +9,7 @@ public partial class SettingsPage : ContentPage
 		InitializeComponent();
 
         BindingContext = new SettingsViewModel();
+
     }
     private async void OnExitButtonClicked(object sender, EventArgs e)
     {

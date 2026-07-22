@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using RubbishRumble.Models;
 using RubbishRumble.Services;
@@ -13,63 +7,120 @@ namespace RubbishRumble.ViewModels
 {
     public class LeaderboardViewModel : BaseViewModel
     {
+        private readonly LeaderboardService _leaderboardService = new();
+
         private string _playerNameText = string.Empty;
+        private AvatarOption? _selectedAvatar;
+        private int _pendingScore;
+        private string _submitErrorMessage = string.Empty;
+
         public string PlayerNameText
         {
             get => _playerNameText;
             set => SetProperty(ref _playerNameText, value);
         }
 
-        private string _selectedAvatarImage = "biodegradable_01.png";
-        public string SelectedAvatarImage
+        public AvatarOption? SelectedAvatar
         {
-            get => _selectedAvatarImage;
-            set => SetProperty(ref _selectedAvatarImage, value);
+            get => _selectedAvatar;
+            set
+            {
+                if (SetProperty(ref _selectedAvatar, value))
+                    OnPropertyChanged(nameof(SelectedAvatarImage));
+            }
         }
 
-        public ObservableCollection<string> TrashAvatars { get; } = new();
+        public string SelectedAvatarImage => SelectedAvatar?.ImagePath ?? string.Empty;
+
+        public bool CanSubmitEntry
+        {
+            get;
+            private set;
+        }
+
+        public string SubmitErrorMessage
+        {
+            get => _submitErrorMessage;
+            private set => SetProperty(ref _submitErrorMessage, value);
+        }
+
+        public ObservableCollection<AvatarOption> Avatars { get; } = new();
         public ObservableCollection<UserProfileModel> SavedProfiles { get; } = new();
 
         public ICommand AddProfileCommand { get; }
 
         public LeaderboardViewModel()
         {
-            AddProfileCommand = new Command(OnAddProfile);
+            AddProfileCommand = new Command(async () => await OnAddProfileAsync(), () => CanSubmitEntry);
+        }
+
+        public async Task InitializeAsync()
+        {
             LoadAvatarOptions();
-            LoadMockProfiles();
+            await LoadLeaderboardAsync();
+            await RefreshSubmitStateAsync();
         }
 
         private void LoadAvatarOptions()
         {
-            TrashAvatars.Add("biodegradable_01.png");
-            TrashAvatars.Add("recyclables_08.png");
-            TrashAvatars.Add("biohazard_09.png");
-            TrashAvatars.Add("landfall_06.png");
+            Avatars.Clear();
 
-            // Default profile
-            SelectedAvatarImage = TrashAvatars.FirstOrDefault() ?? "biodegradable_01.png";
+            foreach (AvatarOption avatar in _leaderboardService.GetAvailableAvatars())
+                Avatars.Add(avatar);
+
+            SelectedAvatar = Avatars.FirstOrDefault();
         }
 
-        private void OnAddProfile()
+        private async Task LoadLeaderboardAsync()
         {
-            if (string.IsNullOrWhiteSpace(PlayerNameText))
+            IReadOnlyList<LeaderboardEntry> entries = await _leaderboardService.GetLeaderboardAsync();
+
+            SavedProfiles.Clear();
+
+            foreach (LeaderboardEntry entry in entries)
+            {
+                SavedProfiles.Add(new UserProfileModel
+                {
+                    Name = entry.PlayerName,
+                    AvatarImage = _leaderboardService.GetAvatarImagePath(entry.AvatarId),
+                    HighScore = entry.HighestScore
+                });
+            }
+        }
+
+        private async Task RefreshSubmitStateAsync()
+        {
+            _pendingScore = await _leaderboardService.GetPendingLeaderboardScoreAsync();
+            CanSubmitEntry = await _leaderboardService.CanSubmitLeaderboardEntryAsync(_pendingScore);
+
+            if (!CanSubmitEntry)
+                SubmitErrorMessage = string.Empty;
+
+            OnPropertyChanged(nameof(CanSubmitEntry));
+            (AddProfileCommand as Command)?.ChangeCanExecute();
+        }
+
+        private async Task OnAddProfileAsync()
+        {
+            SubmitErrorMessage = string.Empty;
+
+            if (!CanSubmitEntry || SelectedAvatar == null)
                 return;
 
-            var newProfile = new UserProfileModel
+            LeaderboardSubmitResult result = await _leaderboardService.SubmitLeaderboardEntryAsync(
+                PlayerNameText,
+                SelectedAvatar.Id,
+                _pendingScore);
+
+            if (!result.Success)
             {
-                Name = PlayerNameText.Trim(),
-                AvatarImage = SelectedAvatarImage,
-                HighScore = 0
-            };
+                SubmitErrorMessage = result.ErrorMessage;
+                return;
+            }
 
-            SavedProfiles.Add(newProfile);
             PlayerNameText = string.Empty;
-        }
-
-        // Placeholder for high scores
-        private void LoadMockProfiles()
-        {
-            SavedProfiles.Add(new UserProfileModel { Name = "Rubbish Rumble", AvatarImage = "biodegradable_01.png", HighScore = 1250 });
+            await LoadLeaderboardAsync();
+            await RefreshSubmitStateAsync();
         }
     }
 

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ViewModels="clr-namespace:RubbishRumble.ViewModels"
              xmlns:Models="clr-namespace:RubbishRumble.ViewModels"
+             xmlns:Domain="clr-namespace:RubbishRumble.Models"
              x:Class="RubbishRumble.Views.LeaderboardPage"
              x:DataType="ViewModels:LeaderboardViewModel"
              Shell.NavBarIsVisible="False"
@@ -30,7 +31,8 @@
                         StrokeThickness="3"
                         StrokeShape="Rectangle"
                         Background="#9E4539"
-                        Padding="12">
+                        Padding="12"
+                        IsVisible="{Binding CanSubmitEntry}">
 
                     <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
 
@@ -69,25 +71,34 @@
                                TextColor="#FDCBB0"
                                HorizontalTextAlignment="Center"/>
 
-                        <!-- 4 profile icons -->
-                        <CollectionView ItemsSource="{Binding TrashAvatars}" SelectedItem="{Binding SelectedAvatarImage}" SelectionMode="Single" HeightRequest="55">
+                        <!-- Avatar options -->
+                        <CollectionView ItemsSource="{Binding Avatars}"
+                                        SelectedItem="{Binding SelectedAvatar}"
+                                        SelectionMode="Single"
+                                        HeightRequest="110">
                             <CollectionView.ItemsLayout>
-                                <GridItemsLayout Orientation="Vertical" Span="4" HorizontalItemSpacing="8"/>
+                                <GridItemsLayout Orientation="Vertical" Span="4" HorizontalItemSpacing="8" VerticalItemSpacing="8"/>
                             </CollectionView.ItemsLayout>
 
                             <CollectionView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="Domain:AvatarOption">
                                     <Border Stroke="#4C3E24"
                                             StrokeThickness="2"
                                             BackgroundColor="#FDCBB0"
                                             Padding="4"
                                             HeightRequest="50"
                                             WidthRequest="50">
-                                        <Image Source="{Binding .}" Aspect="AspectFit"/>
+                                        <Image Source="{Binding ImagePath}" Aspect="AspectFit"/>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
+
+                        <Label Text="{Binding SubmitErrorMessage}"
+                               FontSize="12"
+                               FontFamily="PixelifySans"
+                               TextColor="#FDCBB0"
+                               HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </Border>
                 <ImageButton Source="add.png"
@@ -99,7 +110,8 @@
                                  Padding="5"
                                  HeightRequest="50"
                                  WidthRequest="160"
-                                 HorizontalOptions="Center"/>
+                                 HorizontalOptions="Center"
+                                 IsVisible="{Binding CanSubmitEntry}"/>
 
                 <Border Stroke="#4C3E24"
                         StrokeThickness="3"
