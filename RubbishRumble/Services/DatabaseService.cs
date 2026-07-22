@@ -8,6 +8,9 @@ namespace RubbishRumble.Services
     {
         public const int DefaultPlayerId = 1;
 
+        private static readonly SemaphoreSlim InitLock = new(1, 1);
+        private static SQLiteAsyncConnection? SharedDatabase;
+
         private SQLiteAsyncConnection? database;
 
         public async Task InitAsync()
@@ -15,22 +18,38 @@ namespace RubbishRumble.Services
             if (database != null)
                 return;
 
-            string path = Path.Combine(FileSystem.AppDataDirectory, "rubbishrumble.db");
-            database = new SQLiteAsyncConnection(path);
+            await InitLock.WaitAsync();
+            try
+            {
+                if (SharedDatabase == null)
+                {
+                    string path = Path.Combine(FileSystem.AppDataDirectory, "rubbishrumble.db");
+                    SharedDatabase = new SQLiteAsyncConnection(path);
+                    database = SharedDatabase;
 
-            await database.CreateTableAsync<Player>();
-            await database.CreateTableAsync<PowerUp>();
-            await database.CreateTableAsync<GameSession>();
-            await database.CreateTableAsync<Inventory>();
-            await database.CreateTableAsync<LeaderboardEntry>();
+                    await SharedDatabase.CreateTableAsync<Player>();
+                    await SharedDatabase.CreateTableAsync<PowerUp>();
+                    await SharedDatabase.CreateTableAsync<GameSession>();
+                    await SharedDatabase.CreateTableAsync<Inventory>();
+                    await SharedDatabase.CreateTableAsync<LeaderboardEntry>();
 
-            await SeedPowerUpsAsync();
-            await MigrateLegacySchemaAsync();
+                    await SeedPowerUpsAsync(SharedDatabase);
+                    await MigrateLegacySchemaAsync(SharedDatabase);
+                }
+                else
+                {
+                    database = SharedDatabase;
+                }
 
-            Player? player = await database.FindAsync<Player>(DefaultPlayerId);
+                Player? player = await database.FindAsync<Player>(DefaultPlayerId);
 
-            if (player == null)
-                await database.InsertAsync(new Player { Id = DefaultPlayerId });
+                if (player == null)
+                    await database.InsertAsync(new Player { Id = DefaultPlayerId });
+            }
+            finally
+            {
+                InitLock.Release();
+            }
         }
 
         public async Task<Player> GetPlayerAsync()
@@ -168,17 +187,21 @@ namespace RubbishRumble.Services
             return entry;
         }
 
-        private async Task SeedPowerUpsAsync()
+        private async Task SeedPowerUpsAsync(SQLiteAsyncConnection db)
         {
             List<PowerUp> catalog = await LoadPowerUpCatalogAsync();
+            HashSet<string> seededNames = new(StringComparer.OrdinalIgnoreCase);
 
             foreach (PowerUp powerUp in catalog)
             {
-                PowerUp? existing = await database!.Table<PowerUp>()
+                if (!seededNames.Add(powerUp.Name))
+                    continue;
+
+                PowerUp? existing = await db.Table<PowerUp>()
                     .FirstOrDefaultAsync(p => p.Name == powerUp.Name);
 
                 if (existing == null)
-                    await database.InsertAsync(powerUp);
+                    await db.InsertAsync(powerUp);
             }
         }
 
@@ -196,28 +219,28 @@ namespace RubbishRumble.Services
             return JsonSerializer.Deserialize<List<PowerUp>>(json, options) ?? new List<PowerUp>();
         }
 
-        private async Task MigrateLegacySchemaAsync()
+        private async Task MigrateLegacySchemaAsync(SQLiteAsyncConnection db)
         {
-            await MigrateInventoryAsync();
-            await MigrateGameSessionsAsync();
-            await MigrateLeaderboardPendingAsync();
+            await MigrateInventoryAsync(db);
+            await MigrateGameSessionsAsync(db);
+            await MigrateLeaderboardPendingAsync(db);
         }
 
-        private async Task MigrateInventoryAsync()
+        private async Task MigrateInventoryAsync(SQLiteAsyncConnection db)
         {
-            HashSet<string> columns = await GetTableColumnsAsync("Inventory");
+            HashSet<string> columns = await GetTableColumnsAsync(db, "Inventory");
 
             if (columns.Contains("PowerUpName") && !columns.Contains("PowerUpId"))
             {
-                await database!.ExecuteAsync(
+                await db.ExecuteAsync(
                     "ALTER TABLE Inventory ADD COLUMN PlayerId INTEGER NOT NULL DEFAULT 1");
-                await database.ExecuteAsync(
+                await db.ExecuteAsync(
                     "ALTER TABLE Inventory ADD COLUMN PowerUpId INTEGER NOT NULL DEFAULT 0");
 
-                List<LegacyInventoryRow> legacyRows = await database.QueryAsync<LegacyInventoryRow>(
+                List<LegacyInventoryRow> legacyRows = await db.QueryAsync<LegacyInventoryRow>(
                     "SELECT Id, PowerUpName, Quantity FROM Inventory");
 
-                await database.ExecuteAsync("DELETE FROM Inventory");
+                await db.ExecuteAsync("DELETE FROM Inventory");
 
                 foreach (LegacyInventoryRow row in legacyRows)
                 {
@@ -226,7 +249,7 @@ namespace RubbishRumble.Services
                     if (powerUpId == null)
                         continue;
 
-                    await database.InsertAsync(new Inventory
+                    await db.InsertAsync(new Inventory
                     {
                         PlayerId = DefaultPlayerId,
                         PowerUpId = powerUpId.Value,
@@ -239,43 +262,43 @@ namespace RubbishRumble.Services
 
             if (columns.Contains("PowerUpId"))
             {
-                await database!.ExecuteAsync(
+                await db.ExecuteAsync(
                     "UPDATE Inventory SET PlayerId = ? WHERE PlayerId = 0 OR PlayerId IS NULL",
                     DefaultPlayerId);
             }
         }
 
-        private async Task MigrateGameSessionsAsync()
+        private async Task MigrateGameSessionsAsync(SQLiteAsyncConnection db)
         {
-            HashSet<string> columns = await GetTableColumnsAsync("GameSession");
+            HashSet<string> columns = await GetTableColumnsAsync(db, "GameSession");
 
             if (!columns.Contains("PlayerId"))
             {
-                await database!.ExecuteAsync(
+                await db.ExecuteAsync(
                     "ALTER TABLE GameSession ADD COLUMN PlayerId INTEGER NOT NULL DEFAULT 1");
             }
             else
             {
-                await database!.ExecuteAsync(
+                await db.ExecuteAsync(
                     "UPDATE GameSession SET PlayerId = ? WHERE PlayerId = 0 OR PlayerId IS NULL",
                     DefaultPlayerId);
             }
         }
 
-        private async Task MigrateLeaderboardPendingAsync()
+        private async Task MigrateLeaderboardPendingAsync(SQLiteAsyncConnection db)
         {
-            HashSet<string> columns = await GetTableColumnsAsync("Player");
+            HashSet<string> columns = await GetTableColumnsAsync(db, "Player");
 
             if (!columns.Contains("PendingLeaderboardScore"))
             {
-                await database!.ExecuteAsync(
+                await db.ExecuteAsync(
                     "ALTER TABLE Player ADD COLUMN PendingLeaderboardScore INTEGER NOT NULL DEFAULT 0");
             }
         }
 
-        private async Task<HashSet<string>> GetTableColumnsAsync(string tableName)
+        private async Task<HashSet<string>> GetTableColumnsAsync(SQLiteAsyncConnection db, string tableName)
         {
-            List<ColumnInfo> columns = await database!.QueryAsync<ColumnInfo>(
+            List<ColumnInfo> columns = await db.QueryAsync<ColumnInfo>(
                 $"PRAGMA table_info({tableName})");
 
             return columns
