@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using RubbishRumble.Helper;
+using RubbishRumble.Models;
 using RubbishRumble.Services;
 
 namespace RubbishRumble.ViewModels
@@ -7,14 +8,34 @@ namespace RubbishRumble.ViewModels
     public class GameOverViewModel : BindableObject
     {
         private readonly DatabaseService _databaseService = new();
+        private readonly PowerUpService _powerUpService = new();
+        private readonly InventoryService _inventoryService;
         private readonly APIService _apiService = new();
         private int _totalScore;
         private int _earnedCoins;
         private int _highestScore;
+        private int _currentRevivePower;
         private bool _isNewHighScore;
         private bool _rewardsSaved;
         private string _ecoTipTitle = string.Empty;
         private string _ecoTipText = "Loading eco fact...";
+
+        public int CurrentRevivePower
+        {
+            get => _currentRevivePower;
+            private set
+            {
+                _currentRevivePower = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanUseRevive));
+                OnPropertyChanged(nameof(ReviveButtonOpacity));
+            }
+        }
+
+        public bool CanUseRevive =>
+            CurrentRevivePower > 0 && GameViewModel.ActiveInstance != null;
+
+        public double ReviveButtonOpacity => CanUseRevive ? 1.0 : 0.4;
 
         public int TotalScore
         {
@@ -88,10 +109,39 @@ namespace RubbishRumble.ViewModels
         }
 
         public ICommand ExitCommand { get; }
+        public ICommand UseReviveCommand { get; }
 
         public GameOverViewModel()
         {
+            _inventoryService = new InventoryService(_databaseService, _powerUpService);
             ExitCommand = new Command(async () => await OnExitExecutedAsync());
+            UseReviveCommand = new Command(async () => await OnReviveExecutedAsync());
+        }
+
+        public async Task LoadReviveCountAsync()
+        {
+            await _powerUpService.InitializeAsync();
+            Player player = await _databaseService.GetPlayerAsync();
+            await _inventoryService.EnsureBeginnerRevivesAsync(player);
+            CurrentRevivePower = await _inventoryService.GetPowerUpCountAsync("Revive");
+            OnPropertyChanged(nameof(CanUseRevive));
+            OnPropertyChanged(nameof(ReviveButtonOpacity));
+        }
+
+        public async Task LoadRewardsPreviewAsync()
+        {
+            try
+            {
+                Player player = await _databaseService.GetPlayerAsync();
+                int previousHighScore = player.HighestScore;
+                IsNewHighScore = TotalScore > 0 && TotalScore > previousHighScore;
+                EarnedCoins = EconomyHelper.CalculateEarnedCoins(TotalScore, IsNewHighScore);
+                HighestScore = Math.Max(previousHighScore, TotalScore);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load reward preview: {ex}");
+            }
         }
 
         public async Task SaveRewardsAsync()
@@ -134,8 +184,28 @@ namespace RubbishRumble.ViewModels
             }
         }
 
-        private static async Task OnExitExecutedAsync()
+        private async Task OnReviveExecutedAsync()
         {
+            GameViewModel? activeGame = GameViewModel.ActiveInstance;
+            if (activeGame == null || !CanUseRevive)
+                return;
+
+            if (!await activeGame.TryReviveAndResumeAsync())
+                return;
+
+            CurrentRevivePower = await _inventoryService.GetPowerUpCountAsync("Revive");
+
+            if (Shell.Current == null)
+                return;
+
+            await Shell.Current.GoToAsync("..");
+        }
+
+        private async Task OnExitExecutedAsync()
+        {
+            await SaveRewardsAsync();
+            GameViewModel.ActiveInstance?.PrepareToQuit();
+
             if (Shell.Current == null)
                 return;
 

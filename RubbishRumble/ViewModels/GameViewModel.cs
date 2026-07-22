@@ -6,6 +6,8 @@ namespace RubbishRumble.ViewModels
 {
     public class GameViewModel : BaseViewModel
     {
+        public static GameViewModel? ActiveInstance { get; private set; }
+
         private readonly GameService _gameService;
         private readonly DatabaseService _databaseService;
         private readonly InventoryService _inventoryService;
@@ -26,6 +28,7 @@ namespace RubbishRumble.ViewModels
         private bool _gameOverHandled;
         private bool _isPaused;
         private bool _isExiting;
+        private bool _resumeAfterRevive;
 
         public bool IsPaused
         {
@@ -173,6 +176,10 @@ namespace RubbishRumble.ViewModels
             ResumeGameCommand = new Command(() => IsPaused = false);
         }
 
+        public bool ShouldResumeAfterRevive => _resumeAfterRevive;
+
+        public void ClearResumeAfterRevive() => _resumeAfterRevive = false;
+
         public void PrepareToQuit()
         {
             if (_isExiting)
@@ -182,18 +189,36 @@ namespace RubbishRumble.ViewModels
             _gameOverHandled = true;
             IsPaused = false;
             _gameService.ResetForExit();
+
+            if (ActiveInstance == this)
+                ActiveInstance = null;
         }
 
         public async Task InitializeAsync()
         {
             _isExiting = false;
             _gameOverHandled = false;
+            _resumeAfterRevive = false;
             IsPaused = false;
+            ActiveInstance = this;
             await _powerUpService.InitializeAsync();
             await _gameService.StartGameAsync();
             await RefreshCoinsAsync();
             await RefreshPowerUpCountsAsync();
             SyncGameState();
+        }
+
+        public async Task<bool> TryReviveAndResumeAsync()
+        {
+            if (!await _gameService.TryReviveAsync())
+                return false;
+
+            _gameOverHandled = false;
+            _resumeAfterRevive = true;
+            IsPaused = false;
+            await RefreshPowerUpCountsAsync();
+            SyncGameState();
+            return true;
         }
 
         public TrashItem? GetRandomTrash() => _gameService.GetRandomTrash();

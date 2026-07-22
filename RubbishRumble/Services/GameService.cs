@@ -174,6 +174,7 @@ namespace RubbishRumble.Services
             Player player = await _dataService.GetPlayerAsync();
 
             await _inventoryService.ApplyBeginnerPackAsync(player);
+            await _inventoryService.EnsureBeginnerRevivesAsync(player);
 
             await LoadGameDataAsync();
 

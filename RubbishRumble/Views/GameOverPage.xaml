@@ -82,20 +82,57 @@
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Exit button -->
-            <Border Stroke="#4C3E24"
-                    StrokeThickness="3"
-                    StrokeShape="Rectangle"
-                    BackgroundColor="#9E4539"
-                    HeightRequest="50"
-                    WidthRequest="160"
-                    HorizontalOptions="Center">
-                <ImageButton Source="exit.png"
-                             Command="{Binding ExitCommand}"
-                             BackgroundColor="Transparent"
-                             Padding="3"
-                             Aspect="AspectFit"/>
-            </Border>
+            <!-- Action buttons -->
+            <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="6"
+                                     HorizontalOptions="Center"
+                                     Opacity="{Binding ReviveButtonOpacity}">
+                    <Border Stroke="#4C3E24"
+                            StrokeThickness="3"
+                            StrokeShape="Rectangle"
+                            BackgroundColor="#9E4539"
+                            HeightRequest="50"
+                            WidthRequest="120"
+                            HorizontalOptions="Center">
+                        <Button Text="REVIVE"
+                                ImageSource="revive01.png"
+                                ContentLayout="Left, 8"
+                                Command="{Binding UseReviveCommand}"
+                                IsEnabled="{Binding CanUseRevive}"
+                                FontFamily="PixelifySans"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                TextColor="#FDCBB0"
+                                BackgroundColor="Transparent"
+                                BorderWidth="0"
+                                HeightRequest="50"
+                                WidthRequest="120"
+                                Padding="8,0"
+                                CornerRadius="0"/>
+                    </Border>
+                    <Label Text="{Binding CurrentRevivePower, StringFormat='x{0}'}"
+                           FontFamily="PixelifySans"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#4C3E24"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <Border Stroke="#4C3E24"
+                        StrokeThickness="3"
+                        StrokeShape="Rectangle"
+                        BackgroundColor="#9E4539"
+                        HeightRequest="50"
+                        WidthRequest="120"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Start">
+                    <ImageButton Source="exit.png"
+                                 Command="{Binding ExitCommand}"
+                                 BackgroundColor="Transparent"
+                                 Padding="3"
+                                 Aspect="AspectFit"/>
+                </Border>
+            </HorizontalStackLayout>
         </VerticalStackLayout>
         <!-- Eco facts area -->
         <Border Grid.Row="1"

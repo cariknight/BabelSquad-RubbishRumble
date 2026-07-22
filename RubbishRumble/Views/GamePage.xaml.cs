@@ -100,12 +100,20 @@ public partial class GamePage : ContentPage
 
         try
         {
-            await _viewModel.InitializeAsync();
+            if (_viewModel.ShouldResumeAfterRevive)
+            {
+                _viewModel.ClearResumeAfterRevive();
+            }
+            else
+            {
+                await _viewModel.InitializeAsync();
+            }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Game init failed: {ex}");
         }
+
         await SettingsService.Instance.PlayMusicAsync("gamemusic.mp3");
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();

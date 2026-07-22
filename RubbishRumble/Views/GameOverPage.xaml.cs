@@ -33,23 +33,14 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
     {
         base.OnAppearing();
         await SettingsService.Instance.PlaySfxAsync("gameover.mp3");
-        RemoveGamePageFromStack();
-        await _viewModel.SaveRewardsAsync();
+        await _viewModel.LoadRewardsPreviewAsync();
+        await _viewModel.LoadReviveCountAsync();
         await _viewModel.LoadEcoTipAsync();
     }
 
     protected override bool OnBackButtonPressed()
     {
         return true;
-    }
-
-    private void RemoveGamePageFromStack()
-    {
-        Page? gamePage = Navigation.NavigationStack
-            .FirstOrDefault(page => page is GamePage);
-
-        if (gamePage != null)
-            Navigation.RemovePage(gamePage);
     }
 
     private static int ParseInt(object value)
