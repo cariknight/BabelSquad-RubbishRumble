@@ -118,6 +118,7 @@ public partial class GamePage : ContentPage
         UpdateLayoutMetrics();
         SetupArenaTouchLayer();
         SettingsService.Instance.AppBecameInactive += OnAppBecameInactive;
+        SettingsService.Instance.AppBecameActive += OnAppBecameActive;
         StartGameLoop();
     }
 
@@ -127,6 +128,7 @@ public partial class GamePage : ContentPage
         _draggingTrash = null;
         _viewModel.PointsEarned -= OnPointsEarned;
         SettingsService.Instance.AppBecameInactive -= OnAppBecameInactive;
+        SettingsService.Instance.AppBecameActive -= OnAppBecameActive;
         StopGameLoop();
         ClearActiveTrash();
 
@@ -141,11 +143,20 @@ public partial class GamePage : ContentPage
         CancelActiveDrag();
     }
 
+    private void OnAppBecameActive(object? sender, EventArgs e)
+    {
+        if (!_isPageActive)
+            return;
+
+        _viewModel.ResumeFromAppActive();
+    }
+
     private async void OnQuitButtonClicked(object sender, EventArgs e)
     {
         if (!_isPageActive || Shell.Current == null)
             return;
 
+        await _viewModel.SaveSessionRewardsAsync();
         _viewModel.PrepareToQuit();
         StopGameLoop();
         ClearActiveTrash();

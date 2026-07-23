@@ -194,12 +194,12 @@ namespace RubbishRumble.Services
 
         public void LoseLife()
         {
+            if (Lives <= 0)
+                return;
+
             Lives--;
 
             NotifyGameStateChanged();
-
-            if (Lives <= 0)
-                EndGame();
         }
 
         public GameSession EndGame()
@@ -340,7 +340,7 @@ namespace RubbishRumble.Services
 
         public async Task ActivatePowerUpAsync(PowerUp? powerUp)
         {
-            if (powerUp == null)
+            if (powerUp == null || powerUp.EffectType == "Revive" || powerUp.DurationSeconds <= 0)
                 return;
 
             _powerUpCts?.Cancel();

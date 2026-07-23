@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Microsoft.Maui.Controls; 
+﻿using System.Windows.Input;
 using RubbishRumble.Services;
 
 namespace RubbishRumble.ViewModels
@@ -16,11 +10,11 @@ namespace RubbishRumble.ViewModels
             get => SettingsService.Instance.IsMusicMuted;
             set
             {
-                if (SettingsService.Instance.IsMusicMuted != value)
-                {
-                    SettingsService.Instance.ToggleMusic();
-                    OnPropertyChanged();
-                }
+                if (SettingsService.Instance.IsMusicMuted == value)
+                    return;
+
+                SettingsService.Instance.SetMusicMuted(value);
+                OnPropertyChanged();
             }
         }
 
@@ -29,11 +23,11 @@ namespace RubbishRumble.ViewModels
             get => SettingsService.Instance.IsSfxMuted;
             set
             {
-                if (SettingsService.Instance.IsSfxMuted != value)
-                {
-                    SettingsService.Instance.ToggleSfx();
-                    OnPropertyChanged();
-                }
+                if (SettingsService.Instance.IsSfxMuted == value)
+                    return;
+
+                SettingsService.Instance.SetSfxMuted(value);
+                OnPropertyChanged();
             }
         }
         public ICommand ToggleMusicCommand { get; }

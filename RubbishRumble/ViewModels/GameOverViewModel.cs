@@ -203,6 +203,12 @@ namespace RubbishRumble.ViewModels
             if (_rewardsSaved)
                 return;
 
+            if (GameViewModel.ActiveInstance?.RewardsPersisted == true)
+            {
+                _rewardsSaved = true;
+                return;
+            }
+
             _rewardsSaved = true;
 
             try

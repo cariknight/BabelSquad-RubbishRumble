@@ -24,9 +24,6 @@ public partial class GameOverPage : ContentPage, IQueryAttributable
     {
         if (query.TryGetValue("TotalScore", out object? scoreValue))
             _viewModel.TotalScore = ParseInt(scoreValue);
-
-        if (query.TryGetValue("EarnedCoins", out object? coinsValue))
-            _viewModel.EarnedCoins = ParseInt(coinsValue);
     }
 
     protected override async void OnAppearing()

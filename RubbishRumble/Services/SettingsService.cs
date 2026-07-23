@@ -72,9 +72,12 @@ namespace RubbishRumble.Services
             await PlayMusicAsync("bgmusic.mp3"); // default game music
         }
 
-        public void ToggleMusic()
+        public void SetMusicMuted(bool muted)
         {
-            _isMusicMuted = !_isMusicMuted;
+            if (_isMusicMuted == muted)
+                return;
+
+            _isMusicMuted = muted;
 
             if (_musicPlayer == null)
                 return;
@@ -83,6 +86,11 @@ namespace RubbishRumble.Services
                 _musicPlayer.Pause();
             else if (_isAppActive)
                 _musicPlayer.Play();
+        }
+
+        public void ToggleMusic()
+        {
+            SetMusicMuted(!_isMusicMuted);
         }
 
         public void PauseForAppInactive()
@@ -120,6 +128,8 @@ namespace RubbishRumble.Services
             _musicPausedForInactivity = false;
             AppBecameActive?.Invoke(this, EventArgs.Empty);
         }
+
+        public void SetSfxMuted(bool muted) => IsSfxMuted = muted;
 
         public void ToggleSfx()
         {
