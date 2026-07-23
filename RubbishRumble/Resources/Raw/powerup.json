@@ -3,7 +3,7 @@
     "name": "Freeze",
     "durationSeconds": 5,
     "effectType": "Freeze",
-    "description":  "",
+    "description":  "Freeze trash items from falling for 5 seconds.",
     "scoreMultiplier": 1.0,
     "speedMultiplier": 0.0,
     "price": 15
@@ -12,25 +12,25 @@
     "name": "Slow",
     "durationSeconds": 5,
     "effectType": "Slow",
-    "description": "",
+    "description": "Slows the fall of trash items for 5 seconds by x0.5.",
     "scoreMultiplier": 1.0,
     "speedMultiplier": 0.5,
     "price": 15
   },
-  {
-    "name": "Auto Sort",
-    "durationSeconds": 5,
-    "effectType": "AutoSort",
-    "description": "",
-    "scoreMultiplier": 0.5,
-    "speedMultiplier": 1.0,
-    "price": 50
-  },
+    {
+      "name": "Auto Sort",
+      "durationSeconds": 5,
+      "effectType": "AutoSort",
+      "description": "Automatically sorts trash on the right bin for 5 seconds.",
+      "scoreMultiplier": 0.5,
+      "speedMultiplier": 1.0,
+      "price": 50
+    },
   {
     "name": "Speed",
     "durationSeconds": 10,
     "effectType": "Speed",
-    "description": "",
+    "description": "Speeds up the fall of thras items x2 but also earns x2 of the score for 10 seconds.",
     "scoreMultiplier": 2.0,
     "speedMultiplier": 2.0,
     "price": 10
@@ -39,7 +39,7 @@
     "name": "Revive",
     "durationSeconds": 0,
     "effectType": "Revive",
-    "description": "",
+    "description": "Revives you when you ran out of hearts.",
     "scoreMultiplier": 1.0,
     "speedMultiplier": 1.0,
     "price": 100
