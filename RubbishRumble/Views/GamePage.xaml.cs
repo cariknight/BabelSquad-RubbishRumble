@@ -97,7 +97,13 @@ public partial class GamePage : ContentPage
         _isPageActive = true;
         _viewModel.PointsEarned += OnPointsEarned;
         StopGameLoop();
-        ClearActiveTrash();
+
+        bool skipInitialization = _skipNextInitialization;
+        if (skipInitialization)
+            _skipNextInitialization = false;
+
+        if (!skipInitialization)
+            ClearActiveTrash();
 
         try
         {
@@ -105,7 +111,7 @@ public partial class GamePage : ContentPage
             {
                 _viewModel.ClearResumeAfterRevive();
             }
-            else
+            else if (!skipInitialization)
             {
                 await _viewModel.InitializeAsync();
             }
