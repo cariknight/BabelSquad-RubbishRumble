@@ -41,7 +41,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- App Icon: Windows uses a larger single-layer icon -->
+		<!-- App Icon: Windows uses a larger transparent icon -->
 		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'"
 		          Include="Resources\AppIcon\appicon_win.png"
 		          BaseSize="512,512" />
