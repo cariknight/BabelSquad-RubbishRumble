@@ -134,7 +134,6 @@ namespace RubbishRumble.Services
                 "Common" => Math.Max(20, rarity.Chance / multiplier),
                 "Rare" => rarity.Chance * multiplier,
                 "Epic" => rarity.Chance * (multiplier + 0.2),
-                "Legendary" => rarity.Chance * (multiplier + 0.4),
                 _ => rarity.Chance
             };
         }
@@ -202,12 +201,12 @@ namespace RubbishRumble.Services
             NotifyGameStateChanged();
         }
 
-        public GameSession EndGame()
+        public GameSession EndGame(bool isNewHighScore)
         {
             return new GameSession
             {
                 FinalScore = Score,
-                CoinsEarned = EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore: false),
+                CoinsEarned = EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore),
                 PlayedAt = DateTime.Now
             };
         }

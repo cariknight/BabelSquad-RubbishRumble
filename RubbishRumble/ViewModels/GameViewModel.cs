@@ -381,7 +381,9 @@ namespace RubbishRumble.ViewModels
             if (Shell.Current == null)
                 return;
 
-            GameSession session = _gameService.EndGame();
+            Player player = await _databaseService.GetPlayerAsync();
+            bool isNewHighScore = _gameService.Score > 0 && _gameService.Score > player.HighestScore;
+            GameSession session = _gameService.EndGame(isNewHighScore);
             string route = $"GameOverPage?TotalScore={session.FinalScore}";
 
             await Shell.Current.GoToAsync(route);

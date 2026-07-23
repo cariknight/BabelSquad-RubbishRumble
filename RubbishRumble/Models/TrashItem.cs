@@ -3,10 +3,10 @@
     public class TrashItem
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Rarity { get; set; }
-        public string FilePath { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public string Rarity { get; set; } = string.Empty;
+        public string FilePath { get; set; } = string.Empty;
 
         public string GetMauiImageSource()
         {
