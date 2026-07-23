@@ -132,6 +132,7 @@ namespace RubbishRumble.Services
             return rarity.RarityName switch
             {
                 "Common" => Math.Max(20, rarity.Chance / multiplier),
+                "Uncommon" => Math.Max(10, rarity.Chance / multiplier),
                 "Rare" => rarity.Chance * multiplier,
                 "Epic" => rarity.Chance * (multiplier + 0.2),
                 _ => rarity.Chance
