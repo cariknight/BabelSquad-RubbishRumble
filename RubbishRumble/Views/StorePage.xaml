@@ -264,48 +264,70 @@
                                      Command="{Binding BuySpeedCommand}"/>
                     </VerticalStackLayout>
                     <!-- REVIVE Power Up -->
-                    <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="15" VerticalOptions="Center">
-                        <Border Stroke="#4C3E24"
-                                StrokeThickness="3"
-                                StrokeShape="Rectangle"
-                                Background="#9E4539"
-                                Padding="20"
-                                WidthRequest="180">
-                            <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
-                                <Label Text="{Binding ReviveDisplayText}" 
-                                       FontFamily="PixelifySans"
-                                       FontSize="18" 
-                                       TextColor="#FDCBB0" 
-                                       HorizontalTextAlignment="Center"/>
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2" ColumnDefinitions="*, *" ColumnSpacing="15">
+                        <BoxView Grid.Column="0"
+                                 x:Name="ReviveColumnReference"
+                                 Color="Transparent"/>
+                        <VerticalStackLayout Grid.ColumnSpan="2"
+                                             HorizontalOptions="Center"
+                                             Spacing="15"
+                                             VerticalOptions="Center">
+                            <Border Stroke="#4C3E24"
+                                    StrokeThickness="3"
+                                    StrokeShape="Rectangle"
+                                    Background="#9E4539"
+                                    Padding="20"
+                                    WidthRequest="{Binding Width, Source={x:Reference ReviveColumnReference}}">
+                                <VerticalStackLayout HorizontalOptions="Center" Spacing="15">
+                                    <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                                        <Label Text="Revive" 
+                                               FontFamily="PixelifySans"
+                                               FontSize="18" 
+                                               TextColor="#FDCBB0" 
+                                               HorizontalTextAlignment="Center"/>
 
-                                <Image Source="revive01.png" 
-                                       HeightRequest="60" 
-                                       WidthRequest="60" 
-                                       Aspect="AspectFit"/>
-                                <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
-                                    <Label Text="Coins:" 
-                                           FontFamily="PixelifySans" 
-                                           FontSize="18" 
-                                           TextColor="#FDCBB0"/>
+                                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                                            <Label Text="Owned:" 
+                                                   FontFamily="PixelifySans"
+                                                   FontSize="18" 
+                                                   TextColor="#FDCBB0"/>
 
-                                    <Label Text="{Binding RevivePrice}" 
-                                           FontFamily="VcrMono" 
-                                           FontSize="18" 
-                                           TextColor="#FDCBB0"/>
-                                </HorizontalStackLayout>
-                            </VerticalStackLayout>
-                        </Border>
-                        <ImageButton Source="buy.png"  
-                                     BackgroundColor="#9E4539"
-                                     BorderColor="#4C3E24"
-                                     BorderWidth="3"
-                                     Aspect="AspectFit"
-                                     Padding="5"
-                                     WidthRequest="100"
-                                     HeightRequest="45"
-                                     HorizontalOptions="Center"
-                                     Command="{Binding BuyReviveCommand}"/>
-                    </VerticalStackLayout>
+                                            <Label Text="{Binding OwnedRevive}" 
+                                                   FontFamily="VcrMono"
+                                                   FontSize="18" 
+                                                   TextColor="#FDCBB0"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+
+                                    <Image Source="revive01.png" 
+                                           HeightRequest="60" 
+                                           WidthRequest="60" 
+                                           Aspect="AspectFit"/>
+                                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                                        <Label Text="Coins:" 
+                                               FontFamily="PixelifySans" 
+                                               FontSize="18" 
+                                               TextColor="#FDCBB0"/>
+
+                                        <Label Text="{Binding RevivePrice}" 
+                                               FontFamily="VcrMono" 
+                                               FontSize="18" 
+                                               TextColor="#FDCBB0"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                            <ImageButton Source="buy.png"  
+                                         BackgroundColor="#9E4539"
+                                         BorderColor="#4C3E24"
+                                         BorderWidth="3"
+                                         Aspect="AspectFit"
+                                         Padding="5"
+                                         WidthRequest="100"
+                                         HeightRequest="45"
+                                         HorizontalOptions="Center"
+                                         Command="{Binding BuyReviveCommand}"/>
+                        </VerticalStackLayout>
+                    </Grid>
                 </Grid>
             </ScrollView>
             <!-- Exit button -->
