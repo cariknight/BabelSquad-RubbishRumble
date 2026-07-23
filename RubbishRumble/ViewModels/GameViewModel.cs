@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using RubbishRumble.Helper;
 using RubbishRumble.Models;
 using RubbishRumble.Services;
 
@@ -29,6 +30,9 @@ namespace RubbishRumble.ViewModels
         private bool _isPaused;
         private bool _isExiting;
         private bool _resumeAfterRevive;
+        private bool _pausedForInactivity;
+        private bool _rewardsPersisted;
+        private CancellationTokenSource? _flashBinCts;
 
         public bool IsPaused
         {
@@ -36,12 +40,24 @@ namespace RubbishRumble.ViewModels
             private set => SetProperty(ref _isPaused, value);
         }
 
+        public bool RewardsPersisted => _rewardsPersisted;
+
         public void PauseForAppInactive()
         {
             if (IsPaused || IsGameOver)
                 return;
 
             IsPaused = true;
+            _pausedForInactivity = true;
+        }
+
+        public void ResumeFromAppActive()
+        {
+            if (!_pausedForInactivity || IsGameOver)
+                return;
+
+            _pausedForInactivity = false;
+            IsPaused = false;
         }
 
         public int CurrentCoins
@@ -172,8 +188,18 @@ namespace RubbishRumble.ViewModels
             UseSlowPowerCommand = new Command(async () => await UsePowerUpAsync("Slow"));
             UseAutoSortPowerCommand = new Command(async () => await UsePowerUpAsync("Auto Sort"));
             UseSpeedPowerCommand = new Command(async () => await UsePowerUpAsync("Speed"));
-            PauseGameCommand = new Command(() => IsPaused = true);
-            ResumeGameCommand = new Command(() => IsPaused = false);
+            PauseGameCommand = new Command(async () =>
+            {
+                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+                _pausedForInactivity = false;
+                IsPaused = true;
+            });
+            ResumeGameCommand = new Command(async () =>
+            {
+                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+                _pausedForInactivity = false;
+                IsPaused = false;
+            });
         }
 
         public bool ShouldResumeAfterRevive => _resumeAfterRevive;
@@ -188,6 +214,9 @@ namespace RubbishRumble.ViewModels
             _isExiting = true;
             _gameOverHandled = true;
             IsPaused = false;
+            _pausedForInactivity = false;
+            _flashBinCts?.Cancel();
+            _gameService.GameStateChanged -= OnGameStateChanged;
             _gameService.ResetForExit();
 
             if (ActiveInstance == this)
@@ -199,6 +228,8 @@ namespace RubbishRumble.ViewModels
             _isExiting = false;
             _gameOverHandled = false;
             _resumeAfterRevive = false;
+            _rewardsPersisted = false;
+            _pausedForInactivity = false;
             IsPaused = false;
             ActiveInstance = this;
             await _powerUpService.InitializeAsync();
@@ -219,6 +250,27 @@ namespace RubbishRumble.ViewModels
             await RefreshPowerUpCountsAsync();
             SyncGameState();
             return true;
+        }
+
+        public async Task SaveSessionRewardsAsync()
+        {
+            if (_rewardsPersisted || _gameService.Score <= 0)
+                return;
+
+            _rewardsPersisted = true;
+
+            try
+            {
+                Player player = await _databaseService.GetPlayerAsync();
+                bool isNewHighScore = _gameService.Score > player.HighestScore;
+                int coinsToAward = EconomyHelper.CalculateEarnedCoins(_gameService.Score, isNewHighScore);
+                await _databaseService.AwardGameRewardsAsync(_gameService.Score, coinsToAward);
+            }
+            catch (Exception ex)
+            {
+                _rewardsPersisted = false;
+                System.Diagnostics.Debug.WriteLine($"Failed to save session rewards: {ex}");
+            }
         }
 
         public TrashItem? GetRandomTrash() => _gameService.GetRandomTrash();
@@ -273,12 +325,12 @@ namespace RubbishRumble.ViewModels
                 _ = FlashBinAsync(trash.Category);
             }
 
-            else if (outcome == TrashSortOutcome.Incorrect) 
+            else if (outcome == TrashSortOutcome.Incorrect)
             {
                 _ = SettingsService.Instance.PlaySfxAsync("wrongbin.mp3");
             }
 
-                return outcome != TrashSortOutcome.NotInBinZone;
+            return outcome != TrashSortOutcome.NotInBinZone;
         }
 
         public void OnTrashMissed()
@@ -329,9 +381,10 @@ namespace RubbishRumble.ViewModels
             if (Shell.Current == null)
                 return;
 
-            GameSession session = _gameService.EndGame();
-            string route =
-                $"GameOverPage?TotalScore={session.FinalScore}&EarnedCoins={session.CoinsEarned}";
+            Player player = await _databaseService.GetPlayerAsync();
+            bool isNewHighScore = _gameService.Score > 0 && _gameService.Score > player.HighestScore;
+            GameSession session = _gameService.EndGame(isNewHighScore);
+            string route = $"GameOverPage?TotalScore={session.FinalScore}";
 
             await Shell.Current.GoToAsync(route);
         }
@@ -375,7 +428,7 @@ namespace RubbishRumble.ViewModels
                 await _powerUpService.InitializeAsync();
 
             PowerUp? powerUp = _powerUpService.PowerUps.FirstOrDefault(p => p.Name == powerUpName);
-            if (powerUp == null)
+            if (powerUp == null || powerUp.EffectType == "Revive" || powerUp.DurationSeconds <= 0)
                 return;
 
             bool used = await _inventoryService.UsePowerUpAsync(powerUpName);
@@ -390,6 +443,11 @@ namespace RubbishRumble.ViewModels
         {
             if (_isExiting)
                 return;
+
+            _flashBinCts?.Cancel();
+            _flashBinCts?.Dispose();
+            _flashBinCts = new CancellationTokenSource();
+            CancellationToken token = _flashBinCts.Token;
 
             switch (category)
             {
@@ -407,9 +465,16 @@ namespace RubbishRumble.ViewModels
                     break;
             }
 
-            await Task.Delay(250);
+            try
+            {
+                await Task.Delay(250, token);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
 
-            if (_isExiting)
+            if (_isExiting || token.IsCancellationRequested)
                 return;
 
             IsRecycleBinOpen = false;

@@ -33,13 +33,14 @@ namespace RubbishRumble.Services
                     await SharedDatabase.CreateTableAsync<Inventory>();
                     await SharedDatabase.CreateTableAsync<LeaderboardEntry>();
 
-                    await SeedPowerUpsAsync(SharedDatabase);
                     await MigrateLegacySchemaAsync(SharedDatabase);
                 }
                 else
                 {
                     database = SharedDatabase;
                 }
+
+                await SyncPowerUpsFromCatalogAsync(database!);
 
                 Player? player = await database.FindAsync<Player>(DefaultPlayerId);
 
@@ -187,21 +188,32 @@ namespace RubbishRumble.Services
             return entry;
         }
 
-        private async Task SeedPowerUpsAsync(SQLiteAsyncConnection db)
+        private async Task SyncPowerUpsFromCatalogAsync(SQLiteAsyncConnection db)
         {
             List<PowerUp> catalog = await LoadPowerUpCatalogAsync();
-            HashSet<string> seededNames = new(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> syncedNames = new(StringComparer.OrdinalIgnoreCase);
 
             foreach (PowerUp powerUp in catalog)
             {
-                if (!seededNames.Add(powerUp.Name))
+                if (!syncedNames.Add(powerUp.Name))
                     continue;
 
                 PowerUp? existing = await db.Table<PowerUp>()
                     .FirstOrDefaultAsync(p => p.Name == powerUp.Name);
 
                 if (existing == null)
+                {
                     await db.InsertAsync(powerUp);
+                    continue;
+                }
+
+                existing.EffectType = powerUp.EffectType;
+                existing.Description = powerUp.Description;
+                existing.DurationSeconds = powerUp.DurationSeconds;
+                existing.ScoreMultiplier = powerUp.ScoreMultiplier;
+                existing.SpeedMultiplier = powerUp.SpeedMultiplier;
+                existing.Price = powerUp.Price;
+                await db.UpdateAsync(existing);
             }
         }
 

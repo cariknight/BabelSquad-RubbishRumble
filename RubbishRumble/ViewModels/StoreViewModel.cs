@@ -88,11 +88,7 @@ namespace RubbishRumble.ViewModels
         public int RevivePrice
         {
             get => _revivePrice;
-            private set
-            {
-                if (SetProperty(ref _revivePrice, value))
-                    OnPropertyChanged(nameof(RevivePriceText));
-            }
+            private set => SetProperty(ref _revivePrice, value);
         }
 
         public string FreezeDisplayText => $"Freeze\nOwned: {OwnedFreeze}";
@@ -100,11 +96,6 @@ namespace RubbishRumble.ViewModels
         public string AutoSortDisplayText => $"Auto Sort\nOwned: {OwnedAutoSort}";
         public string SpeedDisplayText => $"Speed\nOwned: {OwnedSpeed}";
         public string ReviveDisplayText => $"Revive\nOwned: {OwnedRevive}";
-        public string FreezePriceText => $"Coins: {FreezePrice}";
-        public string SlowPriceText => $"Coins: {SlowPrice}";
-        public string AutoSortPriceText => $"Coins: {AutoSortPrice}";
-        public string SpeedPriceText => $"Coins: {SpeedPrice}";
-        public string RevivePriceText => $"Coins: {RevivePrice}";
 
         public ICommand BuyFreezeCommand { get; }
         public ICommand BuySlowCommand { get; }

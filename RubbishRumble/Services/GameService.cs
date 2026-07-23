@@ -26,6 +26,7 @@ namespace RubbishRumble.Services
 
         private List<TrashItem> _trashItems = new();
         private List<Rarity> _rarities = new();
+        private int _trashSinceLastDifficultyIncrease;
 
         public double CurrentScoreMultiplier { get; private set; } = 1.0;
         public double CurrentSpeedMultiplier { get; private set; } = 1.0;
@@ -131,9 +132,9 @@ namespace RubbishRumble.Services
             return rarity.RarityName switch
             {
                 "Common" => Math.Max(20, rarity.Chance / multiplier),
+                "Uncommon" => Math.Max(10, rarity.Chance / multiplier),
                 "Rare" => rarity.Chance * multiplier,
                 "Epic" => rarity.Chance * (multiplier + 0.2),
-                "Legendary" => rarity.Chance * (multiplier + 0.4),
                 _ => rarity.Chance
             };
         }
@@ -181,8 +182,9 @@ namespace RubbishRumble.Services
             Score = 0;
             Lives = Constants.STARTING_LIVES;
             TrashCollected = 0;
+            _trashSinceLastDifficultyIncrease = 0;
             DifficultyLevel = 1;
-            SpawnInterval = Constants.STARTING_SPAWN_INTERVAL;
+            ApplySpawnRateForCurrentLevel();
             TrashSpeed = Constants.STARTING_TRASH_SPEED;
 
             ClearPowerUpState();
@@ -192,20 +194,20 @@ namespace RubbishRumble.Services
 
         public void LoseLife()
         {
+            if (Lives <= 0)
+                return;
+
             Lives--;
 
             NotifyGameStateChanged();
-
-            if (Lives <= 0)
-                EndGame();
         }
 
-        public GameSession EndGame()
+        public GameSession EndGame(bool isNewHighScore)
         {
             return new GameSession
             {
                 FinalScore = Score,
-                CoinsEarned = EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore: false),
+                CoinsEarned = EconomyHelper.CalculateEarnedCoins(Score, isNewHighScore),
                 PlayedAt = DateTime.Now
             };
         }
@@ -214,10 +216,32 @@ namespace RubbishRumble.Services
         {
             DifficultyLevel++;
 
-            SpawnInterval = Math.Max(Constants.MIN_SPAWN_INTERVAL, SpawnInterval - 0.1);
+            ApplySpawnRateForCurrentLevel();
             TrashSpeed = Math.Min(Constants.MAX_TRASH_SPEED, TrashSpeed + Constants.TRASH_SPEED_INCREASE);
 
             NotifyGameStateChanged();
+        }
+
+        private void ApplySpawnRateForCurrentLevel()
+        {
+            double interval = Constants.STARTING_SPAWN_INTERVAL
+                - (DifficultyLevel - 1) * Constants.SPAWN_INTERVAL_DECREASE;
+
+            SpawnInterval = Math.Max(Constants.MIN_SPAWN_INTERVAL, interval);
+        }
+
+        private int GetTrashRequiredForNextLevel()
+            => DifficultyLevel * Constants.DIFFICULTY_TRASH_BASE;
+
+        private void TryIncreaseDifficulty()
+        {
+            int required = GetTrashRequiredForNextLevel();
+            while (_trashSinceLastDifficultyIncrease >= required)
+            {
+                _trashSinceLastDifficultyIncrease -= required;
+                IncreaseDifficulty();
+                required = GetTrashRequiredForNextLevel();
+            }
         }
 
         private double GetDifficultyScoreMultiplier() => 1 + (DifficultyLevel - 1) * 0.1;
@@ -236,9 +260,8 @@ namespace RubbishRumble.Services
             Score += scoreEarned;
 
             TrashCollected++;
-
-            if (TrashCollected % 20 == 0)
-                IncreaseDifficulty();
+            _trashSinceLastDifficultyIncrease++;
+            TryIncreaseDifficulty();
 
             NotifyGameStateChanged();
             return scoreEarned;
@@ -317,7 +340,7 @@ namespace RubbishRumble.Services
 
         public async Task ActivatePowerUpAsync(PowerUp? powerUp)
         {
-            if (powerUp == null)
+            if (powerUp == null || powerUp.EffectType == "Revive" || powerUp.DurationSeconds <= 0)
                 return;
 
             _powerUpCts?.Cancel();

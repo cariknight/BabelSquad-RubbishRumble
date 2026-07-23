@@ -13,7 +13,6 @@
                         <Label Text="{Binding CurrentCoins}" 
                            FontFamily="VcrMono" 
                            FontSize="20" 
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24"
                            VerticalTextAlignment="Center"/>
                         <Image Source="coin.png" 
@@ -42,13 +41,11 @@
                         <Label Text="LEVEL:" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                         <Label Text="{Binding CurrentLevel}" 
                            FontFamily="VcrMono" 
                            FontSize="22" 
-                           FontAttributes="Bold" 
                            TextColor="#9E4539" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -96,13 +93,11 @@
                         <Label Text="SCORE:" 
                            FontFamily="PixelifySans" 
                            FontSize="20" 
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                         <Label Text="{Binding CurrentScore}" 
                            FontFamily="VcrMono" 
                            FontSize="22" 
-                           FontAttributes="Bold" 
                            TextColor="#9E4539" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -130,7 +125,6 @@
                         <Label Text="{Binding ActivePowerUpDisplayText}"
                            FontFamily="PixelifySans"
                            FontSize="18"
-                           FontAttributes="Bold"
                            TextColor="#9E4539"
                            VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
@@ -227,7 +221,6 @@
                         <Label Text="{Binding CurrentFreezePower}" 
                            FontFamily="VcrMono" 
                            FontSize="20"  
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -268,7 +261,6 @@
                         <Label Text="{Binding CurrentSlowPower}" 
                            FontFamily="VcrMono" 
                            FontSize="20"  
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -309,7 +301,6 @@
                         <Label Text="{Binding CurrentAutoSortPower}" 
                            FontFamily="VcrMono" 
                            FontSize="20"  
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -350,7 +341,6 @@
                         <Label Text="{Binding CurrentSpeedPower}" 
                            FontFamily="VcrMono" 
                            FontSize="20"  
-                           FontAttributes="Bold" 
                            TextColor="#4C3E24" 
                            HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -380,6 +370,13 @@
                     <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
                         <ImageButton Source="resume.png"
                              Command="{Binding ResumeGameCommand}"
+                             HeightRequest="50"
+                             Aspect="AspectFit"
+                             HorizontalOptions="Center"
+                             BackgroundColor="Transparent"/>
+
+                        <ImageButton Source="settings.png"
+                             Clicked="OnSettingsButtonClicked"
                              HeightRequest="50"
                              Aspect="AspectFit"
                              HorizontalOptions="Center"

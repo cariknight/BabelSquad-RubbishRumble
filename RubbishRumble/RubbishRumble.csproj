@@ -23,7 +23,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>RubbishRumble</ApplicationTitle>
+		<ApplicationTitle>Rubbish Rumble</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.rubbishrumble</ApplicationId>
@@ -41,8 +41,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<!-- App Icon: Windows uses a larger transparent icon -->
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'"
+		          Include="Resources\AppIcon\appicon_win.png"
+		          BaseSize="512,512" />
+
+		<!-- App Icon: Android/iOS/Mac use adaptive icon with extra padding -->
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'"
+		          Include="Resources\AppIcon\appicon.png"
+		          ForegroundFile="Resources\AppIcon\appicon_fg.png"
+		          ForegroundScale="0.85"
+		          BaseSize="512,512" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -52,7 +61,7 @@
 		<MauiImage Include="Resources\Images\Trash\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<MauiFont Include="Resources\Fonts\*" Exclude="Resources\Fonts\PixelifySans-Regular.ttf;Resources\Fonts\PixelifySans-Bold.ttf" />
 		
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />

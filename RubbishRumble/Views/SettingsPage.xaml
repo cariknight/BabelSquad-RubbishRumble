@@ -35,7 +35,6 @@
                            Text="MUSIC" 
                            FontFamily="PixelifySans"
                            FontSize="22" 
-                           FontAttributes="Bold" 
                            TextColor="#FDCBB0" 
                            VerticalOptions="Center"/>
 
@@ -71,7 +70,6 @@
                            Text="SOUND FX" 
                            FontFamily="PixelifySans"
                            FontSize="22" 
-                           FontAttributes="Bold" 
                            TextColor="#FDCBB0" 
                            VerticalOptions="Center"/>
 

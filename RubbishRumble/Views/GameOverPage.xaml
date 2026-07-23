@@ -29,13 +29,11 @@
                             <Label Text="TOTAL SCORE:"
                                    FontSize="20"
                                    FontFamily="PixelifySans"
-                                   FontAttributes="Bold"
                                    TextColor="#FDCBB0"
                                    HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding TotalScore}"
                                    FontSize="28"
                                    FontFamily="PixelifySans"
-                                   FontAttributes="Bold"
                                    TextColor="#FDCBB0"
                                    HorizontalTextAlignment="Center"/>
                         </VerticalStackLayout>
@@ -44,13 +42,11 @@
                             <Label Text="{Binding HighScoreLabel}"
                                    FontSize="18"
                                    FontFamily="PixelifySans"
-                                   FontAttributes="Bold"
                                    TextColor="#FDCBB0"
                                    HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding HighestScore}"
                                    FontSize="24"
                                    FontFamily="PixelifySans"
-                                   FontAttributes="Bold"
                                    TextColor="#FDCBB0"
                                    HorizontalTextAlignment="Center"/>
                         </VerticalStackLayout>
@@ -64,7 +60,6 @@
                             <Label Text="{Binding EarnedCoins}"
                                    FontSize="28"
                                    FontFamily="PixelifySans"
-                                   FontAttributes="Bold"
                                    TextColor="#FDCBB0"
                                    VerticalOptions="Center"
                                    HorizontalTextAlignment="Start"/>
@@ -74,7 +69,6 @@
                                IsVisible="{Binding ShowCoinBonus}"
                                FontSize="13"
                                FontFamily="PixelifySans"
-                               FontAttributes="Bold"
                                TextColor="#FDCBB0"
                                HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -118,7 +112,6 @@
                         <Label Text="{Binding CurrentRevivePower}"
                                FontFamily="PixelifySans"
                                FontSize="20"
-                               FontAttributes="Bold"
                                TextColor="#4C3E24"
                                HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
@@ -156,7 +149,6 @@
                     <Label Text="{Binding EcoTipTitle}"
                            FontSize="18"
                            FontFamily="PixelifySans"
-                           FontAttributes="Bold"
                            TextColor="#FDCBB0"
                            HorizontalTextAlignment="Center"
                            LineBreakMode="WordWrap"/>
@@ -186,7 +178,6 @@
                     <Label Text="NEW HIGH SCORE!"
                            FontSize="20"
                            FontFamily="PixelifySans"
-                           FontAttributes="Bold"
                            TextColor="#FDCBB0"
                            HorizontalTextAlignment="Center"/>
 
@@ -224,7 +215,6 @@
                     <Label Text="Choose your Profile:"
                            FontSize="15"
                            FontFamily="PixelifySans"
-                           FontAttributes="Bold"
                            TextColor="#FDCBB0"
                            HorizontalTextAlignment="Center"/>
 
