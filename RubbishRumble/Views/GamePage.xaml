@@ -375,6 +375,13 @@
                              HorizontalOptions="Center"
                              BackgroundColor="Transparent"/>
 
+                        <ImageButton Source="settings.png"
+                             Clicked="OnSettingsButtonClicked"
+                             HeightRequest="50"
+                             Aspect="AspectFit"
+                             HorizontalOptions="Center"
+                             BackgroundColor="Transparent"/>
+
                         <ImageButton Source="quit.png"
                              Clicked="OnQuitButtonClicked"
                              HeightRequest="50"

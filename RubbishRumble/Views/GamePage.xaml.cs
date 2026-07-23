@@ -30,6 +30,7 @@ public partial class GamePage : ContentPage
     private double _arenaWidth;
     private double _arenaHeight;
     private bool _isPageActive;
+    private bool _skipNextInitialization;
 
     private const double PointsPopupWidth = 90;
     private const double PointsPopupHeight = 40;
@@ -130,8 +131,11 @@ public partial class GamePage : ContentPage
         SettingsService.Instance.AppBecameInactive -= OnAppBecameInactive;
         SettingsService.Instance.AppBecameActive -= OnAppBecameActive;
         StopGameLoop();
-        ClearActiveTrash();
 
+        if (_skipNextInitialization)
+            return;
+
+        ClearActiveTrash();
     }
 
     private void OnAppBecameInactive(object? sender, EventArgs e)
@@ -149,6 +153,26 @@ public partial class GamePage : ContentPage
             return;
 
         _viewModel.ResumeFromAppActive();
+    }
+
+    private async void OnSettingsButtonClicked(object sender, EventArgs e)
+    {
+        if (!_isPageActive || Shell.Current == null || !_viewModel.IsPaused)
+            return;
+
+        await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
+        CancelActiveDrag();
+        _skipNextInitialization = true;
+
+        try
+        {
+            await Shell.Current.GoToAsync("SettingsPage");
+        }
+        catch (Exception ex)
+        {
+            _skipNextInitialization = false;
+            System.Diagnostics.Debug.WriteLine($"Open settings failed: {ex}");
+        }
     }
 
     private async void OnQuitButtonClicked(object sender, EventArgs e)
