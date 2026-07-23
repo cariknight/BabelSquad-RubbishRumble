@@ -188,13 +188,15 @@ namespace RubbishRumble.ViewModels
             UseSlowPowerCommand = new Command(async () => await UsePowerUpAsync("Slow"));
             UseAutoSortPowerCommand = new Command(async () => await UsePowerUpAsync("Auto Sort"));
             UseSpeedPowerCommand = new Command(async () => await UsePowerUpAsync("Speed"));
-            PauseGameCommand = new Command(() =>
+            PauseGameCommand = new Command(async () =>
             {
+                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
                 _pausedForInactivity = false;
                 IsPaused = true;
             });
-            ResumeGameCommand = new Command(() =>
+            ResumeGameCommand = new Command(async () =>
             {
+                await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
                 _pausedForInactivity = false;
                 IsPaused = false;
             });

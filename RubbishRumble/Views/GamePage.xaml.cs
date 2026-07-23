@@ -156,6 +156,7 @@ public partial class GamePage : ContentPage
         if (!_isPageActive || Shell.Current == null)
             return;
 
+        await SettingsService.Instance.PlaySfxAsync("sfxsound.mp3");
         await _viewModel.SaveSessionRewardsAsync();
         _viewModel.PrepareToQuit();
         StopGameLoop();
