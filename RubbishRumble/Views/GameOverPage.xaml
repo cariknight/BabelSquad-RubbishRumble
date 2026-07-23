@@ -33,7 +33,7 @@
                                    HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding TotalScore}"
                                    FontSize="28"
-                                   FontFamily="PixelifySans"
+                                   FontFamily="VcrMono"
                                    TextColor="#FDCBB0"
                                    HorizontalTextAlignment="Center"/>
                         </VerticalStackLayout>
@@ -46,7 +46,7 @@
                                    HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding HighestScore}"
                                    FontSize="24"
-                                   FontFamily="PixelifySans"
+                                   FontFamily="VcrMono"
                                    TextColor="#FDCBB0"
                                    HorizontalTextAlignment="Center"/>
                         </VerticalStackLayout>
@@ -59,7 +59,7 @@
                                    VerticalOptions="Center"/>
                             <Label Text="{Binding EarnedCoins}"
                                    FontSize="28"
-                                   FontFamily="PixelifySans"
+                                   FontFamily="VcrMono"
                                    TextColor="#FDCBB0"
                                    VerticalOptions="Center"
                                    HorizontalTextAlignment="Start"/>
@@ -110,7 +110,7 @@
                             </ImageButton>
                         </Border>
                         <Label Text="{Binding CurrentRevivePower}"
-                               FontFamily="PixelifySans"
+                               FontFamily="VcrMono"
                                FontSize="20"
                                TextColor="#4C3E24"
                                HorizontalTextAlignment="Center"/>
