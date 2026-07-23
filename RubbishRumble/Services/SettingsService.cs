@@ -5,23 +5,31 @@ namespace RubbishRumble.Services
 {
     public class SettingsService
     {
+        private const string MusicMutedKey = "settings_music_muted";
+        private const string SfxMutedKey = "settings_sfx_muted";
+
         private static SettingsService? _instance;
         public static SettingsService Instance => _instance ??= new SettingsService();
 
         private IAudioPlayer? _musicPlayer;
         private string _currentMusicFile = string.Empty;
         private bool _isMusicMuted;
+        private bool _isSfxMuted;
         private bool _isAppActive = true;
         private bool _musicPausedForInactivity;
 
         public bool IsMusicMuted => _isMusicMuted;
-        public bool IsSfxMuted { get; private set; }
+        public bool IsSfxMuted => _isSfxMuted;
         public bool IsAppActive => _isAppActive;
 
         public event EventHandler? AppBecameInactive;
         public event EventHandler? AppBecameActive;
 
-        private SettingsService() { }
+        private SettingsService()
+        {
+            _isMusicMuted = Preferences.Get(MusicMutedKey, false);
+            _isSfxMuted = Preferences.Get(SfxMutedKey, false);
+        }
 
         public async Task PlayMusicAsync(string fileName)
         {
@@ -78,6 +86,7 @@ namespace RubbishRumble.Services
                 return;
 
             _isMusicMuted = muted;
+            Preferences.Set(MusicMutedKey, muted);
 
             if (_musicPlayer == null)
                 return;
@@ -129,11 +138,18 @@ namespace RubbishRumble.Services
             AppBecameActive?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SetSfxMuted(bool muted) => IsSfxMuted = muted;
+        public void SetSfxMuted(bool muted)
+        {
+            if (_isSfxMuted == muted)
+                return;
+
+            _isSfxMuted = muted;
+            Preferences.Set(SfxMutedKey, muted);
+        }
 
         public void ToggleSfx()
         {
-            IsSfxMuted = !IsSfxMuted;
+            SetSfxMuted(!_isSfxMuted);
         }
 
         public async Task PlaySfxAsync(string fileName)
